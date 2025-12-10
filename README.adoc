@@ -1,0 +1,50 @@
+Spring-Boot-React-Learning
+--------------------------
+
+A program that supports React learning projects with REST services provided by Spring Boot.
+
+REST API Endpoints
+~~~~~~~~~~~~~~~~~~
+
+[options="header"]
+|=======================
+|Endpoint           |HTTP Method | Payload | HTTP Responses                | Description
+|/api/person/ok     | GET        | None    | 200 OK                        | Returns a string: OK
+|/api/person/{id}   | GET        | None    | 200 OK, 404 Not Found         | Returns a person as JSON: {"status":"OK","id":2,"lastName":"Doe","firstName":"John","phoneNumber":"555-234-5678","emailAddress":"john.doe@domain.com"}
+|/api/person/people | GET        | None    | 200 OK                        | Returns a list of persons as JSON: [{"status":"OK","id":2,"lastName":"Doe","firstName":"John","phoneNumber":"555-234-5678","emailAddress":"john.doe@domain.com"}]
+|/api/person        | POST       | JSON    | 201 Created                   | Creates a person from JSON: {"lastName":"Doe","firstName":"John","phoneNumber":"555-234-5678","emailAddress":"john.doe@domain.com"}
+|/api/person/{id}   | PUT        | JSON    | 200 OK                        | Updates a person from JSON: {"lastName":"Doe","firstName":"John","phoneNumber":"555-234-5678","emailAddress":"john.doe@domain.com"}; the updated person is returned as JSON
+|/api/person/{id}   | DELETE     | JSON    | 204 No Content, 404 Not Found | Deletes a person
+|/api/quote/ok      | GET        | None    | 200 OK                        | Returns JSON: {"value":{"id":0,"text":"OK"},"type":"success"}
+|/api/quote/{id}    | GET        | None    | 200 OK, 404 Not Found         | Returns a quote as JSON: {"value":{"id":9,"text":"So easy it is to switch container in #springboot."},"type":"success"}
+|/api/quote/random  | GET        | None    | 200 OK                        | Returns a random quote as JSON: {"value":{"id":9,"text":"So easy it is to switch container in #springboot."},"type":"success"}
+|/api/quote/all     | GET        | None    | 200 OK                        | Returns a list of quotes as JSON: [{"value":{"id":9,"text":"So easy it is to switch container in #springboot."},"type":"success"}]
+|=======================
+
+Gradle JavaExec Tasks
+~~~~~~~~~~~~~~~~~~~~~
+
+Add the --no-configuration-cache option to disable the configuration cache when running bootRun tasks.
+
+[options="header"]
+|=======================
+|Task Name              |Application Invocation
+|bootRun                |No arguments
+|bootRunDev             |No arguments
+|bootRunTest            |No arguments
+|=======================
+
+Running the React application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Run 'npm start' from the client directory.
+
+Scripts
+~~~~~~~
+
+* bin/create-person.sh
+* bin/update-person.sh
+* bin/shutdown.sh
+
+Current version: 0.1.0.
+~~~~~~~~~~~~~~~~~~~~~~~

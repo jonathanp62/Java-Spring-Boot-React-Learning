@@ -1,0 +1,155 @@
+/*
+ * (#)build.gradle  0.1.0   12/10/2025
+ *
+ * @author   Jonathan Parker
+ * @version  0.1.0
+ * @since    0.1.0
+ *
+ * MIT License
+ *
+ * Copyright (c) 2025 Jonathan M. Parker
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+/*
+ * The following system property must be set in HOME/.gradle/gradle.properties:
+ *   systemProp.macosArchitecture=intel -or-
+ *   systemProp.macosArchitecture=silicon
+ */
+
+plugins {
+	id 'java'
+	id 'org.springframework.boot'				version '3.5.8'
+	id 'io.spring.dependency-management'		version '1.1.7'
+	id 'net.jmp.gradle.plugin.projectinfo-info'	version '0.2.0'
+}
+
+apply plugin: 'net.jmp.gradle.plugin.projectinfo-info'
+
+ext {
+	project.group = 'net.jmp.spring.boot.react.learning'
+	project.version = '0.1.0'
+	project.description = 'to support React learning'
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_25
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(25)
+	}
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+dependencies {
+	implementation		('org.springframework.boot:spring-boot-starter')
+	implementation		('org.springframework.boot:spring-boot-starter-actuator')
+	implementation		('org.springframework.boot:spring-boot-starter-web')
+
+	implementation		(libs.co.elastic.logging.logback.ecs.encoder)
+	implementation		(libs.com.google.code.gson.gson)
+	implementation		(libs.net.jmp.util.logging.logging.utilities)
+
+	testImplementation	('org.springframework.boot:spring-boot-starter-test')
+
+	testImplementation	(libs.net.javacrumbs.json.unit.json.unit.spring)
+
+	testRuntimeOnly		('org.junit.platform:junit-platform-launcher')
+}
+
+sourceSets {
+    main {
+        java.srcDir 'src/main/java'
+        resources.srcDir 'src/main/resources'
+    }
+}
+
+tasks.processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.compileJava {
+    options.forkOptions.jvmArgs = ["-Xmx8192m", "--enable-native-access=ALL-UNNAMED"]
+}
+
+tasks.withType(Javadoc).configureEach {
+    CoreJavadocOptions cjo = options as CoreJavadocOptions
+    StandardJavadocDocletOptions sjdo = options as StandardJavadocDocletOptions
+
+    cjo.encoding("UTF-8")
+    cjo.addStringOption("source", "25")
+    cjo.memberLevel = JavadocMemberLevel.PRIVATE
+
+    sjdo.version(true)
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+}
+
+// Tasks named bootRun need to be run with the --no-configuration-cache command line option
+//   ./gradlew --no-configuration-cache bootRun[...]
+
+bootRun {
+	mainClass = 'net.jmp.spring.boot.react.learning.MainApplication'
+	jvmArgs = [ '-Xmx1g', '--enable-native-access=ALL-UNNAMED' ]
+
+	environment("GRADLE_VERSION", "${gradle.gradleVersion}")
+}
+
+tasks.register("bootRunDev") {
+	group = "application"
+	description = "Runs the Spring Boot application with the dev profile"
+
+	doFirst {
+		tasks.bootRun.configure {
+			systemProperty("spring.profiles.active", "dev")
+		}
+	}
+
+    println("The active profile to 'dev'")
+
+	finalizedBy("bootRun")
+}
+
+tasks.register("bootRunTest") {
+	group = "application"
+	description = "Runs the Spring Boot application with the test profile"
+
+	// The 'test' profile is reserved for unit testing
+
+	doFirst {
+		tasks.bootRun.configure {
+			systemProperty("spring.profiles.active", "testing")
+		}
+	}
+
+    println("The active profile to 'testing'")
+
+	finalizedBy("bootRun")
+}
