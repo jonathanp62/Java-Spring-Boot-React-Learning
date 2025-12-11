@@ -36,11 +36,11 @@ package net.jmp.spring.boot.react.learning.bankkycform;
 /// @version   0.1.0
 /// @since     0.1.0
 ///
-/// @param     fileName     java.lang.String
+/// @param     name         java.lang.String
 /// @param     lastModified long
 /// @param     size         long
 public record FormProfilePicture(
-        String fileName,
+        String name,
         long lastModified,
         long size
 ) {

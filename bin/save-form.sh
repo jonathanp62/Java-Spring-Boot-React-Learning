@@ -52,7 +52,7 @@ curl -X POST ${SITE}/react/learning/api/bank-kyc-form \
     "issuedDistrict": "Owings Mills",
     "dateOfIssue": "12/09/2025",
     "profilePicture": {
-      "fileName": "profile.jpg",
+      "name": "profile.jpg",
       "lastModified": 1761323816000,
       "size": 364373
     }
