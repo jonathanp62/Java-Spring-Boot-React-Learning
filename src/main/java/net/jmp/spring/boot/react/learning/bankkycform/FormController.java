@@ -70,4 +70,23 @@ public class FormController {
 
         return result;
     }
+
+    /// The save method.
+    ///
+    /// @param  form    net.jmp.spring.boot.react.learning.bankkycform.Form
+    /// @return         org.springframework.http.ResponseEntity<java.lang.Object>
+    @PostMapping
+    public ResponseEntity<Object> save(final @RequestBody Form form) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(form));
+        }
+
+        ResponseEntity<Object> result = new ResponseEntity<>(form, HttpStatus.CREATED);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
 }

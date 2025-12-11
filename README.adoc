@@ -6,9 +6,10 @@ A program that supports React learning projects with REST services provided by S
 
 [options="header"]
 |=======================
-|Endpoint           |HTTP Method | Payload | HTTP Responses                | Description
-|/react/learning/api/bank-kyc-form/ok | GET        | None    | 200 OK                        | Returns a string: OK
-|/react/learning/api/e-commerce/ok    | GET        | None    | 200 OK                        | Returns a string: OK
+|Endpoint                             |HTTP Method | Payload | HTTP Responses | Description
+|/react/learning/api/bank-kyc-form    | POST       | JSON    | 201 CREATED    | Returns the saved form as JSON
+|/react/learning/api/bank-kyc-form/ok | GET        | None    | 200 OK         | Returns a string: OK
+|/react/learning/api/e-commerce/ok    | GET        | None    | 200 OK         | Returns a string: OK
 |=======================
 
 == Gradle JavaExec Tasks
@@ -25,6 +26,7 @@ Add the --no-configuration-cache option to disable the configuration cache when 
 
 == Scripts
 
+* bin/save-form.sh
 * bin/shutdown.sh
 
 == Current version: 0.1.0.
