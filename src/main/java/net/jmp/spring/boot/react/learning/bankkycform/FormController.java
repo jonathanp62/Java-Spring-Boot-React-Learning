@@ -48,9 +48,16 @@ public class FormController {
     /// The logger.
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /// The repository for the form documents.
+    private final FormDocumentRepository repository;
+
     /// The default constructor.
-    public FormController() {
+    ///
+    /// @param  repository    net.jmp.spring.boot.react.learning.bankkycform.FormDocumentRepository
+    public FormController(final FormDocumentRepository repository) {
         super();
+
+        this.repository = repository;
     }
 
     /// The OK method.
@@ -81,7 +88,32 @@ public class FormController {
             this.logger.trace(entryWith(form));
         }
 
-        ResponseEntity<Object> result = new ResponseEntity<>(form, HttpStatus.CREATED);
+        final FormDocument document = new FormDocument();
+
+        document.setFullName(form.fullName());
+        document.setGender(form.gender());
+        document.setDateOfBirth(form.dateOfBirth());
+        document.setFatherName(form.fatherName());
+        document.setGrandFatherName(form.grandFatherName());
+        document.setMaritalStatus(form.maritalStatus());
+        document.setOccupation(form.occupation());
+        document.setEmailAddress(form.emailAddress());
+        document.setContactNumber(form.contactNumber());
+        document.setState(form.state());
+        document.setDistrict(form.district());
+        document.setMunicipality(form.municipality());
+        document.setWardNumber(form.wardNumber());
+        document.setFamilyName(form.familyName());
+        document.setDocumentType(form.documentType());
+        document.setCitizenshipNumber(form.citizenshipNumber());
+        document.setIssuedDistrict(form.issuedDistrict());
+        document.setDateOfIssue(form.dateOfIssue());
+
+        final FormDocument saved = this.repository.save(document);
+
+        this.logger.info("Saved form document: {}", saved);
+
+        final ResponseEntity<Object> result = new ResponseEntity<>(form, HttpStatus.CREATED);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));

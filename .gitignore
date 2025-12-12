@@ -35,6 +35,7 @@ gradle/*
 !gradle/libs.versions.toml
 gradlew
 out
+src/main/resources/secrets.properties
 target
 
 # Client dependencies

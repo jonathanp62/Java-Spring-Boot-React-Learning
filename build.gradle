@@ -66,6 +66,7 @@ dependencies {
 	implementation		('org.springframework.boot:spring-boot-starter')
 	implementation		('org.springframework.boot:spring-boot-starter-actuator')
 	implementation		('org.springframework.boot:spring-boot-starter-web')
+	implementation 		('org.springframework.boot:spring-boot-starter-data-mongodb')
 
 	implementation		(libs.co.elastic.logging.logback.ecs.encoder)
 	implementation		(libs.com.google.code.gson.gson)
