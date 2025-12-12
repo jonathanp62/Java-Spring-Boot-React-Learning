@@ -108,6 +108,7 @@ public class FormController {
         document.setCitizenshipNumber(form.citizenshipNumber());
         document.setIssuedDistrict(form.issuedDistrict());
         document.setDateOfIssue(form.dateOfIssue());
+        document.setProfilePicture(form.profilePicture());
 
         final FormDocument saved = this.repository.save(document);
 

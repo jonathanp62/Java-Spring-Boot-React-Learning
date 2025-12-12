@@ -36,7 +36,7 @@ import org.springframework.data.annotation.Id;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-/// A MongoDB form class from the bank-kyc-form collection.
+/// A MongoDB form class from the bank_kyc_form collection.
 ///
 /// @version    0.1.0
 /// @since      0.1.0
@@ -63,6 +63,7 @@ public class FormDocument {
     private String citizenshipNumber;
     private String issuedDistrict;
     private String dateOfIssue;
+    private FormProfilePicture profilePicture;
 
     public FormDocument() {
         super();
@@ -220,6 +221,14 @@ public class FormDocument {
         this.dateOfIssue = dateOfIssue;
     }
 
+    public FormProfilePicture getProfilePicture() {
+        return this.profilePicture;
+    }
+
+    public void setProfilePicture(FormProfilePicture profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -246,7 +255,8 @@ public class FormDocument {
                 Objects.equals(this.documentType, that.documentType) &&
                 Objects.equals(this.citizenshipNumber, that.citizenshipNumber) &&
                 Objects.equals(this.issuedDistrict, that.issuedDistrict) &&
-                Objects.equals(this.dateOfIssue, that.dateOfIssue);
+                Objects.equals(this.dateOfIssue, that.dateOfIssue) &&
+                Objects.equals(this.profilePicture, that.profilePicture);
     }
 
     @Override
@@ -270,7 +280,8 @@ public class FormDocument {
                 this.documentType,
                 this.citizenshipNumber,
                 this.issuedDistrict,
-                this.dateOfIssue
+                this.dateOfIssue,
+                this.profilePicture
         );
     }
 
@@ -296,6 +307,7 @@ public class FormDocument {
                 ", citizenshipNumber='" + this.citizenshipNumber + '\'' +
                 ", issuedDistrict='" + this.issuedDistrict + '\'' +
                 ", dateOfIssue='" + this.dateOfIssue + '\'' +
+                ", profilePicture='" + this.profilePicture + '\'' +
                 '}';
     }
 }
