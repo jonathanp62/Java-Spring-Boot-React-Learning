@@ -32,13 +32,16 @@ package net.jmp.spring.boot.react.learning.ecommerce;
 
 import org.springframework.data.annotation.Id;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.Objects;
 
 /// The product document
+@Document(collection = "e_commerce")
 public class ProductDocument {
     /// The Mongo identifier
     @Id
-    private String id;
+    private String documentId;
 
     /// The product
     private Product product;
@@ -51,15 +54,15 @@ public class ProductDocument {
     /// Get the Mongo identifier.
     ///
     /// @return  java.lang.String
-    public String getId() {
-        return this.id;
+    public String getDocumentId() {
+        return this.documentId;
     }
 
     /// Set the Mongo identifier.
     ///
-    /// @param  id  java.lang.String
-    public void setId(final String id) {
-        this.id = id;
+    /// @param  documentId  java.lang.String
+    public void setId(final String documentId) {
+        this.documentId = documentId;
     }
 
     /// Get the product.
@@ -86,7 +89,7 @@ public class ProductDocument {
 
         ProductDocument that = (ProductDocument) o;
 
-        return Objects.equals(this.id, that.id) && Objects.equals(this.product, that.product);
+        return Objects.equals(this.documentId, that.documentId) && Objects.equals(this.product, that.product);
     }
 
     /// The hash code method
@@ -94,7 +97,7 @@ public class ProductDocument {
     /// @return  int
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.product);
+        return Objects.hash(this.documentId, this.product);
     }
 
     /// The to-string method
@@ -103,7 +106,7 @@ public class ProductDocument {
     @Override
     public String toString() {
         return "ProductDocument{" +
-                "id='" +this.id + '\'' +
+                "documentId='" +this.documentId + '\'' +
                 ", product=" + this.product +
                 '}';
     }

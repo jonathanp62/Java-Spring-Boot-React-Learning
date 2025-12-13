@@ -30,6 +30,7 @@ Add the --no-configuration-cache option to disable the configuration cache when 
 == Scripts
 
 * bin/save-form.sh
+* bin/save-product.sh
 * bin/shutdown.sh
 
 == Current version: 0.1.0.

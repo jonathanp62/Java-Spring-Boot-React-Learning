@@ -47,7 +47,7 @@ public record Product(
         double price,
         String description,
         String category,
-        String type,
+        ProductType type,
         TargetGroup target,
         String image,
         Rating rating

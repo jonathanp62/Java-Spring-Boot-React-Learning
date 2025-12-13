@@ -98,4 +98,31 @@ public class OrderController {
 
         return result;
     }
+
+    /// The save order method
+    ///
+    /// @param   product    net.jmp.spring.boot.react.learning.ecommerce.Product
+    /// @return             org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.Product>
+    @PostMapping("/order")
+    public ResponseEntity<Product> save(final @RequestBody Product product) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(product));
+        }
+
+        final ProductDocument document = new ProductDocument();
+
+        document.setProduct(product);
+
+        final ProductDocument saved = this.productDocumentRepository.save(document);
+
+        this.logger.info("Saved product document: {}", saved);
+
+        final ResponseEntity<Product> result = new ResponseEntity<>(product, HttpStatus.CREATED);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
 }
