@@ -30,6 +30,8 @@ package net.jmp.spring.boot.react.learning.bankkycform;
  * SOFTWARE.
  */
 
+import java.util.List;
+
 import static net.jmp.util.logging.LoggerUtils.*;
 
 import org.slf4j.Logger;
@@ -78,12 +80,31 @@ public class FormController {
         return result;
     }
 
+    /// The get all method.
+    ///
+    /// @return org.springframework.http.ResponseEntity<java.util.List<net.jmp.spring.boot.react.learning.bankkycform.FormDocument>>
+    @GetMapping
+    public ResponseEntity<List<FormDocument>> getAll() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final List<FormDocument> documents = this.repository.findAll();
+        final ResponseEntity<List<FormDocument>> result = new ResponseEntity<>(documents, HttpStatus.OK);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
     /// The save method.
     ///
     /// @param  form    net.jmp.spring.boot.react.learning.bankkycform.Form
-    /// @return         org.springframework.http.ResponseEntity<java.lang.Object>
+    /// @return         org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.bankkycform.Form>
     @PostMapping
-    public ResponseEntity<Object> save(final @RequestBody Form form) {
+    public ResponseEntity<Form> save(final @RequestBody Form form) {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entryWith(form));
         }
@@ -114,7 +135,7 @@ public class FormController {
 
         this.logger.info("Saved form document: {}", saved);
 
-        final ResponseEntity<Object> result = new ResponseEntity<>(form, HttpStatus.CREATED);
+        final ResponseEntity<Form> result = new ResponseEntity<>(form, HttpStatus.CREATED);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
