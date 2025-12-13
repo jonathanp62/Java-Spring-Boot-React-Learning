@@ -6,10 +6,13 @@ A program that supports React learning projects with REST services provided by S
 
 [options="header"]
 |=======================
-|Endpoint                             |HTTP Method | Payload | HTTP Responses | Description
-|/react/learning/api/bank-kyc-form    | POST       | JSON    | 201 CREATED    | Returns the saved form as JSON
-|/react/learning/api/bank-kyc-form/ok | GET        | None    | 200 OK         | Returns a string: OK
-|/react/learning/api/e-commerce/ok    | GET        | None    | 200 OK         | Returns a string: OK
+|Endpoint                              |HTTP Method | Payload | HTTP Responses | Description
+|/react/learning/api/bank-kyc-form     | POST       | JSON    | 201 CREATED    | Returns the saved form as JSON
+|/react/learning/api/bank-kyc-form     | GET        | None    | 200 OK         | Returns all saved forms as JSON
+|/react/learning/api/bank-kyc-form/ok  | GET        | None    | 200 OK         | Returns a string: OK
+|/react/learning/api/e-commerce/ok     | GET        | None    | 200 OK         | Returns a string: OK
+|/react/learning/api/e-commerce/order  | POST       | JSON    | 201 CREATED    | Returns the saved order as JSON
+|/react/learning/api/e-commerce/orders | GET        | None    | 200 OK         | Returns all saved orders as JSON
 |=======================
 
 == Gradle JavaExec Tasks
