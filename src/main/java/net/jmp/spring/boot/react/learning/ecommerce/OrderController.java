@@ -50,16 +50,16 @@ public class OrderController {
     /// The logger
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /// The product document repository
-    private final ProductDocumentRepository productDocumentRepository;
+    /// The order document repository
+    private final OrderDocumentRepository orderDocumentRepository;
 
     /// The constructor
     ///
-    /// @param   productDocumentRepository   net.jmp.spring.boot.react.learning.ecommerce.ProductDocumentRepository
-    public OrderController(final ProductDocumentRepository productDocumentRepository) {
+    /// @param   orderDocumentRepository    net.jmp.spring.boot.react.learning.ecommerce.OrderDocumentRepository
+    public OrderController(final OrderDocumentRepository orderDocumentRepository) {
         super();
 
-        this.productDocumentRepository = productDocumentRepository;
+        this.orderDocumentRepository = orderDocumentRepository;
     }
 
     /// The OK method
@@ -82,15 +82,15 @@ public class OrderController {
 
     /// The get all orders method
     ///
-    /// @return org.springframework.http.ResponseEntity<java.util.List<net.jmp.spring.boot.react.learning.ecommerce.ProductDocument>>
+    /// @return org.springframework.http.ResponseEntity<java.util.List<net.jmp.spring.boot.react.learning.ecommerce.OrderDocument>>
     @GetMapping("/orders")
-    public ResponseEntity<List<ProductDocument>> orders() {
+    public ResponseEntity<List<OrderDocument>> orders() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
-        final List<ProductDocument> orders = this.productDocumentRepository.findAll();
-        final ResponseEntity<List<ProductDocument>> result = new ResponseEntity<>(orders, HttpStatus.OK);
+        final List<OrderDocument> orders = this.orderDocumentRepository.findAll();
+        final ResponseEntity<List<OrderDocument>> result = new ResponseEntity<>(orders, HttpStatus.OK);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
@@ -102,22 +102,22 @@ public class OrderController {
     /// The save order method
     ///
     /// @param   products   java.util.List<net.jmp.spring.boot.react.learning.ecommerce.Product>
-    /// @return             org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.ProductDocument>
+    /// @return             org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.OrderDocument>
     @PostMapping("/order")
-    public ResponseEntity<ProductDocument> save(final @RequestBody List<Product> products) {
+    public ResponseEntity<OrderDocument> save(final @RequestBody List<Product> products) {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entryWith(products));
         }
 
-        final ProductDocument document = new ProductDocument();
+        final OrderDocument document = new OrderDocument();
 
         document.setProducts(products);
 
-        final ProductDocument saved = this.productDocumentRepository.save(document);
+        final OrderDocument saved = this.orderDocumentRepository.save(document);
 
         this.logger.info("Saved products document: {}", saved);
 
-        final ResponseEntity<ProductDocument> result = new ResponseEntity<>(saved, HttpStatus.CREATED);
+        final ResponseEntity<OrderDocument> result = new ResponseEntity<>(saved, HttpStatus.CREATED);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));

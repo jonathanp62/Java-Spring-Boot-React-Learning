@@ -1,7 +1,7 @@
 package net.jmp.spring.boot.react.learning.ecommerce;
 
 /*
- * (#)ProductDocument.java  0.1.0   12/13/2025
+ * (#)OrderDocument.java    0.1.0   12/13/2025
  *
  * @author    Jonathan Parker
  * @version   0.1.0
@@ -37,9 +37,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 import java.util.Objects;
 
-/// The product document
+/// The order document
 @Document(collection = "e_commerce")
-public class ProductDocument {
+public class OrderDocument {
     /// The Mongo identifier
     @Id
     private String documentId;
@@ -48,7 +48,7 @@ public class ProductDocument {
     private List<Product> products;
 
     /// The default constructor
-    public ProductDocument() {
+    public OrderDocument() {
         super();
     }
 
@@ -88,7 +88,7 @@ public class ProductDocument {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
 
-        ProductDocument that = (ProductDocument) o;
+        OrderDocument that = (OrderDocument) o;
 
         return Objects.equals(this.documentId, that.documentId) && Objects.equals(this.products, that.products);
     }
@@ -106,7 +106,7 @@ public class ProductDocument {
     /// @return  java.lang.String
     @Override
     public String toString() {
-        return "ProductDocument{" +
+        return "OrderDocument{" +
                 "documentId='" +this.documentId + '\'' +
                 ", products=" + this.products +
                 '}';

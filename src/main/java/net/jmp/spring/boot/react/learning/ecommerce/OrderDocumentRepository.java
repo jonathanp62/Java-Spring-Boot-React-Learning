@@ -1,7 +1,7 @@
 package net.jmp.spring.boot.react.learning.ecommerce;
 
 /*
- * (#)ProductDocumentRepository.java    0.1.0   12/13/2025
+ * (#)OrderDocumentRepository.java  0.1.0   12/13/2025
  *
  * @author    Jonathan Parker
  * @version   0.1.0
@@ -32,9 +32,9 @@ package net.jmp.spring.boot.react.learning.ecommerce;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-/// The product document repository
+/// The order document repository
 ///
 /// @version    0.1.0
 /// @since      0.1.0
-public interface ProductDocumentRepository extends MongoRepository<ProductDocument, String>{
+public interface OrderDocumentRepository extends MongoRepository<OrderDocument, String>{
 }
