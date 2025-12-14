@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-# (#)save-products.sh 0.1.0   12/14/2025
+# (#)save-order.sh  0.1.0   12/14/2025
 #
 # @author   Jonathan Parker
 # @version  0.1.0
@@ -32,10 +32,21 @@ SITE="http://localhost:8080"
 
 curl -X POST ${SITE}/react/learning/api/e-commerce/order \
   -H "Content-Type: application/json" \
-  -d '[
+  -d '{
+      "orderId": "f789e02c-56d1-4a3e-b87c-3f4d5e9a2b10",
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "address": "123 Main Street",
+      "city": "Anytown",
+      "state": "CA",
+      "zipCode": "12345",
+      "country": "USA",
+      "phone": "123-456-7890",
+      "email": "jane.doe@example.com",
+      "products": [
         {
           "id": 101,
-          "title": "The first title",
+          "title": "The title of the first product",
           "price": 99.99,
           "description": "The first description",
           "category": "The first category",
@@ -49,7 +60,7 @@ curl -X POST ${SITE}/react/learning/api/e-commerce/order \
         },
         {
           "id": 102,
-          "title": "The second title",
+          "title": "The title of the second product",
           "price": 109.99,
           "description": "The second description",
           "category": "The second category",
@@ -61,4 +72,5 @@ curl -X POST ${SITE}/react/learning/api/e-commerce/order \
             "count": 18
           }
         }
-      ]'
+      ]
+    }'

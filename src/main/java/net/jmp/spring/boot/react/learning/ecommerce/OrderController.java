@@ -101,21 +101,31 @@ public class OrderController {
 
     /// The save order method
     ///
-    /// @param   products   java.util.List<net.jmp.spring.boot.react.learning.ecommerce.Product>
-    /// @return             org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.OrderDocument>
+    /// @param   order  java.util.List<net.jmp.spring.boot.react.learning.ecommerce.Order>
+    /// @return         org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.OrderDocument>
     @PostMapping("/order")
-    public ResponseEntity<OrderDocument> save(final @RequestBody List<Product> products) {
+    public ResponseEntity<OrderDocument> save(final @RequestBody Order order) {
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(products));
+            this.logger.trace(entryWith(order));
         }
 
         final OrderDocument document = new OrderDocument();
 
-        document.setProducts(products);
+        document.setOrderId(order.orderId());
+        document.setFirstName(order.firstName());
+        document.setLastName(order.lastName());
+        document.setAddress(order.address());
+        document.setCity(order.city());
+        document.setState(order.state());
+        document.setZipCode(order.zipCode());
+        document.setCountry(order.country());
+        document.setPhone(order.phone());
+        document.setEmail(order.email());
+        document.setProducts(order.products());
 
         final OrderDocument saved = this.orderDocumentRepository.save(document);
 
-        this.logger.info("Saved products document: {}", saved);
+        this.logger.info("Saved order document: {}", saved);
 
         final ResponseEntity<OrderDocument> result = new ResponseEntity<>(saved, HttpStatus.CREATED);
 
