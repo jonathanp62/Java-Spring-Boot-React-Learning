@@ -34,6 +34,7 @@ import org.springframework.data.annotation.Id;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
 import java.util.Objects;
 
 /// The product document
@@ -43,8 +44,8 @@ public class ProductDocument {
     @Id
     private String documentId;
 
-    /// The product
-    private Product product;
+    /// The products
+    private List<Product> products;
 
     /// The default constructor
     public ProductDocument() {
@@ -65,18 +66,18 @@ public class ProductDocument {
         this.documentId = documentId;
     }
 
-    /// Get the product.
+    /// Get the products.
     ///
-    /// @return net.jmp.spring.boot.react.learning.ecommerce.Product
-    public Product getProduct() {
-        return this.product;
+    /// @return java.util.List<net.jmp.spring.boot.react.learning.ecommerce.Product>
+    public List<Product> getProducts() {
+        return this.products;
     }
 
-    /// Set the product.
+    /// Set the products.
     ///
-    /// @param  product net.jmp.spring.boot.react.learning.ecommerce.Product
-    public void setProduct(final Product product) {
-        this.product = product;
+    /// @param  products java.util.List<net.jmp.spring.boot.react.learning.ecommerce.Product>
+    public void setProducts(final List<Product> products) {
+        this.products = products;
     }
 
     /// The equals method
@@ -89,7 +90,7 @@ public class ProductDocument {
 
         ProductDocument that = (ProductDocument) o;
 
-        return Objects.equals(this.documentId, that.documentId) && Objects.equals(this.product, that.product);
+        return Objects.equals(this.documentId, that.documentId) && Objects.equals(this.products, that.products);
     }
 
     /// The hash code method
@@ -97,7 +98,7 @@ public class ProductDocument {
     /// @return  int
     @Override
     public int hashCode() {
-        return Objects.hash(this.documentId, this.product);
+        return Objects.hash(this.documentId, this.products);
     }
 
     /// The to-string method
@@ -107,7 +108,7 @@ public class ProductDocument {
     public String toString() {
         return "ProductDocument{" +
                 "documentId='" +this.documentId + '\'' +
-                ", product=" + this.product +
+                ", products=" + this.products +
                 '}';
     }
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-# (#)save-product.sh  0.1.0   12/13/2025
+# (#)save-products.sh 0.1.0   12/14/2025
 #
 # @author   Jonathan Parker
 # @version  0.1.0
@@ -32,17 +32,33 @@ SITE="http://localhost:8080"
 
 curl -X POST ${SITE}/react/learning/api/e-commerce/order \
   -H "Content-Type: application/json" \
-  -d '[{
-    "id": 101,
-    "title": "Some title",
-    "price": 99.99,
-    "description": "Some description",
-    "category": "Some category",
-    "type": "clothes",
-    "target": "women",
-    "image": "image.jpg",
-    "rating": {
-      "rate": 4.2,
-      "count": 10
-    }
-  }]'
+  -d '[
+        {
+          "id": 101,
+          "title": "The first title",
+          "price": 99.99,
+          "description": "The first description",
+          "category": "The first category",
+          "type": "clothes",
+          "target": "women",
+          "image": "image1.jpg",
+          "rating": {
+            "rate": 4.2,
+            "count": 10
+          }
+        },
+        {
+          "id": 102,
+          "title": "The second title",
+          "price": 109.99,
+          "description": "The second description",
+          "category": "The second category",
+          "type": "electronics",
+          "target": "unisex",
+          "image": "image2.jpg",
+          "rating": {
+            "rate": 3.7,
+            "count": 18
+          }
+        }
+      ]'
