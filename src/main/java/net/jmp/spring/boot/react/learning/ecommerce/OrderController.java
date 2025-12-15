@@ -112,6 +112,7 @@ public class OrderController {
         final OrderDocument document = new OrderDocument();
 
         document.setOrderId(order.orderId());
+        document.setOrderDate(order.orderDate());
         document.setFirstName(order.firstName());
         document.setLastName(order.lastName());
         document.setAddress(order.address());

@@ -34,6 +34,8 @@ import org.springframework.data.annotation.Id;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.Instant;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -46,6 +48,9 @@ public class OrderDocument {
 
     /// The order identifier
     private String orderId;
+
+    /// The order date
+    private Instant orderDate;
 
     /// The first name
     private String firstName;
@@ -94,6 +99,14 @@ public class OrderDocument {
     /// @param  documentId  java.lang.String
     public void setDocumentId(final String documentId) {
         this.documentId = documentId;
+    }
+
+    public Instant getOrderDate() {
+        return this.orderDate;
+    }
+
+    public void setOrderDate(final Instant orderDate) {
+        this.orderDate = orderDate;
     }
 
     /// Get the products.
@@ -262,6 +275,7 @@ public class OrderDocument {
 
         return Objects.equals(this.documentId, that.documentId) &&
                 Objects.equals(this.orderId, that.orderId) &&
+                Objects.equals(this.orderDate, that.orderDate) &&
                 Objects.equals(this.firstName, that.firstName) &&
                 Objects.equals(this.lastName, that.lastName) &&
                 Objects.equals(this.address, that.address) &&
@@ -282,6 +296,7 @@ public class OrderDocument {
         return Objects.hash(
                 this.documentId,
                 this.orderId,
+                this.orderDate,
                 this.firstName,
                 this.lastName,
                 this.address,
@@ -303,6 +318,7 @@ public class OrderDocument {
         return "OrderDocument{" +
                 "documentId='" + this.documentId + '\'' +
                 ", orderId='" + this.orderId + '\'' +
+                ", orderDate='" + this.orderDate + '\'' +
                 ", firstName='" + this.firstName + '\'' +
                 ", lastName='" + this.lastName + '\'' +
                 ", address='" + this.address + '\'' +

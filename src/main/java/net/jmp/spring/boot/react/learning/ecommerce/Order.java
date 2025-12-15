@@ -30,11 +30,14 @@ package net.jmp.spring.boot.react.learning.ecommerce;
  * SOFTWARE.
  */
 
+import java.time.Instant;
+
 import java.util.List;
 
 /// The order that is sent from the client to the server.
 public record Order(
     String orderId,
+    Instant orderDate,
     String firstName,
     String lastName,
     String address,

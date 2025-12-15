@@ -30,47 +30,54 @@
 
 SITE="http://localhost:8080"
 
-curl -X POST ${SITE}/react/learning/api/e-commerce/order \
+UUID=$(uuidgen)
+LOWER_UUID=$(echo "$UUID" | tr '[:upper:]' '[:lower:]')
+NOW=$(date -u +"%Y-%m-%dT%H:%M:%S%z")
+
+curl -X POST "${SITE}/react/learning/api/e-commerce/order" \
   -H "Content-Type: application/json" \
-  -d '{
-      "orderId": "f789e02c-56d1-4a3e-b87c-3f4d5e9a2b10",
-      "firstName": "Jane",
-      "lastName": "Doe",
-      "address": "123 Main Street",
-      "city": "Anytown",
-      "state": "CA",
-      "zipCode": "12345",
-      "country": "USA",
-      "phone": "123-456-7890",
-      "email": "jane.doe@example.com",
-      "products": [
-        {
-          "id": 101,
-          "title": "The title of the first product",
-          "price": 99.99,
-          "description": "The first description",
-          "category": "The first category",
-          "type": "clothes",
-          "target": "women",
-          "image": "image1.jpg",
-          "rating": {
-            "rate": 4.2,
-            "count": 10
-          }
-        },
-        {
-          "id": 102,
-          "title": "The title of the second product",
-          "price": 109.99,
-          "description": "The second description",
-          "category": "The second category",
-          "type": "electronics",
-          "target": "unisex",
-          "image": "image2.jpg",
-          "rating": {
-            "rate": 3.7,
-            "count": 18
-          }
-        }
-      ]
-    }'
+  -d @- <<EOF
+{
+  "orderId": "${LOWER_UUID}",
+  "orderDate": "${NOW}",
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "address": "123 Main Street",
+  "city": "Anytown",
+  "state": "CA",
+  "zipCode": "12345",
+  "country": "USA",
+  "phone": "123-456-7890",
+  "email": "jane.doe@example.com",
+  "products": [
+    {
+      "id": 101,
+      "title": "The title of the first product",
+      "price": 99.99,
+      "description": "The first description",
+      "category": "The first category",
+      "type": "clothes",
+      "target": "women",
+      "image": "image1.jpg",
+      "rating": {
+        "rate": 4.2,
+        "count": 10
+      }
+    },
+    {
+      "id": 102,
+      "title": "The title of the second product",
+      "price": 109.99,
+      "description": "The second description",
+      "category": "The second category",
+      "type": "electronics",
+      "target": "unisex",
+      "image": "image2.jpg",
+      "rating": {
+        "rate": 3.7,
+        "count": 18
+      }
+    }
+  ]
+}
+EOF
