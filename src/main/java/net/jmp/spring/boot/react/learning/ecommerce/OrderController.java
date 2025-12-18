@@ -37,6 +37,8 @@ import static net.jmp.util.logging.LoggerUtils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.data.domain.Sort;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -89,7 +91,7 @@ public class OrderController {
             this.logger.trace(entry());
         }
 
-        final List<OrderDocument> orders = this.orderDocumentRepository.findAll();
+        final List<OrderDocument> orders = this.orderDocumentRepository.findAll(Sort.by(Sort.Direction.DESC, "orderDate"));
         final ResponseEntity<List<OrderDocument>> result = new ResponseEntity<>(orders, HttpStatus.OK);
 
         if (this.logger.isTraceEnabled()) {
