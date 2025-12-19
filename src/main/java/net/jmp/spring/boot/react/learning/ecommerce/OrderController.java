@@ -31,6 +31,7 @@ package net.jmp.spring.boot.react.learning.ecommerce;
  */
 
 import java.util.List;
+import java.util.Optional;
 
 import static net.jmp.util.logging.LoggerUtils.*;
 
@@ -93,6 +94,28 @@ public class OrderController {
 
         final List<OrderDocument> orders = this.orderDocumentRepository.findAll(Sort.by(Sort.Direction.DESC, "orderDate"));
         final ResponseEntity<List<OrderDocument>> result = new ResponseEntity<>(orders, HttpStatus.OK);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /// The get order by order ID method
+    ///
+    /// @return org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.OrderDocument>
+    @GetMapping("/order/{orderId}")
+    public ResponseEntity<OrderDocument> orderById(final @PathVariable String orderId) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Optional<OrderDocument> order = this.orderDocumentRepository.findByOrderId(orderId);
+
+        final ResponseEntity<OrderDocument> result = order
+                .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
