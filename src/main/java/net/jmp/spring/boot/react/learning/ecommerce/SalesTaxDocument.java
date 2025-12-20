@@ -33,6 +33,7 @@ package net.jmp.spring.boot.react.learning.ecommerce;
 import org.springframework.data.annotation.Id;
 
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Objects;
 
@@ -50,6 +51,7 @@ public class SalesTaxDocument {
     private String abbreviation;
 
     /// The sales tax rate
+    @Field("tax")
     private double rate;
 
     /// The default constructor
@@ -101,7 +103,7 @@ public class SalesTaxDocument {
     /// Set the abbreviation.
     ///
     /// @param  abbreviation  java.lang.String
-    public void setAbbreviation(    String abbreviation) {
+    public void setAbbreviation(final String abbreviation) {
         this.abbreviation = abbreviation;
     }
 
@@ -117,7 +119,7 @@ public class SalesTaxDocument {
     /// Set the tax rate.
     ///
     /// @param  rate  double
-    public void setRate(    double rate) {
+    public void setRate(final double rate) {
         this.rate = rate;
     }
 

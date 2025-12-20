@@ -1,7 +1,7 @@
 package net.jmp.spring.boot.react.learning.ecommerce;
 
 /*
- * (#)OrderController.java  0.1.0   12/10/2025
+ * (#)SalesTaxController.java   0.1.0   12/20/2025
  *
  * @author    Jonathan Parker
  * @version   0.1.0
@@ -30,39 +30,39 @@ package net.jmp.spring.boot.react.learning.ecommerce;
  * SOFTWARE.
  */
 
-import java.util.List;
-import java.util.Optional;
-
-import static net.jmp.util.logging.LoggerUtils.*;
+import static net.jmp.util.logging.LoggerUtils.entry;
+import static net.jmp.util.logging.LoggerUtils.exitWith;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.data.domain.Sort;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
-/// The order controller
+import java.util.List;
+import java.util.Optional;
+
+/// The sales tax controller
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
-@RequestMapping("/react/learning/api/e-commerce")
-public class OrderController {
+@RequestMapping("/react/learning/api/e-commerce/sales-tax")
+public class SalesTaxController {
     /// The logger
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /// The order document repository
-    private final OrderDocumentRepository orderDocumentRepository;
+    /// The sales tax document repository
+    private final SalesTaxDocumentRepository salesTaxDocumentRepository;
 
     /// The constructor
     ///
-    /// @param   orderDocumentRepository    net.jmp.spring.boot.react.learning.ecommerce.OrderDocumentRepository
-    public OrderController(final OrderDocumentRepository orderDocumentRepository) {
+    /// @param   salesTaxDocumentRepository net.jmp.spring.boot.react.learning.ecommerce.SalesTaxDocumentRepository
+    public SalesTaxController(final SalesTaxDocumentRepository salesTaxDocumentRepository) {
         super();
 
-        this.orderDocumentRepository = orderDocumentRepository;
+        this.salesTaxDocumentRepository = salesTaxDocumentRepository;
     }
 
     /// The OK method
@@ -83,17 +83,17 @@ public class OrderController {
         return result;
     }
 
-    /// The get all orders method
+    /// The get all sales tax documents method
     ///
     /// @return org.springframework.http.ResponseEntity<java.util.List<net.jmp.spring.boot.react.learning.ecommerce.OrderDocument>>
-    @GetMapping("/orders")
-    public ResponseEntity<List<OrderDocument>> orders() {
+    @GetMapping("/")
+    public ResponseEntity<List<SalesTaxDocument>> salesTaxes() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
-        final List<OrderDocument> orders = this.orderDocumentRepository.findAll(Sort.by(Sort.Direction.DESC, "orderDate"));
-        final ResponseEntity<List<OrderDocument>> result = new ResponseEntity<>(orders, HttpStatus.OK);
+        final List<SalesTaxDocument> documents = this.salesTaxDocumentRepository.findAll(Sort.by(Sort.Direction.ASC, "state"));
+        final ResponseEntity<List<SalesTaxDocument>> result = new ResponseEntity<>(documents, HttpStatus.OK);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
@@ -102,58 +102,20 @@ public class OrderController {
         return result;
     }
 
-    /// The get order by order ID method
+    /// The get sales tax document by state name method
     ///
-    /// @return org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.OrderDocument>
-    @GetMapping("/order/{orderId}")
-    public ResponseEntity<OrderDocument> orderById(final @PathVariable String orderId) {
+    /// @return org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.SalesTaxDocument>
+    @GetMapping("/{stateName}")
+    public ResponseEntity<SalesTaxDocument> salesTaxByStateName(final @PathVariable String stateName) {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
-        final Optional<OrderDocument> order = this.orderDocumentRepository.findByOrderId(orderId);
+        final Optional<SalesTaxDocument> document = this.salesTaxDocumentRepository.findByStateName(stateName);
 
-        final ResponseEntity<OrderDocument> result = order
+        final ResponseEntity<SalesTaxDocument> result = document
                 .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
-    }
-
-    /// The save order method
-    ///
-    /// @param   order  java.util.List<net.jmp.spring.boot.react.learning.ecommerce.Order>
-    /// @return         org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.OrderDocument>
-    @PostMapping("/order")
-    public ResponseEntity<OrderDocument> save(final @RequestBody Order order) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(order));
-        }
-
-        final OrderDocument document = new OrderDocument();
-
-        document.setOrderId(order.orderId());
-        document.setOrderDate(order.orderDate());
-        document.setFirstName(order.firstName());
-        document.setLastName(order.lastName());
-        document.setAddress(order.address());
-        document.setCity(order.city());
-        document.setState(order.state());
-        document.setZipCode(order.zipCode());
-        document.setCountry(order.country());
-        document.setPhone(order.phone());
-        document.setEmail(order.email());
-        document.setProducts(order.products());
-
-        final OrderDocument saved = this.orderDocumentRepository.save(document);
-
-        this.logger.info("Saved order document: {}", saved);
-
-        final ResponseEntity<OrderDocument> result = new ResponseEntity<>(saved, HttpStatus.CREATED);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
