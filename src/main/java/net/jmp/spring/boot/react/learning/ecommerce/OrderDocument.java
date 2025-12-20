@@ -101,10 +101,17 @@ public class OrderDocument {
         this.documentId = documentId;
     }
 
+    ///
+    /// Get the order date.
+    ///
+    /// @return java.time.Instant
     public Instant getOrderDate() {
         return this.orderDate;
     }
 
+    /// Set the order date.
+    ///
+    /// @param  orderDate   java.time.Instant
     public void setOrderDate(final Instant orderDate) {
         this.orderDate = orderDate;
     }
@@ -271,7 +278,7 @@ public class OrderDocument {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
 
-        OrderDocument that = (OrderDocument) o;
+        final OrderDocument that = (OrderDocument) o;
 
         return Objects.equals(this.documentId, that.documentId) &&
                 Objects.equals(this.orderId, that.orderId) &&
