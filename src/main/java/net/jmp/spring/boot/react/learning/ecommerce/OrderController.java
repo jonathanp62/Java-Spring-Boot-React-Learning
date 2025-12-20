@@ -147,6 +147,7 @@ public class OrderController {
         document.setCountry(order.country());
         document.setPhone(order.phone());
         document.setEmail(order.email());
+        document.setTaxRate(order.taxRate());
         document.setProducts(order.products());
 
         final OrderDocument saved = this.orderDocumentRepository.save(document);

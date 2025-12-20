@@ -47,6 +47,7 @@ public record Order(
     String country,
     String phone,
     String email,
+    double taxRate,
     List<Product> products
 ) {
 }

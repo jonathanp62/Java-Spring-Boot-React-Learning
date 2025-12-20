@@ -79,6 +79,9 @@ public class OrderDocument {
     /// The email address
     private String email;
 
+    /// The tax rate
+    private double taxRate;
+
     /// The products
     private List<Product> products;
 
@@ -270,6 +273,20 @@ public class OrderDocument {
         this.products = products;
     }
 
+    /// Get the tax rate.
+    ///
+    /// @return double
+    public double getTaxRate() {
+        return this.taxRate;
+    }
+
+    /// Set the tax rate.
+    ///
+    /// @param  taxRate  double
+    public void setTaxRate(final double taxRate) {
+        this.taxRate = taxRate;
+    }
+
     /// The equals method
     ///
     /// @param  o  java.lang.Object
@@ -292,6 +309,7 @@ public class OrderDocument {
                 Objects.equals(this.country, that.country) &&
                 Objects.equals(this.phone, that.phone) &&
                 Objects.equals(this.email, that.email) &&
+                Objects.equals(this.taxRate, that.taxRate) &&
                 Objects.equals(this.products, that.products);
     }
 
@@ -313,6 +331,7 @@ public class OrderDocument {
                 this.country,
                 this.phone,
                 this.email,
+                this.taxRate,
                 this.products
         );
     }
@@ -335,6 +354,7 @@ public class OrderDocument {
                 ", country='" + this.country + '\'' +
                 ", phone='" + this.phone + '\'' +
                 ", email='" + this.email + '\'' +
+                ", taxRate=" + this.taxRate +
                 ", products=" + this.products +
                 '}';
     }
