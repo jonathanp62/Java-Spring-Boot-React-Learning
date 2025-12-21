@@ -104,7 +104,8 @@ public class SalesTaxController {
 
     /// The get sales tax document by state name method
     ///
-    /// @return org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.SalesTaxDocument>
+    /// @param   stateName  java.lang.String
+    /// @return             org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.SalesTaxDocument>
     @GetMapping("/{stateName}")
     public ResponseEntity<SalesTaxDocument> salesTaxByStateName(final @PathVariable String stateName) {
         if (this.logger.isTraceEnabled()) {
@@ -112,6 +113,29 @@ public class SalesTaxController {
         }
 
         final Optional<SalesTaxDocument> document = this.salesTaxDocumentRepository.findByStateName(stateName);
+
+        final ResponseEntity<SalesTaxDocument> result = document
+                .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /// The get sales tax document by state abbreviation method
+    ///
+    /// @param  stateAbbreviation   java.lang.String
+    /// @return                     org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.SalesTaxDocument>
+    @GetMapping("/{stateAbbreviation}")
+    public ResponseEntity<SalesTaxDocument> salesTaxByStateAbbreviation(final @PathVariable String stateAbbreviation) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Optional<SalesTaxDocument> document = this.salesTaxDocumentRepository.findByStateAbbreviation(stateAbbreviation);
 
         final ResponseEntity<SalesTaxDocument> result = document
                 .map(found -> new ResponseEntity<>(found, HttpStatus.OK))

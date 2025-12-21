@@ -46,4 +46,11 @@ public interface SalesTaxDocumentRepository extends MongoRepository<SalesTaxDocu
     /// @return             java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.SalesTaxDocument>
     @Query("{ 'state' :  ?0}")
     Optional<SalesTaxDocument> findByStateName(final String stateName);
+
+    /// Get a sales tax document by state abbreviation.
+    ///
+    /// @param  stateAbbreviation   java.lang.String
+    /// @return                     java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.SalesTaxDocument>
+    @Query("{ 'abbreviation' :  ?0}")
+    Optional<SalesTaxDocument> findByStateAbbreviation(final String stateAbbreviation);
 }
