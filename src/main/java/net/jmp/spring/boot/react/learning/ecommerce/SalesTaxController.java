@@ -129,7 +129,7 @@ public class SalesTaxController {
     ///
     /// @param  stateAbbreviation   java.lang.String
     /// @return                     org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.SalesTaxDocument>
-    @GetMapping("/{stateAbbreviation}")
+    @GetMapping("/abbr/{stateAbbreviation}")
     public ResponseEntity<SalesTaxDocument> salesTaxByStateAbbreviation(final @PathVariable String stateAbbreviation) {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
