@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.Optional;
 
 /// The sales tax controller
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/react/learning/api/e-commerce/sales-tax")
 public class SalesTaxController {

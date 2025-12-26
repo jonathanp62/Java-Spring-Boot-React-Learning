@@ -52,7 +52,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /// The order controller
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/react/learning/api/e-commerce")
 public class OrderController {
