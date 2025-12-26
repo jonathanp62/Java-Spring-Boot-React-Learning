@@ -1,4 +1,4 @@
-package net.jmp.spring.boot.react.learning.ecommerce;
+package net.jmp.spring.boot.react.learning.ecommerce.repositories;
 
 /*
  * (#)SalesTaxDocumentRepository.java   0.1.0   12/20/2025
@@ -30,6 +30,7 @@ package net.jmp.spring.boot.react.learning.ecommerce;
  * SOFTWARE.
  */
 
+import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -43,14 +44,14 @@ public interface SalesTaxDocumentRepository extends MongoRepository<SalesTaxDocu
     /// Get a sales tax document by state name.
     ///
     /// @param  stateName   java.lang.String
-    /// @return             java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.SalesTaxDocument>
+    /// @return             java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
     @Query("{ 'state' :  ?0}")
     Optional<SalesTaxDocument> findByStateName(final String stateName);
 
     /// Get a sales tax document by state abbreviation.
     ///
     /// @param  stateAbbreviation   java.lang.String
-    /// @return                     java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.SalesTaxDocument>
+    /// @return                     java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
     @Query("{ 'abbreviation' :  ?0}")
     Optional<SalesTaxDocument> findByStateAbbreviation(final String stateAbbreviation);
 }

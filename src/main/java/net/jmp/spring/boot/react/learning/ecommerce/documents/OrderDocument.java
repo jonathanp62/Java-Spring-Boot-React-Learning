@@ -1,4 +1,4 @@
-package net.jmp.spring.boot.react.learning.ecommerce;
+package net.jmp.spring.boot.react.learning.ecommerce.documents;
 
 /*
  * (#)OrderDocument.java    0.1.0   12/13/2025
@@ -30,6 +30,7 @@ package net.jmp.spring.boot.react.learning.ecommerce;
  * SOFTWARE.
  */
 
+import net.jmp.spring.boot.react.learning.ecommerce.Product;
 import org.springframework.data.annotation.Id;
 
 import org.springframework.data.mongodb.core.mapping.Document;

@@ -1,4 +1,4 @@
-package net.jmp.spring.boot.react.learning.ecommerce;
+package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 /*
  * (#)OrderController.java  0.1.0   12/10/2025
@@ -33,6 +33,12 @@ package net.jmp.spring.boot.react.learning.ecommerce;
 import java.util.List;
 import java.util.Optional;
 
+import net.jmp.spring.boot.react.learning.ecommerce.Order;
+
+import net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument;
+
+import net.jmp.spring.boot.react.learning.ecommerce.repositories.OrderDocumentRepository;
+
 import static net.jmp.util.logging.LoggerUtils.*;
 
 import org.slf4j.Logger;
@@ -58,7 +64,7 @@ public class OrderController {
 
     /// The constructor
     ///
-    /// @param   orderDocumentRepository    net.jmp.spring.boot.react.learning.ecommerce.OrderDocumentRepository
+    /// @param   orderDocumentRepository    net.jmp.spring.boot.react.learning.ecommerce.repositories.OrderDocumentRepository
     public OrderController(final OrderDocumentRepository orderDocumentRepository) {
         super();
 
@@ -85,7 +91,7 @@ public class OrderController {
 
     /// The get all orders method
     ///
-    /// @return org.springframework.http.ResponseEntity<java.util.List<net.jmp.spring.boot.react.learning.ecommerce.OrderDocument>>
+    /// @return org.springframework.http.ResponseEntity<java.util.List<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>>
     @GetMapping("/orders")
     public ResponseEntity<List<OrderDocument>> orders() {
         if (this.logger.isTraceEnabled()) {
@@ -104,7 +110,7 @@ public class OrderController {
 
     /// The get order by order ID method
     ///
-    /// @return org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.OrderDocument>
+    /// @return org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>
     @GetMapping("/order/{orderId}")
     public ResponseEntity<OrderDocument> orderById(final @PathVariable String orderId) {
         if (this.logger.isTraceEnabled()) {
@@ -127,7 +133,7 @@ public class OrderController {
     /// The save order method
     ///
     /// @param   order  java.util.List<net.jmp.spring.boot.react.learning.ecommerce.Order>
-    /// @return         org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.OrderDocument>
+    /// @return         org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>
     @PostMapping("/order")
     public ResponseEntity<OrderDocument> save(final @RequestBody Order order) {
         if (this.logger.isTraceEnabled()) {

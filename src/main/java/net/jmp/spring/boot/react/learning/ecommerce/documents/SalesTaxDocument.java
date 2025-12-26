@@ -1,4 +1,4 @@
-package net.jmp.spring.boot.react.learning.ecommerce;
+package net.jmp.spring.boot.react.learning.ecommerce.documents;
 
 /*
  * (#)SalesTaxDocument.java 0.1.0   12/20/2025

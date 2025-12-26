@@ -1,4 +1,4 @@
-package net.jmp.spring.boot.react.learning.ecommerce;
+package net.jmp.spring.boot.react.learning.ecommerce.repositories;
 
 /*
  * (#)OrderDocumentRepository.java  0.1.0   12/13/2025
@@ -32,6 +32,7 @@ package net.jmp.spring.boot.react.learning.ecommerce;
 
 import java.util.Optional;
 
+import net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -43,7 +44,7 @@ public interface OrderDocumentRepository extends MongoRepository<OrderDocument, 
     /// Get an order by order identifier.
     ///
     /// @param  orderId java.lang.String
-    /// @return         java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.OrderDocument>
+    /// @return         java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>
     @Query("{ 'orderId' :  ?0}")
     Optional<OrderDocument> findByOrderId(final String orderId);
 }
