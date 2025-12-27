@@ -43,7 +43,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /// The person controller.
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/react/learning/api/bank-kyc-form")
 public class FormController {
@@ -83,7 +82,7 @@ public class FormController {
     /// The get all method.
     ///
     /// @return org.springframework.http.ResponseEntity<java.util.List<net.jmp.spring.boot.react.learning.bankkycform.FormDocument>>
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<FormDocument>> getAll() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
