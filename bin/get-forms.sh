@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-# (#)save-order.sh  0.1.0   12/14/2025
+# (#)get-forms.sh  0.1.0   12/29/2025
 #
 # @author   Jonathan Parker
 # @version  0.1.0
@@ -30,55 +30,5 @@
 
 SITE="http://localhost:8080"
 
-UUID=$(uuidgen)
-LOWER_UUID=$(echo "$UUID" | tr '[:upper:]' '[:lower:]')
-NOW=$(date -u +"%Y-%m-%dT%H:%M:%S%z")
-
-curl -i -X POST "${SITE}/react/learning/api/e-commerce/order" \
+curl -i -X GET ${SITE}/react/learning/api/bank-kyc-form/ \
   -H "Accept: application/json" \
-  -H "Content-Type: application/json" \
-  -d @- <<EOF
-{
-  "orderId": "${LOWER_UUID}",
-  "orderDate": "${NOW}",
-  "firstName": "Jane",
-  "lastName": "Doe",
-  "address": "123 Main Street",
-  "city": "Anytown",
-  "state": "CA",
-  "zipCode": "12345",
-  "country": "USA",
-  "phone": "123-456-7890",
-  "email": "jane.doe@example.com",
-  "products": [
-    {
-      "id": 101,
-      "title": "The title of the first product",
-      "price": 99.99,
-      "description": "The first description",
-      "category": "The first category",
-      "type": "clothes",
-      "target": "women",
-      "image": "image1.jpg",
-      "rating": {
-        "rate": 4.2,
-        "count": 10
-      }
-    },
-    {
-      "id": 102,
-      "title": "The title of the second product",
-      "price": 109.99,
-      "description": "The second description",
-      "category": "The second category",
-      "type": "electronics",
-      "target": "unisex",
-      "image": "image2.jpg",
-      "rating": {
-        "rate": 3.7,
-        "count": 18
-      }
-    }
-  ]
-}
-EOF

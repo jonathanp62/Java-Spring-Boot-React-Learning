@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-# (#)save-form.sh 0.1.0   12/11/2025
+# (#)get-sales-tax-ok.sh  0.1.0   12/29/2025
 #
 # @author   Jonathan Parker
 # @version  0.1.0
@@ -30,31 +30,5 @@
 
 SITE="http://localhost:8080"
 
-curl -i -X POST ${SITE}/react/learning/api/bank-kyc-form \
-  -H "Accept: application/json" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "fullName": "Jonathan Parker",
-    "gender": "male",
-    "dateOfBirth": "02/05/1962",
-    "fatherName": "Glenn Parker",
-    "grandFatherName": "William Parker",
-    "maritalStatus": "married",
-    "occupation": "tech",
-    "emailAddress": "jonathanp62@gmail.com",
-    "contactNumber": "4436042821",
-    "state": "Maryland",
-    "district": "Owings Mills",
-    "municipality": "Baltimore County",
-    "wardNumber": "21117",
-    "familyName": "Parker",
-    "documentType": "passport",
-    "citizenshipNumber": "1234567890",
-    "issuedDistrict": "Owings Mills",
-    "dateOfIssue": "12/09/2025",
-    "profilePicture": {
-      "name": "profile.jpg",
-      "lastModified": 1761323816000,
-      "size": 364373
-    }
-  }'
+curl -i -X GET ${SITE}/react/learning/api/e-commerce/sales-tax/ok \
+  -H "Accept: text/plain" \
