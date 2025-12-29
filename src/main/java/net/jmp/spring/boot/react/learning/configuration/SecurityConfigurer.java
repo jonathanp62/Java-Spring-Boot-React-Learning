@@ -38,15 +38,31 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
 
+/// The security configuration
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurer {
+    /// Return a security filter chain
+    ///
+    /// @param  http    org.springframework.security.config.annotation.web.builders.HttpSecurity
+    /// @return         org.springframework.security.web.SecurityFilterChain
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) {
+    public SecurityFilterChain filterChain(final HttpSecurity http) {
         http
                 // This line tells Spring Security to look for a
                 // CorsConfigurationSource or use the MVC CORS configuration
@@ -54,10 +70,38 @@ public class SecurityConfigurer {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/react/learning/api/**").permitAll()
-                        .anyRequest().authenticated()
-                );
+                        .requestMatchers("/react/learning/api/e-commerce/**").authenticated()
+                        .anyRequest().permitAll()
+                )
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
+    }
+
+    /// Return a user details service
+    ///
+    /// @param  passwordEncoder org.springframework.security.crypto.password.PasswordEncoder
+    /// @return                 org.springframework.security.core.userdetails.UserDetailsService
+    @Bean
+    public UserDetailsService userDetailsService(final PasswordEncoder passwordEncoder) {
+        final UserDetails admin = User.withUsername("admin")
+                .password(passwordEncoder.encode("admin123"))
+                .roles("ADMIN")
+                .build();
+
+        final UserDetails user = User.withUsername("user")
+                .password(passwordEncoder.encode("user123"))
+                .roles("USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(admin, user);
+    }
+
+    /// Return a password encoder
+    ///
+    /// @return org.springframework.security.crypto.password.PasswordEncoder
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

@@ -30,5 +30,8 @@
 
 SITE="http://localhost:8080"
 
-curl -i -X GET ${SITE}/react/learning/api/e-commerce/orders \
-  -H "Accept: application/json" \
+curl \
+ -i \
+ -u "user:user123" \
+ -X GET ${SITE}/react/learning/api/e-commerce/orders \
+ -H "Accept: application/json" \
