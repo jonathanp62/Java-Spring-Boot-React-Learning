@@ -30,12 +30,14 @@ package net.jmp.spring.boot.react.learning.configuration;
  * SOFTWARE.
  */
 
-import org.springframework.security.config.Customizer;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.http.HttpMethod;
+
+import org.springframework.security.config.Customizer;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
@@ -56,7 +58,20 @@ import org.springframework.security.web.SecurityFilterChain;
 /// The security configuration
 @Configuration
 @EnableWebSecurity
+@EnableConfigurationProperties(AuthProperties.class)
 public class SecurityConfigurer {
+    /// The authentication properties
+    private final AuthProperties authProperties;
+
+    /// The constructor
+    ///
+    /// @param  authProperties  net.jmp.spring.boot.react.learning.configuration.AuthProperties
+    public SecurityConfigurer(final AuthProperties authProperties) {
+        super();
+
+        this.authProperties = authProperties;
+    }
+
     /// Return a security filter chain
     ///
     /// @param  http    org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -84,17 +99,22 @@ public class SecurityConfigurer {
     /// @return                 org.springframework.security.core.userdetails.UserDetailsService
     @Bean
     public UserDetailsService userDetailsService(final PasswordEncoder passwordEncoder) {
-        final UserDetails admin = User.withUsername("admin")
-                .password(passwordEncoder.encode("admin123"))
-                .roles("READWRITE")
-                .build();
+        final InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
 
-        final UserDetails user = User.withUsername("user")
-                .password(passwordEncoder.encode("user123"))
-                .roles("READONLY")
-                .build();
+        if (this.authProperties.users() != null) {
+            this.authProperties.users().values().forEach(userProperties -> {
+                final String[] roles = userProperties.roles() != null ? userProperties.roles().toArray(new String[0]) : new String[0];
 
-        return new InMemoryUserDetailsManager(admin, user);
+                final UserDetails userDetails = User.withUsername(userProperties.username())
+                        .password(passwordEncoder.encode(userProperties.password()))
+                        .roles(roles)
+                        .build();
+
+                manager.createUser(userDetails);
+            });
+        }
+
+        return manager;
     }
 
     /// Return a password encoder
