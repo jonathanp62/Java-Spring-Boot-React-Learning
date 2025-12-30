@@ -49,6 +49,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+
 import org.springframework.web.bind.annotation.*;
 
 /// The order controller
@@ -72,12 +75,16 @@ public class OrderController {
 
     /// The OK method
     ///
-    /// @return org.springframework.http.ResponseEntity<java.lang.String>
+    /// @param  authentication      org.springframework.security.core.Authentication
+    /// @return                     org.springframework.http.ResponseEntity<java.lang.String>
     @GetMapping("/ok")
-    public ResponseEntity<String> ok() {
+    public ResponseEntity<String> ok(final Authentication authentication) {
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
+            this.logger.trace(entryWith(authentication));
         }
+
+        this.logger.info("User: {}", authentication.getName());
+        this.logger.info("Roles: {}", authentication.getAuthorities());
 
         final ResponseEntity<String> result = new ResponseEntity<>("OK", HttpStatus.OK);
 
@@ -131,40 +138,68 @@ public class OrderController {
 
     /// The save order method
     ///
-    /// @param   order  java.util.List<net.jmp.spring.boot.react.learning.ecommerce.Order>
-    /// @return         org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>
+    /// @param  order           java.util.List<net.jmp.spring.boot.react.learning.ecommerce.Order>
+    /// @param  authentication  org.springframework.security.core.Authentication
+    /// @return                 org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>
     @PostMapping("/order")
-    public ResponseEntity<OrderDocument> save(final @RequestBody Order order) {
+    public ResponseEntity<OrderDocument> save(final @RequestBody Order order, final Authentication authentication) {
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(order));
+            this.logger.trace(entryWith(order, authentication));
         }
 
-        final OrderDocument document = new OrderDocument();
+        ResponseEntity<OrderDocument> result;
 
-        document.setOrderId(order.orderId());
-        document.setOrderDate(order.orderDate());
-        document.setFirstName(order.firstName());
-        document.setLastName(order.lastName());
-        document.setAddress(order.address());
-        document.setCity(order.city());
-        document.setState(order.state());
-        document.setZipCode(order.zipCode());
-        document.setCountry(order.country());
-        document.setPhone(order.phone());
-        document.setEmail(order.email());
-        document.setTaxRate(order.taxRate());
-        document.setProducts(order.products());
+        final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
-        final OrderDocument saved = this.orderDocumentRepository.save(document);
+        if (userRoles.contains("ROLE_READWRITE")) {
+            final OrderDocument document = this.createOrderDocument(order);
+            final OrderDocument saved = this.orderDocumentRepository.save(document);
 
-        this.logger.info("Saved order document: {}", saved);
+            this.logger.info("User {} saved order document: {}", authentication.getName(), saved);
 
-        final ResponseEntity<OrderDocument> result = new ResponseEntity<>(saved, HttpStatus.CREATED);
+            result = new ResponseEntity<>(saved, HttpStatus.CREATED);
+        } else {
+            this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
+
+            result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
         }
 
         return result;
+    }
+
+    /// The create order document method
+    ///
+    /// @param  order   java.util.List<net.jmp.spring.boot.react.learning.ecommerce.Order>
+    /// @return         net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument
+    private OrderDocument createOrderDocument(final Order order) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(order));
+        }
+
+        final OrderDocument orderDocument = new OrderDocument();
+
+        orderDocument.setOrderId(order.orderId());
+        orderDocument.setOrderDate(order.orderDate());
+        orderDocument.setFirstName(order.firstName());
+        orderDocument.setLastName(order.lastName());
+        orderDocument.setAddress(order.address());
+        orderDocument.setCity(order.city());
+        orderDocument.setState(order.state());
+        orderDocument.setZipCode(order.zipCode());
+        orderDocument.setCountry(order.country());
+        orderDocument.setPhone(order.phone());
+        orderDocument.setEmail(order.email());
+        orderDocument.setTaxRate(order.taxRate() != null ? order.taxRate() : 0.0);
+        orderDocument.setProducts(order.products());
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(orderDocument));
+        }
+
+        return orderDocument;
     }
 }

@@ -34,7 +34,10 @@ UUID=$(uuidgen)
 LOWER_UUID=$(echo "$UUID" | tr '[:upper:]' '[:lower:]')
 NOW=$(date -u +"%Y-%m-%dT%H:%M:%S%z")
 
-curl -i -X POST "${SITE}/react/learning/api/e-commerce/order" \
+curl \
+  -i \
+  -u admin:admin123 \
+  -X POST "${SITE}/react/learning/api/e-commerce/order" \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
   -d @- <<EOF

@@ -86,12 +86,12 @@ public class SecurityConfigurer {
     public UserDetailsService userDetailsService(final PasswordEncoder passwordEncoder) {
         final UserDetails admin = User.withUsername("admin")
                 .password(passwordEncoder.encode("admin123"))
-                .roles("ADMIN")
+                .roles("READWRITE")
                 .build();
 
         final UserDetails user = User.withUsername("user")
                 .password(passwordEncoder.encode("user123"))
-                .roles("USER")
+                .roles("READONLY")
                 .build();
 
         return new InMemoryUserDetailsManager(admin, user);

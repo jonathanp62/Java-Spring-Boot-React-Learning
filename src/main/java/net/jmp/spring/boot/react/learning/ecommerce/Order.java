@@ -47,7 +47,7 @@ public record Order(
     String country,
     String phone,
     String email,
-    double taxRate,
+    Double taxRate, // JSON works better with boxed primitives in case of null
     List<Product> products
 ) {
 }
