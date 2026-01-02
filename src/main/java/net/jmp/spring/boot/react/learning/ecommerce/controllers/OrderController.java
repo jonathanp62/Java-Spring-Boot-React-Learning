@@ -41,6 +41,7 @@ import net.jmp.spring.boot.react.learning.ecommerce.repositories.OrderDocumentRe
 
 import static net.jmp.util.logging.LoggerUtils.*;
 
+import net.jmp.spring.boot.react.learning.ecommerce.services.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,16 +62,16 @@ public class OrderController {
     /// The logger
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /// The order document repository
-    private final OrderDocumentRepository orderDocumentRepository;
+    /// The order service
+    private final OrderService orderService;
 
     /// The constructor
     ///
-    /// @param   orderDocumentRepository    net.jmp.spring.boot.react.learning.ecommerce.repositories.OrderDocumentRepository
-    public OrderController(final OrderDocumentRepository orderDocumentRepository) {
+    /// @param   orderService   net.jmp.spring.boot.react.learning.ecommerce.services.OrderService
+    public OrderController(final OrderService orderService) {
         super();
 
-        this.orderDocumentRepository = orderDocumentRepository;
+        this.orderService = orderService;
     }
 
     /// The OK method
@@ -104,7 +105,7 @@ public class OrderController {
             this.logger.trace(entry());
         }
 
-        final List<OrderDocument> orders = this.orderDocumentRepository.findAll(Sort.by(Sort.Direction.DESC, "orderDate"));
+        final List<OrderDocument> orders = this.orderService.getOrders();
         final ResponseEntity<List<OrderDocument>> result = new ResponseEntity<>(orders, HttpStatus.OK);
 
         if (this.logger.isTraceEnabled()) {
@@ -123,7 +124,7 @@ public class OrderController {
             this.logger.trace(entry());
         }
 
-        final Optional<OrderDocument> order = this.orderDocumentRepository.findByOrderId(orderId);
+        final Optional<OrderDocument> order = this.orderService.getOrderById(orderId);
 
         final ResponseEntity<OrderDocument> result = order
                 .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
@@ -153,7 +154,7 @@ public class OrderController {
 
         if (userRoles.contains("ROLE_READWRITE")) {
             final OrderDocument document = this.createOrderDocument(order);
-            final OrderDocument saved = this.orderDocumentRepository.save(document);
+            final OrderDocument saved = this.orderService.saveOrder(document);
 
             this.logger.info("User {} saved order document: {}", authentication.getName(), saved);
 

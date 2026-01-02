@@ -37,14 +37,14 @@ import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
 
 import net.jmp.spring.boot.react.learning.ecommerce.repositories.SalesTaxDocumentRepository;
 
+import static net.jmp.util.logging.LoggerUtils.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Service;
-
-import static net.jmp.util.logging.LoggerUtils.*;
 
 /// The sales tax service
 @Service
