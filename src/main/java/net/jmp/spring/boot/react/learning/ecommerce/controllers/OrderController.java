@@ -37,15 +37,11 @@ import net.jmp.spring.boot.react.learning.ecommerce.Order;
 
 import net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument;
 
-import net.jmp.spring.boot.react.learning.ecommerce.repositories.OrderDocumentRepository;
-
 import static net.jmp.util.logging.LoggerUtils.*;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.data.domain.Sort;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
