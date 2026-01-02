@@ -32,7 +32,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
 
-import net.jmp.spring.boot.react.learning.ecommerce.repositories.SalesTaxDocumentRepository;
+import net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService;
 
 import static net.jmp.util.logging.LoggerUtils.entry;
 import static net.jmp.util.logging.LoggerUtils.exitWith;
@@ -56,16 +56,16 @@ public class SalesTaxController {
     /// The logger
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /// The sales tax document repository
-    private final SalesTaxDocumentRepository salesTaxDocumentRepository;
+    /// The sales tax service
+    private final SalesTaxService salesTaxService;
 
     /// The constructor
     ///
-    /// @param   salesTaxDocumentRepository net.jmp.spring.boot.react.learning.ecommerce.repositories.SalesTaxDocumentRepository
-    public SalesTaxController(final SalesTaxDocumentRepository salesTaxDocumentRepository) {
+    /// @param   salesTaxService net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService
+    public SalesTaxController(final SalesTaxService salesTaxService) {
         super();
 
-        this.salesTaxDocumentRepository = salesTaxDocumentRepository;
+        this.salesTaxService = salesTaxService;
     }
 
     /// The OK method
@@ -95,7 +95,7 @@ public class SalesTaxController {
             this.logger.trace(entry());
         }
 
-        final List<SalesTaxDocument> documents = this.salesTaxDocumentRepository.findAll(Sort.by(Sort.Direction.ASC, "state"));
+        final List<SalesTaxDocument> documents = this.salesTaxService.getSalesTaxes();
         final ResponseEntity<List<SalesTaxDocument>> result = new ResponseEntity<>(documents, HttpStatus.OK);
 
         if (this.logger.isTraceEnabled()) {
@@ -115,7 +115,7 @@ public class SalesTaxController {
             this.logger.trace(entry());
         }
 
-        final Optional<SalesTaxDocument> document = this.salesTaxDocumentRepository.findByStateName(stateName);
+        final Optional<SalesTaxDocument> document = this.salesTaxService.getSalesTaxByStateName(stateName);
 
         final ResponseEntity<SalesTaxDocument> result = document
                 .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
@@ -138,7 +138,7 @@ public class SalesTaxController {
             this.logger.trace(entry());
         }
 
-        final Optional<SalesTaxDocument> document = this.salesTaxDocumentRepository.findByStateAbbreviation(stateAbbreviation);
+        final Optional<SalesTaxDocument> document = this.salesTaxService.getSalesTaxByStateAbbreviation(stateAbbreviation);
 
         final ResponseEntity<SalesTaxDocument> result = document
                 .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
