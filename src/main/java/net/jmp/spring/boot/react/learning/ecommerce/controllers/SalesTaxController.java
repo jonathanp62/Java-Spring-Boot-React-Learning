@@ -1,7 +1,7 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 /*
- * (#)SalesTaxController.java   0.1.0   12/20/2025
+ * (#)SalesTaxController.java   0.1.0   01/03/2026
  *
  * @author    Jonathan Parker
  * @version   0.1.0
@@ -9,7 +9,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
  *
  * MIT License
  *
- * Copyright (c) 2025 Jonathan M. Parker
+ * Copyright (c) 2026 Jonathan M. Parker
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,27 +30,22 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
  * SOFTWARE.
  */
 
-import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
-
 import net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService;
 
-import static net.jmp.util.logging.LoggerUtils.entry;
+import static net.jmp.util.logging.LoggerUtils.entryWith;
 import static net.jmp.util.logging.LoggerUtils.exitWith;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
 
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.GetMapping;
 
-/// The sales tax controller
-@RestController
-@RequestMapping("/react/learning/api/e-commerce/sales-tax")
+/// The sales tax controller class.
+@Controller
 public class SalesTaxController {
     /// The logger
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -60,93 +55,30 @@ public class SalesTaxController {
 
     /// The constructor
     ///
-    /// @param   salesTaxService net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService
+    /// @param  salesTaxService net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService
     public SalesTaxController(final SalesTaxService salesTaxService) {
         super();
 
         this.salesTaxService = salesTaxService;
     }
 
-    /// The OK method
+    /// Maps GET requests for the e-commerce sales-tax path to the "e-commerce/sales-tax" view.
     ///
-    /// @return org.springframework.http.ResponseEntity<java.lang.String>
-    @GetMapping("/ok")
-    public ResponseEntity<String> ok() {
+    /// @return java.lang.String
+    @GetMapping("/e-commerce/sales-tax/")
+    public String eCommerceHome(final Model model) {
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
+            this.logger.trace(entryWith(model));
         }
 
-        final ResponseEntity<String> result = new ResponseEntity<>("OK", HttpStatus.OK);
+        model.addAttribute("salesTaxList", this.salesTaxService.getSalesTaxes());
+
+        final String template = "e-commerce/sales-tax";
 
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
+            this.logger.trace(exitWith(template));
         }
 
-        return result;
-    }
-
-    /// The get all sales tax documents method
-    ///
-    /// @return org.springframework.http.ResponseEntity<java.util.List<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>>
-    @GetMapping("/")
-    public ResponseEntity<List<SalesTaxDocument>> salesTaxes() {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
-        }
-
-        final List<SalesTaxDocument> documents = this.salesTaxService.getSalesTaxes();
-        final ResponseEntity<List<SalesTaxDocument>> result = new ResponseEntity<>(documents, HttpStatus.OK);
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
-    }
-
-    /// The get sales tax document by state name method
-    ///
-    /// @param   stateName  java.lang.String
-    /// @return             org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
-    @GetMapping("/{stateName}")
-    public ResponseEntity<SalesTaxDocument> salesTaxByStateName(final @PathVariable String stateName) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
-        }
-
-        final Optional<SalesTaxDocument> document = this.salesTaxService.getSalesTaxByStateName(stateName);
-
-        final ResponseEntity<SalesTaxDocument> result = document
-                .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
-    }
-
-    /// The get sales tax document by state abbreviation method
-    ///
-    /// @param  stateAbbreviation   java.lang.String
-    /// @return                     org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
-    @GetMapping("/abbr/{stateAbbreviation}")
-    public ResponseEntity<SalesTaxDocument> salesTaxByStateAbbreviation(final @PathVariable String stateAbbreviation) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
-        }
-
-        final Optional<SalesTaxDocument> document = this.salesTaxService.getSalesTaxByStateAbbreviation(stateAbbreviation);
-
-        final ResponseEntity<SalesTaxDocument> result = document
-                .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+        return template;
     }
 }

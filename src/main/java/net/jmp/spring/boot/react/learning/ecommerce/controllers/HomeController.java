@@ -1,7 +1,7 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 /*
- * (#)IndexController.java  0.1.0   01/02/2026
+ * (#)HomeController.java   0.1.0   01/02/2026
  *
  * @author    Jonathan Parker
  * @version   0.1.0
@@ -34,27 +34,19 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
-/// The index controller class.
+/// The home controller class.
 @Controller
-public class IndexController {
+public class HomeController {
     /// The default constructor
-    public IndexController() {
+    public HomeController() {
         super();
     }
 
-    /// Maps GET requests for the root path to the "index" view.
-    ///
-    /// @return java.lang.String
-    @GetMapping("/")
-    public String index() {
-        return "index";
-    }
-
-    /// Maps GET requests for the e-commerce root path to the "index-e-commerce" view.
+    /// Maps GET requests for the e-commerce root path to the "e-commerce/home" view.
     ///
     /// @return java.lang.String
     @GetMapping("/e-commerce/")
-    public String indexECommerce() {
-        return "index-e-commerce";
+    public String eCommerceHome() {
+        return "e-commerce/home";
     }
 }

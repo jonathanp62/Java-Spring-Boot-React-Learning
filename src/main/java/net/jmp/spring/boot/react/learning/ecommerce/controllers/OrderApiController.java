@@ -1,7 +1,7 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 /*
- * (#)OrderController.java  0.1.0   12/10/2025
+ * (#)OrderApiController.java   0.1.0   12/10/2025
  *
  * @author    Jonathan Parker
  * @version   0.1.0
@@ -51,10 +51,10 @@ import org.springframework.security.core.GrantedAuthority;
 
 import org.springframework.web.bind.annotation.*;
 
-/// The order controller
+/// The order API controller
 @RestController
 @RequestMapping("/react/learning/api/e-commerce")
-public class OrderController {
+public class OrderApiController {
     /// The logger
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -64,7 +64,7 @@ public class OrderController {
     /// The constructor
     ///
     /// @param   orderService   net.jmp.spring.boot.react.learning.ecommerce.services.OrderService
-    public OrderController(final OrderService orderService) {
+    public OrderApiController(final OrderService orderService) {
         super();
 
         this.orderService = orderService;

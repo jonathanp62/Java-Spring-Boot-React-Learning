@@ -1,5 +1,5 @@
 <!--
- (#)home-e-commerce.htm 0.1.0   01/02/2026
+ (#)sales-tax.html  0.1.0   01/03/2026
 
  @author  Jonathan Parker
  @version 0.1.0
@@ -31,10 +31,29 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>E-Commerce</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>E-Commerce Sales Tax</title>
 </head>
 <body>
-    <h2>E-Commerce</h2>
+  <h2>E-Commerce Sales Tax</h2>
+
+  <table border="1">
+    <thead>
+      <tr>
+        <th>State</th>
+        <th>Abbreviation</th>
+        <th>Rate</th>
+        <th>Document ID</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="salesTax : ${salesTaxList}">
+        <td th:text="${salesTax.state}"/>
+        <td th:text="${salesTax.abbreviation}"/>
+        <td th:text="${salesTax.rate}"/>
+        <td th:text="${salesTax.documentId}"/>
+      </tr>
+    </tbody>
+  </table>
 </body>
 </html>
