@@ -1,0 +1,102 @@
+package net.jmp.spring.boot.react.learning.ecommerce.components;
+
+/*
+ * (#)OrderCostCalculator.java  0.1.0   01/03/2026
+ *
+ * @author    Jonathan Parker
+ * @version   0.1.0
+ * @since     0.1.0
+ *
+ * MIT License
+ *
+ * Copyright (c) 2026 Jonathan M. Parker
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import java.text.NumberFormat;
+
+import java.util.Locale;
+
+import net.jmp.spring.boot.react.learning.ecommerce.Product;
+
+import net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.stereotype.Component;
+
+import static net.jmp.util.logging.LoggerUtils.*;
+
+/// The order cost calculator class. It is used in Thymeleaf templates.
+@Component("orderCostCalculator")
+public class OrderCostCalculator {
+    /// The logger
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
+    /// The default constructor
+    public OrderCostCalculator() {
+        super();
+    }
+
+    /// The calculate total cost method
+    ///
+    /// @param  orderDocument  net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument
+    /// @return                double
+    public double calculateTotalCost(final OrderDocument orderDocument) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(orderDocument));
+        }
+
+        final double subtotal = orderDocument.getProducts() != null
+                ? orderDocument.getProducts().stream().mapToDouble(Product::price).sum()
+                : 0.0;
+
+        final double unroundedTotal = subtotal * (1.0 + orderDocument.getTaxRate());
+
+        final double total = BigDecimal.valueOf(unroundedTotal)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(total));
+        }
+
+        return total;
+    }
+
+    public String calculateTotalCostAsMoney(final OrderDocument orderDocument) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(orderDocument));
+        }
+
+        final double total = this.calculateTotalCost(orderDocument);
+        final String money = NumberFormat.getCurrencyInstance(Locale.US).format(total);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(money));
+        }
+
+        return money;
+    }
+}

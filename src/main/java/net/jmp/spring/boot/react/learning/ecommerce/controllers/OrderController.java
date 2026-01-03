@@ -30,6 +30,10 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
  * SOFTWARE.
  */
 
+import java.util.Optional;
+
+import net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument;
+
 import net.jmp.spring.boot.react.learning.ecommerce.services.OrderService;
 
 import static net.jmp.util.logging.LoggerUtils.entryWith;
@@ -43,6 +47,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /// The order controller class.
 @Controller
@@ -74,6 +79,31 @@ public class OrderController {
         model.addAttribute("ordersList", this.orderService.getOrders());
 
         final String template = "e-commerce/orders";
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(template));
+        }
+
+        return template;
+    }
+
+    /// Maps GET requests for the e-commerce order detail path to the "e-commerce/order-detail" view.
+    ///
+    /// @param  orderId    java.lang.String
+    /// @param  model      org.springframework.ui.Model
+    /// @return            java.lang.String
+    @GetMapping("/e-commerce/order-detail/")
+    public String orderDetail(final @RequestParam String orderId, final Model model) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(orderId, model));
+        }
+
+        final Optional<OrderDocument> order = this.orderService.getOrderById(orderId);
+
+        model.addAttribute("order", order.orElse(null));
+        model.addAttribute("orderFound", order.isPresent());
+
+        final String template = "e-commerce/order-detail";
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(template));

@@ -1,0 +1,112 @@
+<!--
+ (#)order-detail.html 0.1.0   01/03/2026
+
+ @author  Jonathan Parker
+ @version 0.1.0
+ @since   0.1.0
+
+ MIT License
+
+ Copyright (c) 2026 Jonathan M. Parker
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>E-Commerce Order Detail</title>
+</head>
+<body>
+  <h2>E-Commerce Order Detail</h2>
+
+  <div th:if="${orderFound}">
+    <table border="1">
+      <tbody>
+        <tr>
+          <td><strong>Order ID</strong></td>
+          <td><span th:text="${order.orderId}"></span></td>
+        </tr>
+        <tr>
+          <td><strong>Document ID</strong></td>
+          <td><span th:text="${order.documentId}"></span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p></p>
+
+    <table border="1">
+      <tbody>
+      <tr>
+        <td><strong>Total Items</strong></td>
+        <td><span th:text="${order.products.size()}"></span></td>
+      </tr>
+      <tr>
+        <td><strong>Sub Total</strong></td>
+        <td><span th:text="${order.documentId}"></span></td>
+      </tr>
+      <tr>
+        <td><strong>Tax</strong></td>
+        <td><span th:text="${order.documentId}"></span></td>
+      </tr>
+      <tr>
+        <td><strong>Total</strong></td>
+        <td><span th:text="${@orderCostCalculator.calculateTotalCostAsMoney(order)}"></span></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <p></p>
+
+    <div><strong>Ordered By</strong></div>
+    <div><span th:text="${@nameFormatter.format(order.firstName, order.lastName)}"></span></div>
+    <div><span th:text="${@dateFormatter.format(order.orderDate)}"></span></div>
+  </div>
+
+  <p></p>
+
+  <div><strong>Shipping Information</strong></div>
+  <div><span th:text="${@nameFormatter.format(order.firstName, order.lastName)}"></span></div>
+  <div><span th:text="${order.address}"></span></div>
+  <div><span th:text="${order.city}"></span>, <span th:text="${order.state}"></span> <span th:text="${order.zipCode}"></span></div>
+  <div><span th:text="${order.country}"></span></div>
+
+  <p></p>
+
+  <div><strong>Contact Information</strong></div>
+  <div><span th:text="${order.phone}"></span></div>
+  <div><span th:text="${order.email}"></span></div>
+
+  <p></p>
+
+  <div><strong>Products</strong></div>
+
+  <div th:unless="${orderFound}">
+    <div>Order not found.</div>
+  </div>
+
+  <p></p>
+
+  <div>
+    <a th:href="@{/e-commerce/orders/}">All Orders</a>
+  </div>
+</body>
+</html>

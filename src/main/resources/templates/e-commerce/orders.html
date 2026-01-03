@@ -46,18 +46,18 @@
         <th>Total</th>
         <th>Order ID</th>
         <th>Document ID</th>
-        <th>More Detail</th>
+        <th>Order Details</th>
       </tr>
     </thead>
     <tbody>
       <tr th:each="order : ${ordersList}">
-        <td th:text="${order.getOrderDate()}"/>
-        <td th:text="${order.getFirstName()}"/>
+        <td th:text="${@dateFormatter.format(order.orderDate)}"/>
+        <td th:text="${@nameFormatter.format(order.firstName, order.lastName)}"/>
         <td th:text="${order.products.size()}"/>
-        <td>Computed total</td>
+        <td th:text="${@orderCostCalculator.calculateTotalCostAsMoney(order)}"/>
         <td th:text="${order.orderId}"/>
         <td th:text="${order.documentId}"/>
-        <td>...</td>
+        <td><a th:href="@{/e-commerce/order-detail/(orderId=${order.orderId})}">...</a></td>
       </tr>
     </tbody>
   </table>
