@@ -1,5 +1,5 @@
 <!--
- (#)home.html   0.1.0   01/02/2026
+ (#)orders.html 0.1.0   01/03/2026
 
  @author  Jonathan Parker
  @version 0.1.0
@@ -31,20 +31,35 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>E-Commerce Home</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>E-Commerce Orders</title>
 </head>
 <body>
-    <h2>E-Commerce Home</h2>
+  <h2>E-Commerce Orders</h2>
 
-    <table class="unbordered">
-        <thead>
-            <tr><th>&nbsp;</th></tr>
-        </thead>
-        <tbody>
-            <tr><td><a href="/e-commerce/orders/">Orders</a></td></tr>
-            <tr><td><a href="/e-commerce/sales-tax/">Sales Tax</a></td></tr>
-        </tbody>
-    </table>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Order Placed</th>
+        <th>Ordered By</th>
+        <th>Products</th>
+        <th>Total</th>
+        <th>Order ID</th>
+        <th>Document ID</th>
+        <th>More Detail</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="order : ${ordersList}">
+        <td th:text="${order.getOrderDate()}"/>
+        <td th:text="${order.getFirstName()}"/>
+        <td th:text="${order.products.size()}"/>
+        <td>Computed total</td>
+        <td th:text="${order.orderId}"/>
+        <td th:text="${order.documentId}"/>
+        <td>...</td>
+      </tr>
+    </tbody>
+  </table>
 </body>
 </html>

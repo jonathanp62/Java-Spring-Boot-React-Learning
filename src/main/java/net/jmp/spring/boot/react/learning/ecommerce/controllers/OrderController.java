@@ -1,7 +1,7 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 /*
- * (#)SalesTaxController.java   0.1.0   01/03/2026
+ * (#)OrderController.java  0.1.0   01/03/2026
  *
  * @author    Jonathan Parker
  * @version   0.1.0
@@ -30,7 +30,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
  * SOFTWARE.
  */
 
-import net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService;
+import net.jmp.spring.boot.react.learning.ecommerce.services.OrderService;
 
 import static net.jmp.util.logging.LoggerUtils.entryWith;
 import static net.jmp.util.logging.LoggerUtils.exitWith;
@@ -44,36 +44,36 @@ import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
-/// The sales tax controller class.
+/// The order controller class.
 @Controller
-public class SalesTaxController {
+public class OrderController {
     /// The logger
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /// The sales tax service
-    private final SalesTaxService salesTaxService;
+    /// The order service
+    private final OrderService orderService;
 
     /// The constructor
     ///
-    /// @param  salesTaxService net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService
-    public SalesTaxController(final SalesTaxService salesTaxService) {
+    /// @param  orderService    net.jmp.spring.boot.react.learning.ecommerce.services.OrderService
+    public OrderController(final OrderService orderService) {
         super();
 
-        this.salesTaxService = salesTaxService;
+        this.orderService = orderService;
     }
 
-    /// Maps GET requests for the e-commerce sales-tax path to the "e-commerce/sales-tax" view.
+    /// Maps GET requests for the e-commerce orders path to the "e-commerce/orders" view.
     ///
     /// @return java.lang.String
-    @GetMapping("/e-commerce/sales-tax/")
-    public String salesTaxes(final Model model) {
+    @GetMapping("/e-commerce/orders/")
+    public String orders(final Model model) {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entryWith(model));
         }
 
-        model.addAttribute("salesTaxList", this.salesTaxService.getSalesTaxes());
+        model.addAttribute("ordersList", this.orderService.getOrders());
 
-        final String template = "e-commerce/sales-tax";
+        final String template = "e-commerce/orders";
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(template));
