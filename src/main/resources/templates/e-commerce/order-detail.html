@@ -80,25 +80,47 @@
     <div><strong>Ordered By</strong></div>
     <div><span th:text="${@nameFormatter.format(order.firstName, order.lastName)}"></span></div>
     <div><span th:text="${@dateFormatter.format(order.orderDate)}"></span></div>
+
+    <p></p>
+
+    <div><strong>Shipping Information</strong></div>
+    <div><span th:text="${@nameFormatter.format(order.firstName, order.lastName)}"></span></div>
+    <div><span th:text="${order.address}"></span></div>
+    <div><span th:text="${order.city}"></span>, <span th:text="${order.state}"></span> <span th:text="${order.zipCode}"></span></div>
+    <div><span th:text="${order.country}"></span></div>
+
+    <p></p>
+
+    <div><strong>Contact Information</strong></div>
+    <div><span th:text="${@phoneFormatter.format(order.phone)}"></span></div>
+    <div><span th:text="${order.email}"></span></div>
+
+    <p></p>
+
+    <div><strong>Products</strong></div>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Price</th>
+          <th>Category</th>
+          <th>Rating</th>
+          <th>Reviews</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="product : ${order.products}">
+          <td th:text="${product.title}"></td>
+          <td th:text="${#numbers.formatCurrency(product.price)}"></td>
+          <td th:text="${#strings.capitalize(product.category)}"></td>
+          <td th:text="${#numbers.formatDecimal(product.rating.rate, 1, 1)}"></td>
+          <td th:text="${product.rating.count}"></td>
+          <td th:text="${product.description}"></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-
-  <p></p>
-
-  <div><strong>Shipping Information</strong></div>
-  <div><span th:text="${@nameFormatter.format(order.firstName, order.lastName)}"></span></div>
-  <div><span th:text="${order.address}"></span></div>
-  <div><span th:text="${order.city}"></span>, <span th:text="${order.state}"></span> <span th:text="${order.zipCode}"></span></div>
-  <div><span th:text="${order.country}"></span></div>
-
-  <p></p>
-
-  <div><strong>Contact Information</strong></div>
-  <div><span th:text="${@phoneFormatter.format(order.phone)}"></span></div>
-  <div><span th:text="${order.email}"></span></div>
-
-  <p></p>
-
-  <div><strong>Products</strong></div>
 
   <div th:unless="${orderFound}">
     <div>Order not found.</div>
