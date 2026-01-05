@@ -50,7 +50,7 @@
       <tr th:each="salesTax : ${salesTaxList}">
         <td th:text="${salesTax.state}"/>
         <td th:text="${salesTax.abbreviation}"/>
-        <td th:text="${salesTax.rate}"/>
+        <td th:text="${@salesTaxFormatter.format(salesTax.rate)}"/>
         <td th:text="${salesTax.documentId}"/>
       </tr>
     </tbody>

@@ -61,11 +61,11 @@
       </tr>
       <tr>
         <td><strong>Sub Total</strong></td>
-        <td><span th:text="${order.documentId}"></span></td>
+        <td><span th:text="${@orderCostCalculator.calculateSubTotalAsMoney(order)}"></span></td>
       </tr>
       <tr>
         <td><strong>Tax</strong></td>
-        <td><span th:text="${order.documentId}"></span></td>
+        <td><span th:text="${@orderCostCalculator.calculateTaxAsMoney(order)}"></span></td>
       </tr>
       <tr>
         <td><strong>Total</strong></td>
@@ -92,7 +92,7 @@
   <p></p>
 
   <div><strong>Contact Information</strong></div>
-  <div><span th:text="${order.phone}"></span></div>
+  <div><span th:text="${@phoneFormatter.format(order.phone)}"></span></div>
   <div><span th:text="${order.email}"></span></div>
 
   <p></p>

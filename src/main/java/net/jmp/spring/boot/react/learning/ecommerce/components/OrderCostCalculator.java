@@ -85,6 +85,10 @@ public class OrderCostCalculator {
         return total;
     }
 
+    /// The calculate total cost as money method
+    ///
+    /// @param  orderDocument  net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument
+    /// @return                java.lang.String
     public String calculateTotalCostAsMoney(final OrderDocument orderDocument) {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entryWith(orderDocument));
@@ -92,6 +96,56 @@ public class OrderCostCalculator {
 
         final double total = this.calculateTotalCost(orderDocument);
         final String money = NumberFormat.getCurrencyInstance(Locale.US).format(total);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(money));
+        }
+
+        return money;
+    }
+
+    /// The calculate sub-total as money method
+    ///
+    /// @param  orderDocument  net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument
+    /// @return                java.lang.String
+    public String calculateSubTotalAsMoney(final OrderDocument orderDocument) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(orderDocument));
+        }
+
+        final double subtotal = orderDocument.getProducts() != null
+                ? orderDocument.getProducts().stream().mapToDouble(Product::price).sum()
+                : 0.0;
+
+        final String money = NumberFormat.getCurrencyInstance(Locale.US).format(subtotal);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(money));
+        }
+
+        return money;
+    }
+
+    /// The calculate tax as money method
+    ///
+    /// @param  orderDocument  net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument
+    /// @return                java.lang.String
+    public String calculateTaxAsMoney(final OrderDocument orderDocument) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(orderDocument));
+        }
+
+        final double subtotal = orderDocument.getProducts() != null
+                ? orderDocument.getProducts().stream().mapToDouble(Product::price).sum()
+                : 0.0;
+
+        final double unroundedTax = subtotal * orderDocument.getTaxRate();
+
+        final double tax = BigDecimal.valueOf(unroundedTax)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
+
+        final String money = NumberFormat.getCurrencyInstance(Locale.US).format(tax);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(money));
