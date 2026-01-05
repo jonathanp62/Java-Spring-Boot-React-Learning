@@ -1,5 +1,7 @@
-<!--
- (#)home.html   0.1.0   01/02/2026
+@charset "utf-8";
+
+/*
+ (#)styles.css  0.1.0   01/05/2026
 
  @author  Jonathan Parker
  @version 0.1.0
@@ -26,26 +28,51 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
--->
+ */
 
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" th:href="@{/styles/styles.css}">
-    <title>E-Commerce Home</title>
-</head>
-<body>
-    <h2>E-Commerce Home</h2>
+a:active, a:link, a:visited {
+    color: black;
+    text-decoration: none;
+}
 
-    <table class="unbordered">
-        <thead>
-            <tr><th>&nbsp;</th></tr>
-        </thead>
-        <tbody>
-            <tr><td><a href="/e-commerce/orders/">Orders</a></td></tr>
-            <tr><td><a href="/e-commerce/sales-tax/">Sales Tax</a></td></tr>
-        </tbody>
-    </table>
-</body>
-</html>
+.bandedTable {
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+}
+
+p.bold {
+    font-weight: bold;
+}
+
+span.bold {
+    font-weight: bold;
+}
+
+span.normal {
+    font-weight: normal;
+}
+
+table.bordered {
+    border: 1px solid black;
+}
+
+table.unbordered {
+    border: 0;
+}
+
+td.bold {
+    font-weight: bold;
+}
+
+td.bordered {
+    border: 1px solid black;
+}
+
+td.normal {
+    font-weight: normal;
+}
+
+td.top {
+    vertical-align: top;
+}
