@@ -32,19 +32,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+    <link rel="stylesheet" th:href="@{/styles/styles.css}" href="../../static/styles/styles.css">
     <title>Spring Boot React Learning</title>
 </head>
-<body>
-    <h2>Spring Boot React Learning</h2>
+<body class="pageCenteredBody">
+    <div class="pageCentered">
+        <h2>Spring Boot React Learning</h2>
 
-    <table class="unbordered">
-        <thead>
-            <tr><th>&nbsp;</th></tr>
-        </thead>
-        <tbody>
-            <tr><td><a href="/e-commerce/">E-Commerce</a></td></tr>
-        </tbody>
-    </table>
+        <table class="linkTable">
+            <thead>
+                <tr><th>&nbsp;</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><a href="/e-commerce/">E-Commerce</a></td></tr>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

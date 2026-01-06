@@ -32,29 +32,31 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link rel="stylesheet" th:href="@{/styles/styles.css}">
+  <link rel="stylesheet" th:href="@{/styles/styles.css}" href="../../static/styles/styles.css">
   <title>E-Commerce Sales Tax</title>
 </head>
-<body>
-  <h2>E-Commerce Sales Tax</h2>
+<body class="pageCenteredBody">
+  <div class="pageCentered">
+    <h2>E-Commerce Sales Tax</h2>
 
-  <table border="1">
-    <thead>
-      <tr>
-        <th>State</th>
-        <th>Abbreviation</th>
-        <th>Rate</th>
-        <th>Document ID</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr th:each="salesTax : ${salesTaxList}">
-        <td th:text="${salesTax.state}"/>
-        <td th:text="${salesTax.abbreviation}"/>
-        <td th:text="${@salesTaxFormatter.format(salesTax.rate)}"/>
-        <td th:text="${salesTax.documentId}"/>
-      </tr>
-    </tbody>
-  </table>
+    <table class="dataTable">
+      <thead>
+        <tr>
+          <th>State</th>
+          <th>Abbreviation</th>
+          <th>Rate</th>
+          <th>Document ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="salesTax : ${salesTaxList}">
+          <td th:text="${salesTax.state}"/>
+          <td th:text="${salesTax.abbreviation}"/>
+          <td th:text="${@salesTaxFormatter.format(salesTax.rate)}"/>
+          <td th:text="${salesTax.documentId}"/>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </body>
 </html>
