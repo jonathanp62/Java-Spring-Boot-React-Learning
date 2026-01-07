@@ -37,32 +37,41 @@
 </head>
 <body class="pageCenteredBody">
   <div class="pageCentered">
-  <h2>E-Commerce Orders</h2>
+    <h2>E-Commerce Orders</h2>
 
-  <table class="dataTable">
-    <thead>
-      <tr>
-        <th>Order Placed</th>
-        <th>Ordered By</th>
-        <th>Products</th>
-        <th>Total</th>
-        <th>Order ID</th>
-        <th>Document ID</th>
-        <th>Order Details</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr th:each="order : ${ordersList}">
-        <td th:text="${@dateFormatter.format(order.orderDate)}"/>
-        <td th:text="${@nameFormatter.format(order.firstName, order.lastName)}"/>
-        <td th:text="${order.products.size()}"/>
-        <td th:text="${@orderCostCalculator.calculateTotalCostAsMoney(order)}"/>
-        <td th:text="${order.orderId}"/>
-        <td th:text="${order.documentId}"/>
-        <td><a th:href="@{/e-commerce/order-detail/(orderId=${order.orderId})}">...</a></td>
-      </tr>
-    </tbody>
-  </table>
+    <table class="dataTable">
+      <thead>
+        <tr>
+          <th>Order Placed</th>
+          <th>Ordered By</th>
+          <th>Products</th>
+          <th>Total</th>
+          <th>Order ID</th>
+          <th>Document ID</th>
+          <th>Order Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="order : ${ordersList}">
+          <td th:text="${@dateFormatter.format(order.orderDate)}"/>
+          <td th:text="${@nameFormatter.format(order.firstName, order.lastName)}"/>
+          <td th:text="${order.products.size()}"/>
+          <td th:text="${@orderCostCalculator.calculateTotalCostAsMoney(order)}"/>
+          <td th:text="${order.orderId}"/>
+          <td th:text="${order.documentId}"/>
+          <td><a th:href="@{/e-commerce/order-detail/(orderId=${order.orderId})}">...</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 2rem;">
+      <nav class="navigationContainer">
+        <ul class="navigationList">
+          <li><a href="/e-commerce/">E-Commerce Home</a></li>
+          <li><a href="/">React Learning Home</a></li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </body>
 </html>
