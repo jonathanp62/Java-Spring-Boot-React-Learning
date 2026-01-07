@@ -35,101 +35,108 @@
   <link rel="stylesheet" th:href="@{/styles/styles.css}">
   <title>E-Commerce Order Detail</title>
 </head>
-<body>
-  <h2>E-Commerce Order Detail</h2>
+<body class="pageCenteredBody">
+  <div class="pageCentered">
+    <h2>E-Commerce Order Detail</h2>
 
-  <div th:if="${orderFound}">
-    <table border="1">
-      <tbody>
+    <div th:if="${orderFound}">
+      <table class="dataTable">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Document ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span th:text="${order.orderId}"></span></td>
+            <td><span th:text="${order.documentId}"></span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p></p>
+
+      <table class="dataTable">
+        <thead>
         <tr>
-          <td><strong>Order ID</strong></td>
-          <td><span th:text="${order.orderId}"></span></td>
+          <th>Total Items</th>
+          <th>Sub Total</th>
+          <th>Tax</th>
+          <th>Total</th>
         </tr>
+        </thead>
+        <tbody>
         <tr>
-          <td><strong>Document ID</strong></td>
-          <td><span th:text="${order.documentId}"></span></td>
+          <td><span th:text="${order.products.size()}"></span></td>
+          <td><span th:text="${@orderCostCalculator.calculateSubTotalAsMoney(order)}"></span></td>
+          <td><span th:text="${@orderCostCalculator.calculateTaxAsMoney(order)}"></span></td>
+          <td><span th:text="${@orderCostCalculator.calculateTotalCostAsMoney(order)}"></span></td>
         </tr>
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+
+      <p></p>
+
+      <div><strong>Ordered By</strong></div>
+      <div><span th:text="${@nameFormatter.format(order.firstName, order.lastName)}"></span></div>
+      <div><span th:text="${@dateFormatter.format(order.orderDate)}"></span></div>
+
+      <p></p>
+
+      <div><strong>Shipping Information</strong></div>
+      <div><span th:text="${@nameFormatter.format(order.firstName, order.lastName)}"></span></div>
+      <div><span th:text="${order.address}"></span></div>
+      <div><span th:text="${order.city}"></span>, <span th:text="${order.state}"></span> <span th:text="${order.zipCode}"></span></div>
+      <div><span th:text="${order.country}"></span></div>
+
+      <p></p>
+
+      <div><strong>Contact Information</strong></div>
+      <div><span th:text="${@phoneFormatter.format(order.phone)}"></span></div>
+      <div><span th:text="${order.email}"></span></div>
+
+      <p></p>
+
+      <table class="dataTable">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Rating</th>
+            <th>Reviews</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="product : ${order.products}">
+            <td th:text="${product.title}"></td>
+            <td th:text="${#numbers.formatCurrency(product.price)}"></td>
+            <td th:text="${#strings.capitalize(product.category)}"></td>
+            <td th:text="${#numbers.formatDecimal(product.rating.rate, 1, 1)}"></td>
+            <td th:text="${product.rating.count}"></td>
+            <td th:text="${#strings.capitalize(product.description)}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div th:unless="${orderFound}">
+      <h3>Order not found</h3>
+    </div>
 
     <p></p>
 
-    <table border="1">
-      <tbody>
-      <tr>
-        <td><strong>Total Items</strong></td>
-        <td><span th:text="${order.products.size()}"></span></td>
-      </tr>
-      <tr>
-        <td><strong>Sub Total</strong></td>
-        <td><span th:text="${@orderCostCalculator.calculateSubTotalAsMoney(order)}"></span></td>
-      </tr>
-      <tr>
-        <td><strong>Tax</strong></td>
-        <td><span th:text="${@orderCostCalculator.calculateTaxAsMoney(order)}"></span></td>
-      </tr>
-      <tr>
-        <td><strong>Total</strong></td>
-        <td><span th:text="${@orderCostCalculator.calculateTotalCostAsMoney(order)}"></span></td>
-      </tr>
-      </tbody>
-    </table>
-
-    <p></p>
-
-    <div><strong>Ordered By</strong></div>
-    <div><span th:text="${@nameFormatter.format(order.firstName, order.lastName)}"></span></div>
-    <div><span th:text="${@dateFormatter.format(order.orderDate)}"></span></div>
-
-    <p></p>
-
-    <div><strong>Shipping Information</strong></div>
-    <div><span th:text="${@nameFormatter.format(order.firstName, order.lastName)}"></span></div>
-    <div><span th:text="${order.address}"></span></div>
-    <div><span th:text="${order.city}"></span>, <span th:text="${order.state}"></span> <span th:text="${order.zipCode}"></span></div>
-    <div><span th:text="${order.country}"></span></div>
-
-    <p></p>
-
-    <div><strong>Contact Information</strong></div>
-    <div><span th:text="${@phoneFormatter.format(order.phone)}"></span></div>
-    <div><span th:text="${order.email}"></span></div>
-
-    <p></p>
-
-    <div><strong>Products</strong></div>
-    <table border="1">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Price</th>
-          <th>Category</th>
-          <th>Rating</th>
-          <th>Reviews</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="product : ${order.products}">
-          <td th:text="${product.title}"></td>
-          <td th:text="${#numbers.formatCurrency(product.price)}"></td>
-          <td th:text="${#strings.capitalize(product.category)}"></td>
-          <td th:text="${#numbers.formatDecimal(product.rating.rate, 1, 1)}"></td>
-          <td th:text="${product.rating.count}"></td>
-          <td th:text="${product.description}"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div th:unless="${orderFound}">
-    <div>Order not found.</div>
-  </div>
-
-  <p></p>
-
-  <div>
-    <a th:href="@{/e-commerce/orders/}">All Orders</a>
+    <div style="margin-top: 2rem;">
+      <nav class="navigationContainer">
+        <ul class="navigationList">
+          <li><a th:href="@{/e-commerce/orders/}">Orders</a></li>
+          <li><a href="/e-commerce/">E-Commerce Home</a></li>
+          <li><a href="/">React Learning Home</a></li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </body>
 </html>
