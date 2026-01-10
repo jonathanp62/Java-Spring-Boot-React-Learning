@@ -45,7 +45,7 @@ apply plugin: 'net.jmp.gradle.plugin.projectinfo-info'
 
 ext {
 	project.group = 'net.jmp.spring.boot.react.learning'
-	project.version = '0.1.0'
+	project.version = '0.2.0'
 	project.description = 'to support React learning'
 }
 
