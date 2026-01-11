@@ -1,6 +1,7 @@
 package net.jmp.spring.boot.react.learning.ecommerce.services;
 
 /*
+ * (#)SalesTaxService.java  0.2.0   01/11/2026
  * (#)SalesTaxService.java  0.1.0   01/02/2026
  *
  * @author    Jonathan Parker
@@ -115,5 +116,23 @@ public class SalesTaxService {
         }
 
         return document;
+    }
+
+    /// The save sales tax method
+    ///
+    /// @param  salesTaxDocument  net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument
+    /// @return                   net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument
+    public SalesTaxDocument saveSalesTax(final SalesTaxDocument salesTaxDocument) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(salesTaxDocument));
+        }
+
+        final SalesTaxDocument saved = this.salesTaxDocumentRepository.save(salesTaxDocument);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(saved));
+        }
+
+        return saved;
     }
 }

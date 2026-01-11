@@ -1,15 +1,16 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 /*
+ * (#)SalesTaxApiController.java    0.2.0   01/11/2026
  * (#)SalesTaxApiController.java    0.1.0   12/20/2025
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.2.0
  * @since     0.1.0
  *
  * MIT License
  *
- * Copyright (c) 2025 Jonathan M. Parker
+ * Copyright (c) 2026 Jonathan M. Parker
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,12 +31,16 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
  * SOFTWARE.
  */
 
+import java.util.List;
+import java.util.Optional;
+
+import net.jmp.spring.boot.react.learning.ecommerce.SalesTax;
+
 import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService;
 
-import static net.jmp.util.logging.LoggerUtils.entry;
-import static net.jmp.util.logging.LoggerUtils.exitWith;
+import static net.jmp.util.logging.LoggerUtils.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,10 +48,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.*;
 
 /// The sales tax API controller
 @RestController
@@ -142,6 +147,46 @@ public class SalesTaxApiController {
         final ResponseEntity<SalesTaxDocument> result = document
                 .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /// The create sales tax method
+    ///
+    /// @param   salesTax       net.jmp.spring.boot.react.learning.ecommerce.SalesTax
+    /// @param   authentication org.springframework.security.core.Authentication
+    /// @return                 org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
+    @PostMapping("/")
+    public ResponseEntity<SalesTaxDocument> createSalesTax(final @RequestBody SalesTax salesTax, final Authentication authentication) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(salesTax, authentication));
+        }
+
+        ResponseEntity<SalesTaxDocument> result = null;
+
+        final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+
+        if (userRoles.contains("ROLE_READWRITE")) {
+            final SalesTaxDocument document = new SalesTaxDocument();
+
+            document.setState(salesTax.state());
+            document.setAbbreviation(salesTax.abbreviation());
+            document.setRate(salesTax.rate());
+
+            final SalesTaxDocument saved = this.salesTaxService.saveSalesTax(document);
+
+            this.logger.info("User {} saved sales tax: {}", authentication.getName(), saved);
+
+            result = new ResponseEntity<>(saved, HttpStatus.CREATED);
+        } else {
+            this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
+
+            result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
