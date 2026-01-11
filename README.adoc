@@ -15,8 +15,11 @@ A program that supports React learning projects with REST services provided by S
 |/react/learning/api/e-commerce/order/:orderId                    | GET        | None    | 200 OK         | Returns the saved order for the specified order ID as JSON
 |/react/learning/api/e-commerce/orders                            | GET        | None    | 200 OK         | Returns all saved orders as JSON
 |/react/learning/api/e-commerce/sales-tax                         | GET        | None    | 200 OK         | Returns all saved sales tax documents as JSON
+|/react/learning/api/e-commerce/sales-tax/                        | POST       | JSON    | 201 CREATED    | Returns the saved sales tax as JSON
 |/react/learning/api/e-commerce/sales-tax/:stateName              | GET        | None    | 200 OK         | Returns the saved sales tax document for the specified state name as JSON
 |/react/learning/api/e-commerce/sales-tax/abbr/:stateAbbreviation | GET        | None    | 200 OK         | Returns the saved sales tax document for the specified state abbreviation as JSON
+|/react/learning/api/e-commerce/sales-tax/:stateName              | DELETE     | None    | 204 NO CONTENT | Deletes the sales tax document for the specified state name
+|/react/learning/api/e-commerce/sales-tax/abbr/:stateAbbreviation | DELETE     | None    | 204 NO CONTENT | Deletes the sales tax document for the specified state abbreviation
 |=======================
 
 == Gradle JavaExec Tasks
@@ -33,6 +36,8 @@ Add the --no-configuration-cache option to disable the configuration cache when 
 
 == Scripts
 
+* bin/delete-sales-tax-abbr.sh
+* bin/delete-sales-tax-name.sh
 * bin/get-form-ok.sh
 * bin/get-forms.sh
 * bin/get-order-ok.sh
@@ -44,6 +49,7 @@ Add the --no-configuration-cache option to disable the configuration cache when 
 * bin/get-sales-taxes.sh
 * bin/save-form.sh
 * bin/save-product.sh
+* bin/save-sales-tax.sh
 * bin/shutdown.sh
 
 == Current version: 0.2.0.

@@ -135,4 +135,34 @@ public class SalesTaxService {
 
         return saved;
     }
+
+    /// The delete sales tax by state name method
+    ///
+    /// @param  stateName   java.lang.String
+    public void deleteSalesTaxByStateName(final String stateName) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(stateName));
+        }
+
+        this.salesTaxDocumentRepository.deleteByStateName(stateName);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /// The delete sales tax by state abbreviation method
+    ///
+    /// @param  stateAbbreviation   java.lang.String
+    public void deleteSalesTaxByStateAbbreviation(final String stateAbbreviation) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(stateAbbreviation));
+        }
+
+        this.salesTaxDocumentRepository.deleteByStateAbbreviation(stateAbbreviation);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
 }

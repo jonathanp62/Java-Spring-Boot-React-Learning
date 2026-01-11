@@ -1,15 +1,16 @@
 package net.jmp.spring.boot.react.learning.ecommerce.repositories;
 
 /*
+ * (#)SalesTaxDocumentRepository.java   0.2.0   01/11/2026
  * (#)SalesTaxDocumentRepository.java   0.1.0   12/20/2025
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.2.0
  * @since     0.1.0
  *
  * MIT License
  *
- * Copyright (c) 2025 Jonathan M. Parker
+ * Copyright (c) 2026 Jonathan M. Parker
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,10 +49,22 @@ public interface SalesTaxDocumentRepository extends MongoRepository<SalesTaxDocu
     @Query("{ 'state' :  ?0}")
     Optional<SalesTaxDocument> findByStateName(final String stateName);
 
+    /// Delete a sales tax document by state name.
+    ///
+    /// @param  stateName   java.lang.String
+    @Query(value = "{ 'state' :  ?0}", delete = true)
+    void deleteByStateName(final String stateName);
+
     /// Get a sales tax document by state abbreviation.
     ///
     /// @param  stateAbbreviation   java.lang.String
     /// @return                     java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
     @Query("{ 'abbreviation' :  ?0}")
     Optional<SalesTaxDocument> findByStateAbbreviation(final String stateAbbreviation);
+
+    /// Delete a sales tax document by state abbreviation.
+    ///
+    /// @param  stateAbbreviation   java.lang.String
+    @Query(value = "{ 'abbreviation' :  ?0}", delete = true)
+    void deleteByStateAbbreviation(final String stateAbbreviation);
 }

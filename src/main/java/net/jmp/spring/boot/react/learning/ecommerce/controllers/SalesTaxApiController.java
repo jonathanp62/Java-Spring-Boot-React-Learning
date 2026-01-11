@@ -116,7 +116,7 @@ public class SalesTaxApiController {
     @GetMapping("/{stateName}")
     public ResponseEntity<SalesTaxDocument> salesTaxByStateName(final @PathVariable String stateName) {
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
+            this.logger.trace(entryWith(stateName));
         }
 
         final Optional<SalesTaxDocument> document = this.salesTaxService.getSalesTaxByStateName(stateName);
@@ -139,7 +139,7 @@ public class SalesTaxApiController {
     @GetMapping("/abbr/{stateAbbreviation}")
     public ResponseEntity<SalesTaxDocument> salesTaxByStateAbbreviation(final @PathVariable String stateAbbreviation) {
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
+            this.logger.trace(entryWith(stateAbbreviation));
         }
 
         final Optional<SalesTaxDocument> document = this.salesTaxService.getSalesTaxByStateAbbreviation(stateAbbreviation);
@@ -166,7 +166,7 @@ public class SalesTaxApiController {
             this.logger.trace(entryWith(salesTax, authentication));
         }
 
-        ResponseEntity<SalesTaxDocument> result = null;
+        ResponseEntity<SalesTaxDocument> result;
 
         final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
@@ -182,6 +182,74 @@ public class SalesTaxApiController {
             this.logger.info("User {} saved sales tax: {}", authentication.getName(), saved);
 
             result = new ResponseEntity<>(saved, HttpStatus.CREATED);
+        } else {
+            this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
+
+            result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /// The delete sales tax by state name method
+    ///
+    /// @param   stateName      java.lang.String
+    /// @param   authentication org.springframework.security.core.Authentication
+    /// @return                 org.springframework.http.ResponseEntity<java.lang.Void>
+    @DeleteMapping("/{stateName}")
+    public ResponseEntity<Void> deleteSalesTaxByStateName(final @PathVariable String stateName, final Authentication authentication) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(stateName, authentication));
+        }
+
+        ResponseEntity<Void> result;
+
+        final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+
+        if (userRoles.contains("ROLE_READWRITE")) {
+            this.salesTaxService.deleteSalesTaxByStateName(stateName);
+
+            this.logger.info("User {} deleted sales tax by state name: {}", authentication.getName(), stateName);
+
+            result = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
+
+            result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /// The delete sales tax by state abbreviation method
+    ///
+    /// @param   stateAbbreviation  java.lang.String
+    /// @param   authentication     org.springframework.security.core.Authentication
+    /// @return                     org.springframework.http.ResponseEntity<java.lang.Void>
+    @DeleteMapping("/abbr/{stateAbbreviation}")
+    public ResponseEntity<Void> deleteSalesTaxByStateAbbreviation(final @PathVariable String stateAbbreviation, final Authentication authentication) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(stateAbbreviation, authentication));
+        }
+
+        ResponseEntity<Void> result;
+
+        final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+
+        if (userRoles.contains("ROLE_READWRITE")) {
+            this.salesTaxService.deleteSalesTaxByStateAbbreviation(stateAbbreviation);
+
+            this.logger.info("User {} deleted sales tax by state abbreviation: {}", authentication.getName(), stateAbbreviation);
+
+            result = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
 
