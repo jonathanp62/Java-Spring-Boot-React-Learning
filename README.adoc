@@ -16,6 +16,7 @@ A program that supports React learning projects with REST services provided by S
 |/react/learning/api/e-commerce/orders                            | GET        | None    | 200 OK         | Returns all saved orders as JSON
 |/react/learning/api/e-commerce/sales-tax                         | GET        | None    | 200 OK         | Returns all saved sales tax documents as JSON
 |/react/learning/api/e-commerce/sales-tax/                        | POST       | JSON    | 201 CREATED    | Returns the saved sales tax as JSON
+|/react/learning/api/e-commerce/sales-tax/                        | PUT        | JSON    | 200 OK         | Returns the updated sales tax as JSON
 |/react/learning/api/e-commerce/sales-tax/:stateName              | GET        | None    | 200 OK         | Returns the saved sales tax document for the specified state name as JSON
 |/react/learning/api/e-commerce/sales-tax/abbr/:stateAbbreviation | GET        | None    | 200 OK         | Returns the saved sales tax document for the specified state abbreviation as JSON
 |/react/learning/api/e-commerce/sales-tax/:stateName              | DELETE     | None    | 204 NO CONTENT | Deletes the sales tax document for the specified state name
@@ -51,5 +52,6 @@ Add the --no-configuration-cache option to disable the configuration cache when 
 * bin/save-product.sh
 * bin/save-sales-tax.sh
 * bin/shutdown.sh
+* bin/update-sales-tax.sh
 
 == Current version: 0.2.0.

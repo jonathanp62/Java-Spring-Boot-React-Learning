@@ -195,6 +195,55 @@ public class SalesTaxApiController {
         return result;
     }
 
+    /// The update sales tax method
+    ///
+    /// @param   salesTax       net.jmp.spring.boot.react.learning.ecommerce.SalesTax
+    /// @param   authentication org.springframework.security.core.Authentication
+    /// @return                 org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
+    @PutMapping("/")
+    public ResponseEntity<SalesTaxDocument> updateSalesTax(final @RequestBody SalesTax salesTax, final Authentication authentication) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(salesTax, authentication));
+        }
+
+        ResponseEntity<SalesTaxDocument> result;
+
+        final Optional<SalesTaxDocument> existing = this.salesTaxService.getSalesTaxByStateName(salesTax.state());
+
+        if (existing.isEmpty()) {
+            this.logger.warn("State {} was not found", salesTax.state());
+
+            result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+
+            if (userRoles.contains("ROLE_READWRITE")) {
+                final SalesTaxDocument document = new SalesTaxDocument();
+
+                document.setDocumentId(existing.get().getDocumentId());
+                document.setState(salesTax.state());
+                document.setAbbreviation(salesTax.abbreviation());
+                document.setRate(salesTax.rate());
+
+                final SalesTaxDocument saved = this.salesTaxService.saveSalesTax(document);
+
+                this.logger.info("User {} updated sales tax: {}", authentication.getName(), saved);
+
+                result = new ResponseEntity<>(saved, HttpStatus.OK);
+            } else {
+                this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
+
+                result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
     /// The delete sales tax by state name method
     ///
     /// @param   stateName      java.lang.String
