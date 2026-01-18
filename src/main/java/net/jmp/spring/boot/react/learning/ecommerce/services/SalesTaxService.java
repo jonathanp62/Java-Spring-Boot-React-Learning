@@ -82,6 +82,24 @@ public class SalesTaxService {
         return documents;
     }
 
+    /// The get sales tax by document identifier
+    ///
+    /// @param  documentId  java.lang.String
+    /// @return             java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
+    public Optional<SalesTaxDocument> getSalesTaxByDocumentId(final String documentId) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(documentId));
+        }
+
+        final Optional<SalesTaxDocument> document = this.salesTaxDocumentRepository.findById(documentId);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(document));
+        }
+
+        return document;
+    }
+
     /// The get sales tax by state name method
     ///
     /// @param  stateName   java.lang.String

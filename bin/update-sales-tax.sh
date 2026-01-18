@@ -30,20 +30,21 @@
 
 SITE="http://localhost:8080"
 
-if [ "$#" -ne 3 ]
+if [ "$#" -ne 4 ]
 then
-        echo "Usage: $0 <state-name> <state-abbreviation> <tax-rate>"
+        echo "Usage: $0 <document-id> <state-name> <state-abbreviation> <tax-rate>"
         exit 1
 fi
 
-STATE_NAME=${1}
-STATE_ABBREVIATION=${2}
-TAX_RATE=${3}
+DOCUMENT_ID=${1}
+STATE_NAME=${2}
+STATE_ABBREVIATION=${3}
+TAX_RATE=${4}
 
 curl \
   -i \
   -u admin:admin123 \
-  -X PUT "${SITE}/react/learning/api/e-commerce/sales-tax/" \
+  -X PUT "${SITE}/react/learning/api/e-commerce/sales-tax/${DOCUMENT_ID}" \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
   -d @- <<EOF

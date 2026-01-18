@@ -197,21 +197,22 @@ public class SalesTaxApiController {
 
     /// The update sales tax method
     ///
+    /// @param   documentId     java.lang.String
     /// @param   salesTax       net.jmp.spring.boot.react.learning.ecommerce.SalesTax
     /// @param   authentication org.springframework.security.core.Authentication
     /// @return                 org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
-    @PutMapping("/")
-    public ResponseEntity<SalesTaxDocument> updateSalesTax(final @RequestBody SalesTax salesTax, final Authentication authentication) {
+    @PutMapping("/{documentId}")
+    public ResponseEntity<SalesTaxDocument> updateSalesTax(final @PathVariable String documentId, final @RequestBody SalesTax salesTax, final Authentication authentication) {
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(salesTax, authentication));
+            this.logger.trace(entryWith(documentId, salesTax, authentication));
         }
 
         ResponseEntity<SalesTaxDocument> result;
 
-        final Optional<SalesTaxDocument> existing = this.salesTaxService.getSalesTaxByStateName(salesTax.state());
+        final Optional<SalesTaxDocument> existing = this.salesTaxService.getSalesTaxByDocumentId(documentId);
 
         if (existing.isEmpty()) {
-            this.logger.warn("State {} was not found", salesTax.state());
+            this.logger.warn("Document {} was not found", documentId);
 
             result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
