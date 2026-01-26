@@ -34,6 +34,8 @@ import java.util.Optional;
 
 import net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument;
 
+import net.jmp.spring.boot.react.learning.ecommerce.exceptions.OrderNotFoundException;
+
 import net.jmp.spring.boot.react.learning.ecommerce.services.OrderService;
 
 import static net.jmp.util.logging.LoggerUtils.entryWith;
@@ -100,8 +102,18 @@ public class OrderController {
 
         final Optional<OrderDocument> order = this.orderService.getOrderById(orderId);
 
-        model.addAttribute("order", order.orElse(null));
-        model.addAttribute("orderFound", order.isPresent());
+        /*
+         * The exception is here just to provide a model for how to
+         * throw exceptions in a controller that can be viewed in the
+         * Thymeleaf error pages.
+         */
+
+        if (order.isEmpty()) {
+            throw new OrderNotFoundException("Order " + orderId + " not found");
+        }
+
+        model.addAttribute("order", order.get());
+        model.addAttribute("orderFound", true);
 
         final String template = "e-commerce/order-detail";
 

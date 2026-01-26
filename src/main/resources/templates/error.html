@@ -30,23 +30,25 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" th:href="@{/styles/styles.css}" href="../../static/styles/styles.css">
-    <title>Spring Boot React Learning</title>
-</head>
-<body>
-    <h2>An error occurred</h2>
-    <div>
-        <div><strong>Status:</strong> <span th:text="${status}">500</span></div>
-        <div><strong>Error:</strong> <span th:text="${error}">Internal Server Error</span></div>
-        <div><strong>Message:</strong> <span th:text="${message}">...</span></div>
-        <div><strong>Path:</strong> <span th:text="${path}">/some/path</span></div>
-        <div><strong>Timestamp:</strong> <span th:text="${timestamp}">...</span></div>
-        <div><strong>Exception:</strong> <span th:text="${exception}">...</span></div>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" th:href="@{/styles/styles.css}" href="../../static/styles/styles.css">
+        <title>Spring Boot React Learning</title>
+    </head>
+    <body>
+        <h2>An error occurred</h2>
+        <div>
+            <div><strong>Status:</strong> <span th:text="${status}">...</span></div>
+            <div><strong>Error:</strong> <span th:text="${error}">...</span></div>
+            <div><strong>Path:</strong> <span th:text="${path}">...</span></div>
 
-        <h3>Stacktrace</h3>
-        <pre th:text="${trace}">...</pre>
-    </div>
-</body>
+            <div th:if="${exception}"><strong>Exception:</strong> <span th:text="${exception}">...</span></div>
+            <div th:if="${message}"><strong>Message:</strong> <span th:text="${message}">...</span></div>
+
+            <div th:if="${trace}">
+                <h3>Stacktrace</h3>
+                <pre th:text="${trace}">...</pre>
+            </div>
+        </div>
+    </body>
 </html>

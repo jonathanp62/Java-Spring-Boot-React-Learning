@@ -85,6 +85,7 @@ public class SecurityConfigurer {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/error/**").permitAll()
                         .requestMatchers("/react/learning/api/e-commerce/**").authenticated()
                         .anyRequest().permitAll()
                 )
