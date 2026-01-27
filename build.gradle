@@ -115,6 +115,10 @@ tasks.named('test') {
 	}
 }
 
+bootJar {
+	mainClass = 'net.jmp.spring.boot.react.learning.MainApplication'
+}
+
 // Tasks named bootRun need to be run with the --no-configuration-cache command line option
 //   ./gradlew --no-configuration-cache bootRun[...]
 
