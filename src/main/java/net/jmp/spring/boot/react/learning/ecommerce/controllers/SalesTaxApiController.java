@@ -40,7 +40,7 @@ import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService;
 
-import net.jmp.spring.boot.react.learning.ecommerce.helpers.Tracer;
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
 import static net.jmp.util.logging.LoggerUtils.*;
 
@@ -66,7 +66,7 @@ public class SalesTaxApiController {
     private final SalesTaxService salesTaxService;
 
     /// The log tracer
-    private Tracer tracer;
+    private final LogTracer logTracer;
 
     /// The constructor
     ///
@@ -75,7 +75,7 @@ public class SalesTaxApiController {
         super();
 
         this.salesTaxService = salesTaxService;
-        this.tracer = new Tracer(this.logger);
+        this.logTracer = new LogTracer(this.logger);
     }
 
     /// The OK method
@@ -83,7 +83,7 @@ public class SalesTaxApiController {
     /// @return org.springframework.http.ResponseEntity<java.lang.String>
     @GetMapping("/ok")
     public ResponseEntity<String> ok() {
-        return this.tracer.trace(() -> new ResponseEntity<>("OK", HttpStatus.OK));
+        return this.logTracer.traced(() -> new ResponseEntity<>("OK", HttpStatus.OK));
     }
 
     /// The get all sales tax documents method
@@ -91,11 +91,10 @@ public class SalesTaxApiController {
     /// @return org.springframework.http.ResponseEntity<java.util.List<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>>
     @GetMapping("/")
     public ResponseEntity<List<SalesTaxDocument>> salesTaxes() {
-        return this.tracer.trace(() -> {
+        return this.logTracer.traced(() -> {
             final List<SalesTaxDocument> documents = this.salesTaxService.getSalesTaxes();
 
             return new ResponseEntity<>(documents, HttpStatus.OK);
-
         });
     }
 
@@ -105,21 +104,13 @@ public class SalesTaxApiController {
     /// @return             org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
     @GetMapping("/{stateName}")
     public ResponseEntity<SalesTaxDocument> salesTaxByStateName(final @PathVariable String stateName) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(stateName));
-        }
+        return this.logTracer.tracedWith(() -> {
+            final Optional<SalesTaxDocument> document = this.salesTaxService.getSalesTaxByStateName(stateName);
 
-        final Optional<SalesTaxDocument> document = this.salesTaxService.getSalesTaxByStateName(stateName);
-
-        final ResponseEntity<SalesTaxDocument> result = document
-                .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+            return document
+                    .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        }, stateName);
     }
 
     /// The get sales tax document by state abbreviation method

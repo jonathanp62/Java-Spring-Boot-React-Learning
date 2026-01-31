@@ -1,7 +1,7 @@
 package net.jmp.spring.boot.react.learning.ecommerce.helpers;
 
 /*
- * (#)Tracer.java   0.2.0   01/31/2026
+ * (#)LogTracer.java    0.2.0   01/31/2026
  *
  * @author    Jonathan Parker
  * @version   0.2.0
@@ -37,25 +37,25 @@ import static net.jmp.util.logging.LoggerUtils.*;
 import org.slf4j.Logger;
 
 /// The log tracer
-public final class Tracer {
+public final class LogTracer {
     /// The logger
     private final Logger logger;
 
     /// The constructor
     ///
     /// @param   logger org.slf4j.Logger
-    public Tracer(final Logger logger) {
+    public LogTracer(final Logger logger) {
         super();
 
         this.logger = logger;
     }
 
-    /// The trace method
+    /// The traced method
     ///
     /// @param  <T>      The return type
     /// @param  supplier java.util.function.Supplier
     /// @return          T
-    public <T> T trace(final Supplier<T> supplier) {
+    public <T> T traced(final Supplier<T> supplier) {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
@@ -69,13 +69,18 @@ public final class Tracer {
         return result;
     }
 
-    /*
-    private <T> T tracedWith(final Object arg, final Supplier<T> body) {
+    /// The traced method
+    ///
+    /// @param  <T>      The return type
+    /// @param  supplier java.util.function.Supplier
+    /// @param  args     java.lang.Object[]
+    /// @return          T
+    public <T> T tracedWith(final Supplier<T> supplier, final Object... args) {
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(arg));
+            this.logger.trace(entryWith(args));
         }
 
-        final T result = body.get();
+        final T result = supplier.get();
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
@@ -83,18 +88,4 @@ public final class Tracer {
 
         return result;
     }
-     */
-
-    /*
-        @GetMapping("/{stateName}")
-        public ResponseEntity<SalesTaxDocument> salesTaxByStateName(final @PathVariable String stateName) {
-            return tracedWith(stateName, () -> {
-                final Optional<SalesTaxDocument> document = this.salesTaxService.getSalesTaxByStateName(stateName);
-
-                return document
-                        .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
-                        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-            });
-        }
-     */
 }
