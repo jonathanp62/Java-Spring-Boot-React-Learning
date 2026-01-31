@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
+ (#)logback-spring.xml  0.2.0   12/10/2025
  (#)logback-spring.xml  0.1.0   12/10/2025
 
  @author   Jonathan Parker
- @version  0.1.0
+ @version  0.2.0
  @since    0.1.0
 
  MIT License
 
- Copyright (c) 2025 Jonathan M. Parker
+ Copyright (c) 2025, 2026 Jonathan M. Parker
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -103,13 +104,19 @@
             </rollingPolicy>
         </appender>
 
-        <logger name="net.jmp.spring.boot.react.MainApplication" additivity="false" level="info">
+        <logger name="net.jmp.spring.boot.react.learning" additivity="false" level="info">
             <appender-ref ref="ECS_JSON_FILE" />
         </logger>
-        <logger name="net.jmp.spring.boot.react.person" additivity="false" level="info">
+        <logger name="net.jmp.spring.boot.react.learning.bankkycform" additivity="false" level="info">
             <appender-ref ref="ECS_JSON_FILE" />
         </logger>
-        <logger name="net.jmp.spring.boot.react.quote" additivity="false" level="info">
+        <logger name="net.jmp.spring.boot.react.learning.configuration" additivity="false" level="info">
+            <appender-ref ref="ECS_JSON_FILE" />
+        </logger>
+        <logger name="net.jmp.spring.boot.react.learning.controller" additivity="false" level="info">
+            <appender-ref ref="ECS_JSON_FILE" />
+        </logger>
+        <logger name="net.jmp.spring.boot.react.learning.ecommerce" additivity="false" level="info">
             <appender-ref ref="ECS_JSON_FILE" />
         </logger>
         <logger name="org.springframework.beans" additivity="false" level="warn">
