@@ -40,6 +40,8 @@ import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService;
 
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.Tracer;
+
 import static net.jmp.util.logging.LoggerUtils.*;
 
 import org.slf4j.Logger;
@@ -63,6 +65,9 @@ public class SalesTaxApiController {
     /// The sales tax service
     private final SalesTaxService salesTaxService;
 
+    /// The log tracer
+    private Tracer tracer;
+
     /// The constructor
     ///
     /// @param   salesTaxService net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService
@@ -70,6 +75,7 @@ public class SalesTaxApiController {
         super();
 
         this.salesTaxService = salesTaxService;
+        this.tracer = new Tracer(this.logger);
     }
 
     /// The OK method
@@ -77,17 +83,7 @@ public class SalesTaxApiController {
     /// @return org.springframework.http.ResponseEntity<java.lang.String>
     @GetMapping("/ok")
     public ResponseEntity<String> ok() {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
-        }
-
-        final ResponseEntity<String> result = new ResponseEntity<>("OK", HttpStatus.OK);
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+        return this.tracer.trace(() -> new ResponseEntity<>("OK", HttpStatus.OK));
     }
 
     /// The get all sales tax documents method
@@ -95,18 +91,12 @@ public class SalesTaxApiController {
     /// @return org.springframework.http.ResponseEntity<java.util.List<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>>
     @GetMapping("/")
     public ResponseEntity<List<SalesTaxDocument>> salesTaxes() {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
-        }
+        return this.tracer.trace(() -> {
+            final List<SalesTaxDocument> documents = this.salesTaxService.getSalesTaxes();
 
-        final List<SalesTaxDocument> documents = this.salesTaxService.getSalesTaxes();
-        final ResponseEntity<List<SalesTaxDocument>> result = new ResponseEntity<>(documents, HttpStatus.OK);
+            return new ResponseEntity<>(documents, HttpStatus.OK);
 
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+        });
     }
 
     /// The get sales tax document by state name method

@@ -1,4 +1,5 @@
 /*
+ * (#)build.gradle  0.2.0   01/31/2026
  * (#)build.gradle  0.1.0   12/10/2025
  *
  * @author   Jonathan Parker
@@ -7,7 +8,7 @@
  *
  * MIT License
  *
- * Copyright (c) 2025 Jonathan M. Parker
+ * Copyright (c) 2025, 2026 Jonathan M. Parker
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -117,6 +118,7 @@ tasks.named('test') {
 
 bootJar {
 	mainClass = 'net.jmp.spring.boot.react.learning.MainApplication'
+	archiveFileName = "spring-boot-react-learning-${project.version}.jar"
 }
 
 // Tasks named bootRun need to be run with the --no-configuration-cache command line option

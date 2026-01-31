@@ -50,13 +50,19 @@
             </encoder>
         </appender>
 
-        <logger name="net.jmp.spring.boot.react" additivity="false" level="debug">
+        <logger name="net.jmp.spring.boot.react.learning" additivity="false" level="debug">
             <appender-ref ref="ECS_JSON_CONSOLE" />
         </logger>
-        <logger name="net.jmp.spring.boot.react.person" additivity="false" level="debug">
+        <logger name="net.jmp.spring.boot.react.learning.bankkycform" additivity="false" level="debug">
             <appender-ref ref="ECS_JSON_CONSOLE" />
         </logger>
-        <logger name="net.jmp.spring.boot.react.quote" additivity="false" level="debug">
+        <logger name="net.jmp.spring.boot.react.learning.configuration" additivity="false" level="debug">
+            <appender-ref ref="ECS_JSON_CONSOLE" />
+        </logger>
+        <logger name="net.jmp.spring.boot.react.learning.controller" additivity="false" level="debug">
+            <appender-ref ref="ECS_JSON_CONSOLE" />
+        </logger>
+        <logger name="net.jmp.spring.boot.react.learning.ecommerce" additivity="false" level="trace">
             <appender-ref ref="ECS_JSON_CONSOLE" />
         </logger>
         <logger name="org.springframework.beans" additivity="false" level="warn">
