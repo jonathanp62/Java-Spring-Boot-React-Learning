@@ -48,6 +48,7 @@
                 <serviceName>${SERVICE_NAME:-default-service-name}</serviceName>
                 <serviceVersion>${SERVICE_VERSION:-0.0.0}</serviceVersion>
                 <serviceEnvironment>${SERVICE_ENVIRONMENT:-default-service-environment}</serviceEnvironment>
+                <includeOrigin>true</includeOrigin>
             </encoder>
         </appender>
 

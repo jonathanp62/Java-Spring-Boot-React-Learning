@@ -38,6 +38,30 @@ import org.slf4j.Logger;
 
 /// The log tracer
 public final class LogTracer {
+    /// The stack walker
+    private static final StackWalker WALKER =
+            StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+
+    /// The caller method
+    private static Caller caller() {
+        return WALKER.walk(stream ->
+                stream
+                        // Drop frames that belong to LogTracer itself
+                        .dropWhile(f -> f.getDeclaringClass() == LogTracer.class)
+                        // First frame outside LogTracer is the "real" caller
+                        .findFirst()
+                        .map(f -> new Caller(
+                                f.getDeclaringClass().getName(),
+                                f.getMethodName(),
+                                f.getLineNumber()
+                        ))
+                        .orElse(new Caller("unknown", "unknown", -1))
+        );
+    }
+
+    /// The caller record
+    private record Caller(String className, String methodName, int lineNumber) {}
+
     /// The logger
     private final Logger logger;
 
@@ -60,7 +84,7 @@ public final class LogTracer {
             this.logger.trace(entry());
         }
 
-        final T result = supplier.get();
+        final T result = this.getResult(caller(), supplier);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
@@ -69,7 +93,7 @@ public final class LogTracer {
         return result;
     }
 
-    /// The traced method
+    /// The traced method when the supplier has arguments
     ///
     /// @param  <T>      The return type
     /// @param  supplier java.util.function.Supplier
@@ -80,12 +104,24 @@ public final class LogTracer {
             this.logger.trace(entryWith(args));
         }
 
-        final T result = supplier.get();
+        final T result = this.getResult(caller(), supplier);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
         }
 
         return result;
+    }
+
+    /// The method that calls the supplier and returns the result
+    ///
+    /// @param  <T>      The return type
+    /// @param  caller   The caller
+    /// @param  supplier java.util.function.Supplier
+    /// @return          T
+    private <T> T getResult(final Caller caller, final Supplier<T> supplier) {
+        this.logger.trace("caller={}.{}:{}", caller.className, caller.methodName, caller.lineNumber);
+
+        return supplier.get();
     }
 }

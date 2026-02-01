@@ -10,7 +10,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
  *
  * MIT License
  *
- * Copyright (c) 2026 Jonathan M. Parker
+ * Copyright (c) 2025, 2026 Jonathan M. Parker
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -119,21 +119,13 @@ public class SalesTaxApiController {
     /// @return                     org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
     @GetMapping("/abbr/{stateAbbreviation}")
     public ResponseEntity<SalesTaxDocument> salesTaxByStateAbbreviation(final @PathVariable String stateAbbreviation) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(stateAbbreviation));
-        }
+        return this.logTracer.tracedWith(() -> {
+            final Optional<SalesTaxDocument> document = this.salesTaxService.getSalesTaxByStateAbbreviation(stateAbbreviation);
 
-        final Optional<SalesTaxDocument> document = this.salesTaxService.getSalesTaxByStateAbbreviation(stateAbbreviation);
-
-        final ResponseEntity<SalesTaxDocument> result = document
-                .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+            return document
+                    .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        }, stateAbbreviation);
     }
 
     /// The create sales tax method
@@ -143,37 +135,31 @@ public class SalesTaxApiController {
     /// @return                 org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
     @PostMapping("/")
     public ResponseEntity<SalesTaxDocument> createSalesTax(final @RequestBody SalesTax salesTax, final Authentication authentication) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(salesTax, authentication));
-        }
+        return this.logTracer.tracedWith(() -> {
+            ResponseEntity<SalesTaxDocument> result;
 
-        ResponseEntity<SalesTaxDocument> result;
+            final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
-        final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+            if (userRoles.contains("ROLE_READWRITE")) {
+                final SalesTaxDocument document = new SalesTaxDocument();
 
-        if (userRoles.contains("ROLE_READWRITE")) {
-            final SalesTaxDocument document = new SalesTaxDocument();
+                document.setState(salesTax.state());
+                document.setAbbreviation(salesTax.abbreviation());
+                document.setRate(salesTax.rate());
 
-            document.setState(salesTax.state());
-            document.setAbbreviation(salesTax.abbreviation());
-            document.setRate(salesTax.rate());
+                final SalesTaxDocument saved = this.salesTaxService.saveSalesTax(document);
 
-            final SalesTaxDocument saved = this.salesTaxService.saveSalesTax(document);
+                this.logger.info("User {} saved sales tax: {}", authentication.getName(), saved);
 
-            this.logger.info("User {} saved sales tax: {}", authentication.getName(), saved);
+                result = new ResponseEntity<>(saved, HttpStatus.CREATED);
+            } else {
+                this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
 
-            result = new ResponseEntity<>(saved, HttpStatus.CREATED);
-        } else {
-            this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
+                result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+            return result;
+        }, salesTax, authentication);
     }
 
     /// The update sales tax method
@@ -184,46 +170,40 @@ public class SalesTaxApiController {
     /// @return                 org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
     @PutMapping("/{documentId}")
     public ResponseEntity<SalesTaxDocument> updateSalesTax(final @PathVariable String documentId, final @RequestBody SalesTax salesTax, final Authentication authentication) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(documentId, salesTax, authentication));
-        }
+        return this.logTracer.tracedWith(() -> {
+            ResponseEntity<SalesTaxDocument> result;
 
-        ResponseEntity<SalesTaxDocument> result;
+            final Optional<SalesTaxDocument> existing = this.salesTaxService.getSalesTaxByDocumentId(documentId);
 
-        final Optional<SalesTaxDocument> existing = this.salesTaxService.getSalesTaxByDocumentId(documentId);
+            if (existing.isEmpty()) {
+                this.logger.warn("Document {} was not found", documentId);
 
-        if (existing.isEmpty()) {
-            this.logger.warn("Document {} was not found", documentId);
-
-            result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-
-            if (userRoles.contains("ROLE_READWRITE")) {
-                final SalesTaxDocument document = new SalesTaxDocument();
-
-                document.setDocumentId(existing.get().getDocumentId());
-                document.setState(salesTax.state());
-                document.setAbbreviation(salesTax.abbreviation());
-                document.setRate(salesTax.rate());
-
-                final SalesTaxDocument saved = this.salesTaxService.saveSalesTax(document);
-
-                this.logger.info("User {} updated sales tax: {}", authentication.getName(), saved);
-
-                result = new ResponseEntity<>(saved, HttpStatus.OK);
+                result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
+                final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
-                result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                if (userRoles.contains("ROLE_READWRITE")) {
+                    final SalesTaxDocument document = new SalesTaxDocument();
+
+                    document.setDocumentId(existing.get().getDocumentId());
+                    document.setState(salesTax.state());
+                    document.setAbbreviation(salesTax.abbreviation());
+                    document.setRate(salesTax.rate());
+
+                    final SalesTaxDocument saved = this.salesTaxService.saveSalesTax(document);
+
+                    this.logger.info("User {} updated sales tax: {}", authentication.getName(), saved);
+
+                    result = new ResponseEntity<>(saved, HttpStatus.OK);
+                } else {
+                    this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
+
+                    result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
             }
-        }
 
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+            return result;
+        }, documentId, salesTax, authentication);
     }
 
     /// The delete sales tax by state name method
@@ -233,31 +213,29 @@ public class SalesTaxApiController {
     /// @return                 org.springframework.http.ResponseEntity<java.lang.Void>
     @DeleteMapping("/{stateName}")
     public ResponseEntity<Void> deleteSalesTaxByStateName(final @PathVariable String stateName, final Authentication authentication) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(stateName, authentication));
-        }
+        return this.logTracer.tracedWith(() -> {
+            ResponseEntity<Void> result;
 
-        ResponseEntity<Void> result;
+            final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
-        final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+            if (userRoles.contains("ROLE_READWRITE")) {
+                this.salesTaxService.deleteSalesTaxByStateName(stateName);
 
-        if (userRoles.contains("ROLE_READWRITE")) {
-            this.salesTaxService.deleteSalesTaxByStateName(stateName);
+                this.logger.info("User {} deleted sales tax by state name: {}", authentication.getName(), stateName);
 
-            this.logger.info("User {} deleted sales tax by state name: {}", authentication.getName(), stateName);
+                result = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
 
-            result = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
+                result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+            if (this.logger.isTraceEnabled()) {
+                this.logger.trace(exitWith(result));
+            }
 
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+            return result;
+        }, stateName, authentication);
     }
 
     /// The delete sales tax by state abbreviation method
@@ -267,30 +245,28 @@ public class SalesTaxApiController {
     /// @return                     org.springframework.http.ResponseEntity<java.lang.Void>
     @DeleteMapping("/abbr/{stateAbbreviation}")
     public ResponseEntity<Void> deleteSalesTaxByStateAbbreviation(final @PathVariable String stateAbbreviation, final Authentication authentication) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(stateAbbreviation, authentication));
-        }
+        return this.logTracer.tracedWith(() -> {
+            ResponseEntity<Void> result;
 
-        ResponseEntity<Void> result;
+            final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
-        final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+            if (userRoles.contains("ROLE_READWRITE")) {
+                this.salesTaxService.deleteSalesTaxByStateAbbreviation(stateAbbreviation);
 
-        if (userRoles.contains("ROLE_READWRITE")) {
-            this.salesTaxService.deleteSalesTaxByStateAbbreviation(stateAbbreviation);
+                this.logger.info("User {} deleted sales tax by state abbreviation: {}", authentication.getName(), stateAbbreviation);
 
-            this.logger.info("User {} deleted sales tax by state abbreviation: {}", authentication.getName(), stateAbbreviation);
+                result = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
 
-            result = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
+                result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+            if (this.logger.isTraceEnabled()) {
+                this.logger.trace(exitWith(result));
+            }
 
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+            return result;
+        }, stateAbbreviation, authentication);
     }
 }
