@@ -39,12 +39,12 @@ import org.slf4j.Logger;
 /// The log tracer
 public final class LogTracer {
     /// The stack walker
-    private static final StackWalker WALKER =
+    private static final StackWalker STACK_WALKER =
             StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
     /// The caller method
     private static Caller caller() {
-        return WALKER.walk(stream ->
+        return STACK_WALKER.walk(stream ->
                 stream
                         // Drop frames that belong to LogTracer itself
                         .dropWhile(f -> f.getDeclaringClass() == LogTracer.class)
