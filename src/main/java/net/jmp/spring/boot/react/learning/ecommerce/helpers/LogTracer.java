@@ -65,6 +65,13 @@ public final class LogTracer {
     /// The logger
     private final Logger logger;
 
+    /// The default constructor
+    private LogTracer() {
+        super();
+
+        this.logger = null;
+    }
+
     /// The constructor
     ///
     /// @param   logger org.slf4j.Logger
