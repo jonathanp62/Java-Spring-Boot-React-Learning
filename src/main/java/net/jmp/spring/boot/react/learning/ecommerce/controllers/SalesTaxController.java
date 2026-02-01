@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 /*
+ * (#)SalesTaxController.java   0.2.0   02/01/2026
  * (#)SalesTaxController.java   0.1.0   01/03/2026
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.2.0
  * @since     0.1.0
  *
  * MIT License
@@ -32,8 +33,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService;
 
-import static net.jmp.util.logging.LoggerUtils.entryWith;
-import static net.jmp.util.logging.LoggerUtils.exitWith;
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +53,9 @@ public class SalesTaxController {
     /// The sales tax service
     private final SalesTaxService salesTaxService;
 
+    /// The log tracer
+    private final LogTracer logTracer;
+
     /// The constructor
     ///
     /// @param  salesTaxService net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService
@@ -60,6 +63,7 @@ public class SalesTaxController {
         super();
 
         this.salesTaxService = salesTaxService;
+        this.logTracer = new LogTracer(this.logger);
     }
 
     /// Maps GET requests for the e-commerce sales-tax path to the "e-commerce/sales-tax" view.
@@ -67,18 +71,11 @@ public class SalesTaxController {
     /// @return java.lang.String
     @GetMapping("/e-commerce/sales-tax/")
     public String salesTaxes(final Model model) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(model));
-        }
+        return this.logTracer.tracedWith(() -> {
+            model.addAttribute("salesTaxList", this.salesTaxService.getSalesTaxes());
 
-        model.addAttribute("salesTaxList", this.salesTaxService.getSalesTaxes());
+            return "e-commerce/sales-tax";
 
-        final String template = "e-commerce/sales-tax";
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(template));
-        }
-
-        return template;
+        }, model);
     }
 }

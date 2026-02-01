@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 /*
+ * (#)OrderController.java  0.2.0   02/01/2026
  * (#)OrderController.java  0.1.0   01/03/2026
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.2.0
  * @since     0.1.0
  *
  * MIT License
@@ -36,10 +37,9 @@ import net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument;
 
 import net.jmp.spring.boot.react.learning.ecommerce.exceptions.OrderNotFoundException;
 
-import net.jmp.spring.boot.react.learning.ecommerce.services.OrderService;
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
-import static net.jmp.util.logging.LoggerUtils.entryWith;
-import static net.jmp.util.logging.LoggerUtils.exitWith;
+import net.jmp.spring.boot.react.learning.ecommerce.services.OrderService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +60,9 @@ public class OrderController {
     /// The order service
     private final OrderService orderService;
 
+    /// The log tracer
+    private final LogTracer logTracer;
+
     /// The constructor
     ///
     /// @param  orderService    net.jmp.spring.boot.react.learning.ecommerce.services.OrderService
@@ -67,6 +70,7 @@ public class OrderController {
         super();
 
         this.orderService = orderService;
+        this.logTracer = new LogTracer(this.logger);
     }
 
     /// Maps GET requests for the e-commerce orders path to the "e-commerce/orders" view.
@@ -74,19 +78,12 @@ public class OrderController {
     /// @return java.lang.String
     @GetMapping("/e-commerce/orders/")
     public String orders(final Model model) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(model));
-        }
+        return this.logTracer.tracedWith(() -> {
+            model.addAttribute("ordersList", this.orderService.getOrders());
 
-        model.addAttribute("ordersList", this.orderService.getOrders());
+            return "e-commerce/orders";
 
-        final String template = "e-commerce/orders";
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(template));
-        }
-
-        return template;
+        }, model);
     }
 
     /// Maps GET requests for the e-commerce order detail path to the "e-commerce/order-detail" view.
@@ -96,31 +93,24 @@ public class OrderController {
     /// @return            java.lang.String
     @GetMapping("/e-commerce/order-detail/")
     public String orderDetail(final @RequestParam String orderId, final Model model) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(orderId, model));
-        }
+        return this.logTracer.tracedWith(() -> {
+            final Optional<OrderDocument> order = this.orderService.getOrderById(orderId);
 
-        final Optional<OrderDocument> order = this.orderService.getOrderById(orderId);
+            /*
+             * The exception is here just to provide a model for how to
+             * throw exceptions in a controller that can be viewed in the
+             * Thymeleaf error pages.
+             */
 
-        /*
-         * The exception is here just to provide a model for how to
-         * throw exceptions in a controller that can be viewed in the
-         * Thymeleaf error pages.
-         */
+            if (order.isEmpty()) {
+                throw new OrderNotFoundException("Order " + orderId + " not found");
+            }
 
-        if (order.isEmpty()) {
-            throw new OrderNotFoundException("Order " + orderId + " not found");
-        }
+            model.addAttribute("order", order.get());
+            model.addAttribute("orderFound", true);
 
-        model.addAttribute("order", order.get());
-        model.addAttribute("orderFound", true);
+            return  "e-commerce/order-detail";
 
-        final String template = "e-commerce/order-detail";
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(template));
-        }
-
-        return template;
+        }, orderId, model);
     }
 }

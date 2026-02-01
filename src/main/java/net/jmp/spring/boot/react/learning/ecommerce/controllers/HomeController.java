@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 /*
+ * (#)HomeController.java   0.2.0   02/01/2026
  * (#)HomeController.java   0.1.0   01/02/2026
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.2.0
  * @since     0.1.0
  *
  * MIT License
@@ -30,6 +31,11 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
  * SOFTWARE.
  */
 
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,9 +43,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 /// The home controller class.
 @Controller
 public class HomeController {
+    /// The logger
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    /// The log tracer
+    private final LogTracer logTracer;
+
     /// The default constructor
     public HomeController() {
         super();
+
+        this.logTracer = new LogTracer(this.logger);
     }
 
     /// Maps GET requests for the e-commerce root path to the "e-commerce/home" view.
@@ -47,6 +61,9 @@ public class HomeController {
     /// @return java.lang.String
     @GetMapping("/e-commerce/")
     public String eCommerceHome() {
-        return "e-commerce/home";
+        return this.logTracer.traced(() -> {
+            return "e-commerce/home";
+
+        });
     }
 }
