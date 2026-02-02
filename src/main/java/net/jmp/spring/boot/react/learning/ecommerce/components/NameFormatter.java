@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.components;
 
 /*
+ * (#)NameFormatter.java    0.2.0   02/02/2026
  * (#)NameFormatter.java    0.1.0   01/03/2026
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.2.0
  * @since     0.1.0
  *
  * MIT License
@@ -30,9 +31,8 @@ package net.jmp.spring.boot.react.learning.ecommerce.components;
  * SOFTWARE.
  */
 
-import static net.jmp.util.logging.LoggerUtils.*;
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Component;
@@ -40,12 +40,14 @@ import org.springframework.stereotype.Component;
 /// The name formatter class. It is used in Thymeleaf templates.
 @Component("nameFormatter")
 public class NameFormatter {
-    /// The logger
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    /// The log tracer
+    private final LogTracer logTracer;
 
     /// The default constructor
     public NameFormatter() {
         super();
+
+        this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
     /// Formats the name
@@ -54,16 +56,6 @@ public class NameFormatter {
     /// @param  lastName    java.lang.String
     /// @return             java.lang.String
     public String format(final String firstName, final String lastName) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(firstName, lastName));
-        }
-
-        final String name = firstName + " " + lastName;
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(name));
-        }
-
-        return name;
+        return this.logTracer.tracedWith(() -> firstName + " " + lastName, firstName, lastName);
     }
 }

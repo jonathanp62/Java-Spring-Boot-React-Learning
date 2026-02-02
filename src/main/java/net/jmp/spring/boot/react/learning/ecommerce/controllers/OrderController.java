@@ -41,7 +41,6 @@ import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.OrderService;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
@@ -54,9 +53,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 /// The order controller class.
 @Controller
 public class OrderController {
-    /// The logger
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     /// The order service
     private final OrderService orderService;
 
@@ -70,7 +66,7 @@ public class OrderController {
         super();
 
         this.orderService = orderService;
-        this.logTracer = new LogTracer(this.logger);
+        this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
     /// Maps GET requests for the e-commerce orders path to the "e-commerce/orders" view.

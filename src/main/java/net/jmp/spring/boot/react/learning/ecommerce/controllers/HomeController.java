@@ -33,7 +33,6 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
@@ -43,9 +42,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 /// The home controller class.
 @Controller
 public class HomeController {
-    /// The logger
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     /// The log tracer
     private final LogTracer logTracer;
 
@@ -53,7 +49,7 @@ public class HomeController {
     public HomeController() {
         super();
 
-        this.logTracer = new LogTracer(this.logger);
+        this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
     /// Maps GET requests for the e-commerce root path to the "e-commerce/home" view.
@@ -61,9 +57,6 @@ public class HomeController {
     /// @return java.lang.String
     @GetMapping("/e-commerce/")
     public String eCommerceHome() {
-        return this.logTracer.traced(() -> {
-            return "e-commerce/home";
-
-        });
+        return this.logTracer.traced(() -> "e-commerce/home");
     }
 }

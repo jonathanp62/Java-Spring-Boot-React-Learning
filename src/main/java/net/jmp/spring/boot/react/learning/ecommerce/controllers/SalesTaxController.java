@@ -35,7 +35,6 @@ import net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
@@ -47,9 +46,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 /// The sales tax controller class.
 @Controller
 public class SalesTaxController {
-    /// The logger
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     /// The sales tax service
     private final SalesTaxService salesTaxService;
 
@@ -63,7 +59,7 @@ public class SalesTaxController {
         super();
 
         this.salesTaxService = salesTaxService;
-        this.logTracer = new LogTracer(this.logger);
+        this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
     /// Maps GET requests for the e-commerce sales-tax path to the "e-commerce/sales-tax" view.

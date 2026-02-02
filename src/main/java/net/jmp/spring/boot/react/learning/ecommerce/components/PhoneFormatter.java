@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.components;
 
 /*
+ * (#)PhoneFormatter.java   0.2.0   02/02/2026
  * (#)PhoneFormatter.java   0.1.0   01/05/2026
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.2.0
  * @since     0.1.0
  *
  * MIT License
@@ -30,9 +31,8 @@ package net.jmp.spring.boot.react.learning.ecommerce.components;
  * SOFTWARE.
  */
 
-import static net.jmp.util.logging.LoggerUtils.*;
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Component;
@@ -40,12 +40,14 @@ import org.springframework.stereotype.Component;
 /// The phone number formatter class. It is used in Thymeleaf templates.
 @Component("phoneFormatter")
 public class PhoneFormatter {
-    /// The logger
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    /// The log tracer
+    private final LogTracer logTracer;
 
     /// The default constructor
     public PhoneFormatter() {
         super();
+
+        this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
     /// Formats the phone number
@@ -53,32 +55,27 @@ public class PhoneFormatter {
     /// @param  phoneNumber   java.lang.String
     /// @return               java.lang.String
     public String format(final String phoneNumber) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(phoneNumber));
-        }
+        return this.logTracer.tracedWith(() -> {
+            String clean = phoneNumber.replaceAll("[^\\d]", "");
 
-        String clean = phoneNumber.replaceAll("[^\\d]", "");
+            // Handle numbers with country code '+1' or '1' by keeping only last 10 digits
 
-        // Handle numbers with country code '+1' or '1' by keeping only last 10 digits
+            if (clean.length() > 10) {
+                clean = clean.substring(clean.length() - 10);
+            }
 
-        if (clean.length() > 10) {
-            clean = clean.substring(clean.length() - 10);
-        }
+            // Ensure we have exactly 10 digits before formatting
 
-        // Ensure we have exactly 10 digits before formatting
+            String result;
 
-        String result;
+            if (clean.length() == 10) {
+                result = clean.replaceFirst("(\\d{3})(\\d{3})(\\d{4})", "$1-$2-$3");
+            } else {
+                result = phoneNumber;
+            }
 
-        if (clean.length() == 10) {
-            result = clean.replaceFirst("(\\d{3})(\\d{3})(\\d{4})", "$1-$2-$3");
-        } else {
-            result = phoneNumber;
-        }
+            return result;
 
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+        }, phoneNumber);
     }
 }

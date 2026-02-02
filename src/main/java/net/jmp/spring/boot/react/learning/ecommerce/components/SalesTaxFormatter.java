@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.components;
 
 /*
+ * (#)SalesTaxFormatter.java    0.2.0   02/02/2026
  * (#)SalesTaxFormatter.java    0.1.0   01/05/2026
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.2.0
  * @since     0.1.0
  *
  * MIT License
@@ -35,9 +36,8 @@ import java.text.NumberFormat;
 
 import java.util.Locale;
 
-import static net.jmp.util.logging.LoggerUtils.*;
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Component;
@@ -45,12 +45,14 @@ import org.springframework.stereotype.Component;
 /// The sales tax formatter class. It is used in Thymeleaf templates.
 @Component("salesTaxFormatter")
 public class SalesTaxFormatter {
-    /// The logger
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    /// The log tracer
+    private final LogTracer logTracer;
 
     /// The default constructor
     public SalesTaxFormatter() {
         super();
+
+        this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
     /// The format method
@@ -58,21 +60,13 @@ public class SalesTaxFormatter {
     /// @param  salesTaxRate  double
     /// @return               java.lang.String
     public String format(final double salesTaxRate) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(salesTaxRate));
-        }
+        return this.logTracer.tracedWith(() -> {
+            final NumberFormat percentFormat = NumberFormat.getPercentInstance(Locale.US);
+            final DecimalFormat decimalFormat = (DecimalFormat) percentFormat;
 
-        final NumberFormat percentFormat = NumberFormat.getPercentInstance(Locale.US);
-        final DecimalFormat decimalFormat = (DecimalFormat) percentFormat;
+            decimalFormat.applyPattern("#,##0.00 %");
 
-        decimalFormat.applyPattern("#,##0.00 %");
-
-        final String result = decimalFormat.format(salesTaxRate);
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+            return decimalFormat.format(salesTaxRate);
+        }, salesTaxRate);
     }
 }

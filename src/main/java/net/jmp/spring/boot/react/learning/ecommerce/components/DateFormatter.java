@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.components;
 
 /*
+ * (#)DateFormatter.java    0.2.0   02/02/2026
  * (#)DateFormatter.java    0.1.0   01/03/2026
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.2.0
  * @since     0.1.0
  *
  * MIT License
@@ -36,9 +37,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-import static net.jmp.util.logging.LoggerUtils.*;
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Component;
@@ -46,12 +46,14 @@ import org.springframework.stereotype.Component;
 /// The date formatter class. It is used in Thymeleaf templates.
 @Component("dateFormatter")
 public class DateFormatter {
-    /// The logger
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    /// The log tracer
+    private final LogTracer logTracer;
 
     /// The default constructor
     public DateFormatter() {
         super();
+
+        this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
     /// Formats the ISO-8601 date string into a more readable format in the local timezone.
@@ -59,22 +61,14 @@ public class DateFormatter {
     /// @param  dateString  java.lang.String
     /// @return             java.lang.String
     public String format(final String dateString) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(dateString));
-        }
+        return this.logTracer.tracedWith(() -> {
+            final Instant instant = Instant.parse(dateString);
 
-        final Instant instant = Instant.parse(dateString);
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy 'at' hh:mm a")
+                    .withLocale(Locale.ENGLISH)
+                    .withZone(ZoneId.of("America/New_York"));
 
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy 'at' hh:mm a")
-                .withLocale(Locale.ENGLISH)
-                .withZone(ZoneId.of("America/New_York"));
-
-        final String date = formatter.format(instant);
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(date));
-        }
-
-        return date;
+            return formatter.format(instant);
+        }, dateString);
     }
 }
