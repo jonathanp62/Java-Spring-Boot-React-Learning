@@ -70,7 +70,6 @@ public final class LogTracer {
     /// The default constructor
     private LogTracer() {
         throw new UnsupportedOperationException("A LogTracer instance always requires a logger");
-
     }
 
     /// The constructor
