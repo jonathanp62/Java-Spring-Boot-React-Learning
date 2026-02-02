@@ -30,6 +30,8 @@ package net.jmp.spring.boot.react.learning.ecommerce.helpers;
  * SOFTWARE.
  */
 
+import java.util.Objects;
+
 import java.util.function.Supplier;
 
 import static net.jmp.util.logging.LoggerUtils.*;
@@ -67,9 +69,8 @@ public final class LogTracer {
 
     /// The default constructor
     private LogTracer() {
-        super();
+        throw new UnsupportedOperationException("A LogTracer instance always requires a logger");
 
-        this.logger = null;
     }
 
     /// The constructor
@@ -78,7 +79,7 @@ public final class LogTracer {
     public LogTracer(final Logger logger) {
         super();
 
-        this.logger = logger;
+        this.logger = Objects.requireNonNull(logger, "logger");;
     }
 
     /// The traced method
@@ -127,7 +128,9 @@ public final class LogTracer {
     /// @param  supplier java.util.function.Supplier
     /// @return          T
     private <T> T getResult(final Caller caller, final Supplier<T> supplier) {
-        this.logger.trace("caller={}.{}:{}", caller.className, caller.methodName, caller.lineNumber);
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace("caller={}.{}:{}", caller.className, caller.methodName, caller.lineNumber);
+        }
 
         return supplier.get();
     }

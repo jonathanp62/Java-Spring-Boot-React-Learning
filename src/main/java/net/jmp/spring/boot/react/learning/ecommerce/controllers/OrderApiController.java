@@ -1,15 +1,16 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 /*
+ * (#)OrderApiController.java   0.2.0   02/02/2026
  * (#)OrderApiController.java   0.1.0   12/10/2025
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.2.0
  * @since     0.1.0
  *
  * MIT License
  *
- * Copyright (c) 2025 Jonathan M. Parker
+ * Copyright (c) 2025, 2026 Jonathan M. Parker
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,9 +38,10 @@ import net.jmp.spring.boot.react.learning.ecommerce.Order;
 
 import net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument;
 
-import static net.jmp.util.logging.LoggerUtils.*;
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.OrderService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +63,9 @@ public class OrderApiController {
     /// The order service
     private final OrderService orderService;
 
+    /// The log tracer
+    private final LogTracer logTracer;
+
     /// The constructor
     ///
     /// @param   orderService   net.jmp.spring.boot.react.learning.ecommerce.services.OrderService
@@ -68,6 +73,7 @@ public class OrderApiController {
         super();
 
         this.orderService = orderService;
+        this.logTracer = new LogTracer(this.logger);
     }
 
     /// The OK method
@@ -76,20 +82,13 @@ public class OrderApiController {
     /// @return                     org.springframework.http.ResponseEntity<java.lang.String>
     @GetMapping("/ok")
     public ResponseEntity<String> ok(final Authentication authentication) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(authentication));
-        }
+        return this.logTracer.tracedWith(() -> {
+            this.logger.info("User: {}", authentication.getName());
+            this.logger.info("Roles: {}", authentication.getAuthorities());
 
-        this.logger.info("User: {}", authentication.getName());
-        this.logger.info("Roles: {}", authentication.getAuthorities());
+            return new ResponseEntity<>("OK", HttpStatus.OK);
 
-        final ResponseEntity<String> result = new ResponseEntity<>("OK", HttpStatus.OK);
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+        }, authentication);
     }
 
     /// The get all orders method
@@ -97,18 +96,11 @@ public class OrderApiController {
     /// @return org.springframework.http.ResponseEntity<java.util.List<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>>
     @GetMapping("/orders")
     public ResponseEntity<List<OrderDocument>> orders() {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
-        }
+        return this.logTracer.traced(() -> {
+            final List<OrderDocument> orders = this.orderService.getOrders();
 
-        final List<OrderDocument> orders = this.orderService.getOrders();
-        final ResponseEntity<List<OrderDocument>> result = new ResponseEntity<>(orders, HttpStatus.OK);
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        });
     }
 
     /// The get order by order ID method
@@ -116,21 +108,13 @@ public class OrderApiController {
     /// @return org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>
     @GetMapping("/order/{orderId}")
     public ResponseEntity<OrderDocument> orderById(final @PathVariable String orderId) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
-        }
+        return this.logTracer.tracedWith(() -> {
+            final Optional<OrderDocument> order = this.orderService.getOrderById(orderId);
 
-        final Optional<OrderDocument> order = this.orderService.getOrderById(orderId);
-
-        final ResponseEntity<OrderDocument> result = order
-                .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+            return order
+                    .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        }, orderId);
     }
 
     /// The save order method
@@ -140,32 +124,26 @@ public class OrderApiController {
     /// @return                 org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>
     @PostMapping("/order")
     public ResponseEntity<OrderDocument> save(final @RequestBody Order order, final Authentication authentication) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(order, authentication));
-        }
+        return this.logTracer.tracedWith(() -> {
+            ResponseEntity<OrderDocument> result;
 
-        ResponseEntity<OrderDocument> result;
+            final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
-        final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+            if (userRoles.contains("ROLE_READWRITE")) {
+                final OrderDocument document = this.createOrderDocument(order);
+                final OrderDocument saved = this.orderService.saveOrder(document);
 
-        if (userRoles.contains("ROLE_READWRITE")) {
-            final OrderDocument document = this.createOrderDocument(order);
-            final OrderDocument saved = this.orderService.saveOrder(document);
+                this.logger.info("User {} saved order document: {}", authentication.getName(), saved);
 
-            this.logger.info("User {} saved order document: {}", authentication.getName(), saved);
+                result = new ResponseEntity<>(saved, HttpStatus.CREATED);
+            } else {
+                this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
 
-            result = new ResponseEntity<>(saved, HttpStatus.CREATED);
-        } else {
-            this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
+                result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
 
-            result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result));
-        }
-
-        return result;
+            return result;
+        }, order, authentication);
     }
 
     /// The create order document method
@@ -173,30 +151,24 @@ public class OrderApiController {
     /// @param  order   java.util.List<net.jmp.spring.boot.react.learning.ecommerce.Order>
     /// @return         net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument
     private OrderDocument createOrderDocument(final Order order) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(order));
-        }
+        return this.logTracer.tracedWith(() -> {
+            final OrderDocument orderDocument = new OrderDocument();
 
-        final OrderDocument orderDocument = new OrderDocument();
+            orderDocument.setOrderId(order.orderId());
+            orderDocument.setOrderDate(order.orderDate());
+            orderDocument.setFirstName(order.firstName());
+            orderDocument.setLastName(order.lastName());
+            orderDocument.setAddress(order.address());
+            orderDocument.setCity(order.city());
+            orderDocument.setState(order.state());
+            orderDocument.setZipCode(order.zipCode());
+            orderDocument.setCountry(order.country());
+            orderDocument.setPhone(order.phone());
+            orderDocument.setEmail(order.email());
+            orderDocument.setTaxRate(order.taxRate() != null ? order.taxRate() : 0.0);
+            orderDocument.setProducts(order.products());
 
-        orderDocument.setOrderId(order.orderId());
-        orderDocument.setOrderDate(order.orderDate());
-        orderDocument.setFirstName(order.firstName());
-        orderDocument.setLastName(order.lastName());
-        orderDocument.setAddress(order.address());
-        orderDocument.setCity(order.city());
-        orderDocument.setState(order.state());
-        orderDocument.setZipCode(order.zipCode());
-        orderDocument.setCountry(order.country());
-        orderDocument.setPhone(order.phone());
-        orderDocument.setEmail(order.email());
-        orderDocument.setTaxRate(order.taxRate() != null ? order.taxRate() : 0.0);
-        orderDocument.setProducts(order.products());
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(orderDocument));
-        }
-
-        return orderDocument;
+            return orderDocument;
+        }, order);
     }
 }

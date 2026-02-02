@@ -67,9 +67,6 @@
         <logger name="net.jmp.spring.boot.react.learning.ecommerce" additivity="false" level="debug">
             <appender-ref ref="ECS_JSON_CONSOLE" />
         </logger>
-        <logger name="net.jmp.spring.boot.react.learning.ecommerce.controllers" additivity="false" level="trace">
-            <appender-ref ref="ECS_JSON_CONSOLE" />
-        </logger>
         <logger name="org.springframework.beans" additivity="false" level="warn">
             <appender-ref ref="ECS_JSON_CONSOLE" />
         </logger>
