@@ -79,7 +79,7 @@ public final class LogTracer {
     public LogTracer(final Logger logger) {
         super();
 
-        this.logger = Objects.requireNonNull(logger, "logger");;
+        this.logger = Objects.requireNonNull(logger, "logger");
     }
 
     /// The traced method
@@ -88,14 +88,16 @@ public final class LogTracer {
     /// @param  supplier java.util.function.Supplier
     /// @return          T
     public <T> T traced(final Supplier<T> supplier) {
+        T result;
+
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
-        }
 
-        final T result = this.getResult(caller(), supplier);
+            result = this.getResult(caller(), supplier);
 
-        if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
+        } else {
+            result = supplier.get();
         }
 
         return result;
@@ -108,29 +110,30 @@ public final class LogTracer {
     /// @param  args     java.lang.Object[]
     /// @return          T
     public <T> T tracedWith(final Supplier<T> supplier, final Object... args) {
+        T result;
+
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entryWith(args));
-        }
 
-        final T result = this.getResult(caller(), supplier);
+            result = this.getResult(caller(), supplier);
 
-        if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
+        } else {
+            result = supplier.get();
         }
 
         return result;
     }
 
-    /// The method that calls the supplier and returns the result
+    /// The method that calls the supplier and
+    /// returns the result when tracing is enabled
     ///
     /// @param  <T>      The return type
     /// @param  caller   The caller
     /// @param  supplier java.util.function.Supplier
     /// @return          T
     private <T> T getResult(final Caller caller, final Supplier<T> supplier) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace("caller={}.{}:{}", caller.className, caller.methodName, caller.lineNumber);
-        }
+        this.logger.trace("caller={}.{}:{}", caller.className, caller.methodName, caller.lineNumber);
 
         return supplier.get();
     }
