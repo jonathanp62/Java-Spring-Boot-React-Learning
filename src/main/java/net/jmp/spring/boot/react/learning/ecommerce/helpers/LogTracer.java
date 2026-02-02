@@ -103,6 +103,25 @@ public final class LogTracer {
         return result;
     }
 
+    /// The traced method when nothing is returned
+    ///
+    /// @param  runnable java.lang.Runnable
+    public void traced(final Runnable runnable) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+
+            this.getResult(caller(), () -> {
+                runnable.run();
+
+                return null;
+            });
+
+            this.logger.trace(exitWith(null));
+        } else {
+            runnable.run();
+        }
+    }
+
     /// The traced method when the supplier has arguments
     ///
     /// @param  <T>      The return type
@@ -123,6 +142,26 @@ public final class LogTracer {
         }
 
         return result;
+    }
+
+    /// The traced method when the runnable has arguments
+    ///
+    /// @param  runnable java.lang.Runnable
+    /// @param  args     java.lang.Object[]
+    public void tracedWith(final Runnable runnable, final Object... args) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(args));
+
+            this.getResult(caller(), () -> {
+                runnable.run();
+
+                return null;
+            });
+
+            this.logger.trace(exitWith(null));
+        } else {
+            runnable.run();
+        }
     }
 
     /// The method that calls the supplier and

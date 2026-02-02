@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.services;
 
 /*
+ * (#)OrderService.java 0.2.0   02/02/2026
  * (#)OrderService.java 0.1.0   01/02/2026
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.2.0
  * @since     0.1.0
  *
  * MIT License
@@ -35,21 +36,21 @@ import java.util.Optional;
 
 import net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument;
 
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
+
 import net.jmp.spring.boot.react.learning.ecommerce.repositories.OrderDocumentRepository;
 
-import static net.jmp.util.logging.LoggerUtils.*;
-
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.data.domain.Sort;
+
 import org.springframework.stereotype.Service;
 
 /// The order service
 @Service
 public class OrderService {
-    /// The logger
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    /// The log tracer
+    private final LogTracer logTracer;
 
     /// The order document repository
     private final OrderDocumentRepository orderDocumentRepository;
@@ -61,23 +62,14 @@ public class OrderService {
         super();
 
         this.orderDocumentRepository = orderDocumentRepository;
+        this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
     /// The get orders method
     ///
     /// @return java.util.List<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>
     public List<OrderDocument> getOrders() {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
-        }
-
-        final List<OrderDocument> orders = this.orderDocumentRepository.findAll(Sort.by(Sort.Direction.DESC, "orderDate"));
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(orders));
-        }
-
-        return orders;
+        return this.logTracer.traced(() -> this.orderDocumentRepository.findAll(Sort.by(Sort.Direction.DESC, "orderDate")));
     }
 
     /// The get order by id method
@@ -85,17 +77,7 @@ public class OrderService {
     /// @param   orderId    java.lang.String
     /// @return             java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>
     public Optional<OrderDocument> getOrderById(final String orderId) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(orderId));
-        }
-
-        final Optional<OrderDocument> order = this.orderDocumentRepository.findByOrderId(orderId);
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(order));
-        }
-
-        return order;
+        return this.logTracer.tracedWith(() -> this.orderDocumentRepository.findByOrderId(orderId), orderId);
     }
 
     /// The save order method
@@ -103,16 +85,6 @@ public class OrderService {
     /// @param   orderDocument    net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument
     /// @return                   net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument
     public OrderDocument saveOrder(final OrderDocument orderDocument) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(orderDocument));
-        }
-
-        final OrderDocument saved = this.orderDocumentRepository.save(orderDocument);
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(saved));
-        }
-
-        return saved;
+        return this.logTracer.tracedWith(() -> this.orderDocumentRepository.save(orderDocument), orderDocument);
     }
 }

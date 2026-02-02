@@ -5,7 +5,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.services;
  * (#)SalesTaxService.java  0.1.0   01/02/2026
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.2.0
  * @since     0.1.0
  *
  * MIT License
@@ -36,6 +36,8 @@ import java.util.Optional;
 
 import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
 
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
+
 import net.jmp.spring.boot.react.learning.ecommerce.repositories.SalesTaxDocumentRepository;
 
 import static net.jmp.util.logging.LoggerUtils.*;
@@ -53,6 +55,9 @@ public class SalesTaxService {
     /// The logger
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /// The log tracer
+    private final LogTracer logTracer;
+
     /// The sales tax document repository
     private final SalesTaxDocumentRepository salesTaxDocumentRepository;
 
@@ -63,23 +68,14 @@ public class SalesTaxService {
         super();
 
         this.salesTaxDocumentRepository = salesTaxDocumentRepository;
+        this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
     /// The get sales taxes method
     ///
     /// @return java.util.List<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
     public List<SalesTaxDocument> getSalesTaxes() {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
-        }
-
-        final List<SalesTaxDocument> documents = this.salesTaxDocumentRepository.findAll(Sort.by(Sort.Direction.ASC, "state"));
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(documents));
-        }
-
-        return documents;
+        return this.logTracer.traced(() -> this.salesTaxDocumentRepository.findAll(Sort.by(Sort.Direction.ASC, "state")));
     }
 
     /// The get sales tax by document identifier
@@ -87,17 +83,7 @@ public class SalesTaxService {
     /// @param  documentId  java.lang.String
     /// @return             java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
     public Optional<SalesTaxDocument> getSalesTaxByDocumentId(final String documentId) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(documentId));
-        }
-
-        final Optional<SalesTaxDocument> document = this.salesTaxDocumentRepository.findById(documentId);
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(document));
-        }
-
-        return document;
+        return this.logTracer.tracedWith(() -> this.salesTaxDocumentRepository.findById(documentId), documentId);
     }
 
     /// The get sales tax by state name method
@@ -105,17 +91,7 @@ public class SalesTaxService {
     /// @param  stateName   java.lang.String
     /// @return             java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
     public Optional<SalesTaxDocument> getSalesTaxByStateName(final String stateName) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(stateName));
-        }
-
-        final Optional<SalesTaxDocument> document = this.salesTaxDocumentRepository.findByStateName(stateName);
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(document));
-        }
-
-        return document;
+        return this.logTracer.tracedWith(() -> this.salesTaxDocumentRepository.findByStateName(stateName), stateName);
     }
 
     /// The get sales tax by state abbreviation method
@@ -123,17 +99,7 @@ public class SalesTaxService {
     /// @param  stateAbbreviation   java.lang.String
     /// @return                     java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
     public Optional<SalesTaxDocument> getSalesTaxByStateAbbreviation(final String stateAbbreviation) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(stateAbbreviation));
-        }
-
-        final Optional<SalesTaxDocument> document = this.salesTaxDocumentRepository.findByStateAbbreviation(stateAbbreviation);
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(document));
-        }
-
-        return document;
+        return this.logTracer.tracedWith(() -> this.salesTaxDocumentRepository.findByStateAbbreviation(stateAbbreviation), stateAbbreviation);
     }
 
     /// The save sales tax method
@@ -141,46 +107,20 @@ public class SalesTaxService {
     /// @param  salesTaxDocument  net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument
     /// @return                   net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument
     public SalesTaxDocument saveSalesTax(final SalesTaxDocument salesTaxDocument) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(salesTaxDocument));
-        }
-
-        final SalesTaxDocument saved = this.salesTaxDocumentRepository.save(salesTaxDocument);
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(saved));
-        }
-
-        return saved;
+        return this.logTracer.tracedWith(() -> this.salesTaxDocumentRepository.save(salesTaxDocument), salesTaxDocument);
     }
 
     /// The delete sales tax by state name method
     ///
     /// @param  stateName   java.lang.String
     public void deleteSalesTaxByStateName(final String stateName) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(stateName));
-        }
-
-        this.salesTaxDocumentRepository.deleteByStateName(stateName);
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
-        }
+        this.logTracer.tracedWith(() -> this.salesTaxDocumentRepository.deleteByStateName(stateName), stateName);
     }
 
     /// The delete sales tax by state abbreviation method
     ///
     /// @param  stateAbbreviation   java.lang.String
     public void deleteSalesTaxByStateAbbreviation(final String stateAbbreviation) {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(stateAbbreviation));
-        }
-
-        this.salesTaxDocumentRepository.deleteByStateAbbreviation(stateAbbreviation);
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
-        }
+        this.logTracer.tracedWith(() -> this.salesTaxDocumentRepository.deleteByStateAbbreviation(stateAbbreviation), stateAbbreviation);
     }
 }
