@@ -34,8 +34,6 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 import java.util.List;
 import java.util.Optional;
 
-import java.util.function.Supplier;
-
 import net.jmp.spring.boot.react.learning.ecommerce.SalesTax;
 
 import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
@@ -43,6 +41,7 @@ import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
 import net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.UserRoleChecker;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -68,6 +66,9 @@ public class SalesTaxApiController {
     /// The log tracer
     private final LogTracer logTracer;
 
+    /// The user role checker
+    private final UserRoleChecker userRoleChecker;
+
     /// The constructor
     ///
     /// @param   salesTaxService net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService
@@ -76,6 +77,7 @@ public class SalesTaxApiController {
 
         this.salesTaxService = salesTaxService;
         this.logTracer = new LogTracer(this.logger);
+        this.userRoleChecker = new UserRoleChecker();
     }
 
     /// The OK method
@@ -136,7 +138,7 @@ public class SalesTaxApiController {
     @PostMapping("/")
     public ResponseEntity<SalesTaxDocument> createSalesTax(final @RequestBody SalesTax salesTax, final Authentication authentication) {
         return this.logTracer.tracedWith(() ->
-            this.ifReadWrite(authentication, () -> {
+            this.userRoleChecker.ifReadWrite(authentication, () -> {
                 final SalesTaxDocument document = new SalesTaxDocument();
 
                 document.setState(salesTax.state());
@@ -169,7 +171,7 @@ public class SalesTaxApiController {
 
                 result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                result = this.ifReadWrite(authentication, () -> {
+                result = this.userRoleChecker.ifReadWrite(authentication, () -> {
                     final SalesTaxDocument document = new SalesTaxDocument();
 
                     document.setDocumentId(existing.get().getDocumentId());
@@ -197,7 +199,7 @@ public class SalesTaxApiController {
     @DeleteMapping("/{stateName}")
     public ResponseEntity<Void> deleteSalesTaxByStateName(final @PathVariable String stateName, final Authentication authentication) {
         return this.logTracer.tracedWith(() ->
-            this.ifReadWrite(authentication, () -> {
+            this.userRoleChecker.ifReadWrite(authentication, () -> {
                 this.salesTaxService.deleteSalesTaxByStateName(stateName);
 
                 this.logger.info("User {} deleted sales tax by state name: {}", authentication.getName(), stateName);
@@ -214,33 +216,12 @@ public class SalesTaxApiController {
     @DeleteMapping("/abbr/{stateAbbreviation}")
     public ResponseEntity<Void> deleteSalesTaxByStateAbbreviation(final @PathVariable String stateAbbreviation, final Authentication authentication) {
         return this.logTracer.tracedWith(() ->
-            this.ifReadWrite(authentication, () -> {
+            this.userRoleChecker.ifReadWrite(authentication, () -> {
                 this.salesTaxService.deleteSalesTaxByStateAbbreviation(stateAbbreviation);
 
                 this.logger.info("User {} deleted sales tax by state abbreviation: {}", authentication.getName(), stateAbbreviation);
 
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }), stateAbbreviation, authentication);
-    }
-
-    /// The method that runs the allowed supplier
-    /// when the user has the READWRITE role.
-    ///
-    /// @param   <T>            The return type of the allowed supplier
-    /// @param   authentication org.springframework.security.core.Authentication
-    /// @param   allowed        java.util.function.Supplier<org.springframework.http.ResponseEntity<T>>
-    /// @return                 org.springframework.http.ResponseEntity<T>
-    private <T> ResponseEntity<T> ifReadWrite(final Authentication authentication, final Supplier<ResponseEntity<T>> allowed) {
-        return this.logTracer.tracedWith(() -> {
-            final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-
-            if (userRoles.contains("ROLE_READWRITE")) {
-                return allowed.get();
-            } else {
-                this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
-
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-            }
-        }, authentication);
     }
 }
