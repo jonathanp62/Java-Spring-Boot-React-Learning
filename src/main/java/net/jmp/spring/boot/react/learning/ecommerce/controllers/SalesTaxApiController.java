@@ -135,12 +135,8 @@ public class SalesTaxApiController {
     /// @return                 org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
     @PostMapping("/")
     public ResponseEntity<SalesTaxDocument> createSalesTax(final @RequestBody SalesTax salesTax, final Authentication authentication) {
-        return this.logTracer.tracedWith(() -> {
-            ResponseEntity<SalesTaxDocument> result;
-
-            final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-
-            if (userRoles.contains("ROLE_READWRITE")) {
+        return this.logTracer.tracedWith(() ->
+            this.ifReadWrite(authentication, () -> {
                 final SalesTaxDocument document = new SalesTaxDocument();
 
                 document.setState(salesTax.state());
@@ -151,15 +147,8 @@ public class SalesTaxApiController {
 
                 this.logger.info("User {} saved sales tax: {}", authentication.getName(), saved);
 
-                result = new ResponseEntity<>(saved, HttpStatus.CREATED);
-            } else {
-                this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
-
-                result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-
-            return result;
-        }, salesTax, authentication);
+                return new ResponseEntity<>(saved, HttpStatus.CREATED);
+            }), salesTax, authentication);
     }
 
     /// The update sales tax method
@@ -180,9 +169,7 @@ public class SalesTaxApiController {
 
                 result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-
-                if (userRoles.contains("ROLE_READWRITE")) {
+                result = this.ifReadWrite(authentication, () -> {
                     final SalesTaxDocument document = new SalesTaxDocument();
 
                     document.setDocumentId(existing.get().getDocumentId());
@@ -194,12 +181,8 @@ public class SalesTaxApiController {
 
                     this.logger.info("User {} updated sales tax: {}", authentication.getName(), saved);
 
-                    result = new ResponseEntity<>(saved, HttpStatus.OK);
-                } else {
-                    this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
-
-                    result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-                }
+                    return new ResponseEntity<>(saved, HttpStatus.OK);
+                });
             }
 
             return result;
@@ -214,13 +197,13 @@ public class SalesTaxApiController {
     @DeleteMapping("/{stateName}")
     public ResponseEntity<Void> deleteSalesTaxByStateName(final @PathVariable String stateName, final Authentication authentication) {
         return this.logTracer.tracedWith(() ->
-                this.ifReadWrite(authentication, () -> {
-                    this.salesTaxService.deleteSalesTaxByStateName(stateName);
+            this.ifReadWrite(authentication, () -> {
+                this.salesTaxService.deleteSalesTaxByStateName(stateName);
 
-                    this.logger.info("User {} deleted sales tax by state name: {}", authentication.getName(), stateName);
+                this.logger.info("User {} deleted sales tax by state name: {}", authentication.getName(), stateName);
 
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-                }), stateName, authentication);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }), stateName, authentication);
     }
 
     /// The delete sales tax by state abbreviation method
