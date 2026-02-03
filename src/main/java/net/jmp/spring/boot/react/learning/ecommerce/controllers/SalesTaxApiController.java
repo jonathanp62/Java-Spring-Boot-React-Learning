@@ -248,14 +248,16 @@ public class SalesTaxApiController {
     /// @param   allowed        java.util.function.Supplier<org.springframework.http.ResponseEntity<T>>
     /// @return                 org.springframework.http.ResponseEntity<T>
     private <T> ResponseEntity<T> ifReadWrite(final Authentication authentication, final Supplier<ResponseEntity<T>> allowed) {
-        final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+        return this.logTracer.tracedWith(() -> {
+            final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
-        if (userRoles.contains("ROLE_READWRITE")) {
-            return allowed.get();
-        } else {
-            this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
+            if (userRoles.contains("ROLE_READWRITE")) {
+                return allowed.get();
+            } else {
+                this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
 
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-        }
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+            }
+        }, authentication);
     }
 }
