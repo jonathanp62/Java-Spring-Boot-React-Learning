@@ -34,6 +34,8 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.function.Supplier;
+
 import net.jmp.spring.boot.react.learning.ecommerce.SalesTax;
 
 import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
@@ -41,8 +43,6 @@ import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
 import net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
-
-import static net.jmp.util.logging.LoggerUtils.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -213,29 +213,14 @@ public class SalesTaxApiController {
     /// @return                 org.springframework.http.ResponseEntity<java.lang.Void>
     @DeleteMapping("/{stateName}")
     public ResponseEntity<Void> deleteSalesTaxByStateName(final @PathVariable String stateName, final Authentication authentication) {
-        return this.logTracer.tracedWith(() -> {
-            ResponseEntity<Void> result;
+        return this.logTracer.tracedWith(() ->
+                this.ifReadWrite(authentication, () -> {
+                    this.salesTaxService.deleteSalesTaxByStateName(stateName);
 
-            final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+                    this.logger.info("User {} deleted sales tax by state name: {}", authentication.getName(), stateName);
 
-            if (userRoles.contains("ROLE_READWRITE")) {
-                this.salesTaxService.deleteSalesTaxByStateName(stateName);
-
-                this.logger.info("User {} deleted sales tax by state name: {}", authentication.getName(), stateName);
-
-                result = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
-
-                result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-
-            if (this.logger.isTraceEnabled()) {
-                this.logger.trace(exitWith(result));
-            }
-
-            return result;
-        }, stateName, authentication);
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }), stateName, authentication);
     }
 
     /// The delete sales tax by state abbreviation method
@@ -245,28 +230,32 @@ public class SalesTaxApiController {
     /// @return                     org.springframework.http.ResponseEntity<java.lang.Void>
     @DeleteMapping("/abbr/{stateAbbreviation}")
     public ResponseEntity<Void> deleteSalesTaxByStateAbbreviation(final @PathVariable String stateAbbreviation, final Authentication authentication) {
-        return this.logTracer.tracedWith(() -> {
-            ResponseEntity<Void> result;
-
-            final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-
-            if (userRoles.contains("ROLE_READWRITE")) {
+        return this.logTracer.tracedWith(() ->
+            this.ifReadWrite(authentication, () -> {
                 this.salesTaxService.deleteSalesTaxByStateAbbreviation(stateAbbreviation);
 
                 this.logger.info("User {} deleted sales tax by state abbreviation: {}", authentication.getName(), stateAbbreviation);
 
-                result = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }), stateAbbreviation, authentication);
+    }
 
-                result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
+    /// The method that runs the allowed supplier
+    /// when the user has the READWRITE role.
+    ///
+    /// @param   <T>            The return type of the allowed supplier
+    /// @param   authentication org.springframework.security.core.Authentication
+    /// @param   allowed        java.util.function.Supplier<org.springframework.http.ResponseEntity<T>>
+    /// @return                 org.springframework.http.ResponseEntity<T>
+    private <T> ResponseEntity<T> ifReadWrite(final Authentication authentication, final Supplier<ResponseEntity<T>> allowed) {
+        final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
-            if (this.logger.isTraceEnabled()) {
-                this.logger.trace(exitWith(result));
-            }
+        if (userRoles.contains("ROLE_READWRITE")) {
+            return allowed.get();
+        } else {
+            this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
 
-            return result;
-        }, stateAbbreviation, authentication);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
     }
 }
