@@ -34,6 +34,8 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.function.Consumer;
+
 import net.jmp.spring.boot.react.learning.ecommerce.SalesTax;
 
 import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
@@ -41,6 +43,7 @@ import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
 import net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.OptionalToResponseEntityMapper;
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.UserRoleChecker;
 
 import org.slf4j.Logger;
@@ -106,13 +109,8 @@ public class SalesTaxApiController {
     /// @return             org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
     @GetMapping("/{stateName}")
     public ResponseEntity<SalesTaxDocument> salesTaxByStateName(final @PathVariable String stateName) {
-        return this.logTracer.tracedWith(() -> {
-            final Optional<SalesTaxDocument> document = this.salesTaxService.getSalesTaxByStateName(stateName);
-
-            return document
-                    .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-        }, stateName);
+        return this.logTracer.tracedWith(() ->
+            OptionalToResponseEntityMapper.map(this.salesTaxService.getSalesTaxByStateName(stateName)), stateName);
     }
 
     /// The get sales tax document by state abbreviation method
@@ -121,13 +119,8 @@ public class SalesTaxApiController {
     /// @return                     org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument>
     @GetMapping("/abbr/{stateAbbreviation}")
     public ResponseEntity<SalesTaxDocument> salesTaxByStateAbbreviation(final @PathVariable String stateAbbreviation) {
-        return this.logTracer.tracedWith(() -> {
-            final Optional<SalesTaxDocument> document = this.salesTaxService.getSalesTaxByStateAbbreviation(stateAbbreviation);
-
-            return document
-                    .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-        }, stateAbbreviation);
+        return this.logTracer.tracedWith(() ->
+            OptionalToResponseEntityMapper.map(this.salesTaxService.getSalesTaxByStateAbbreviation(stateAbbreviation)), stateAbbreviation);
     }
 
     /// The create sales tax method
@@ -208,13 +201,12 @@ public class SalesTaxApiController {
     @DeleteMapping("/{stateName}")
     public ResponseEntity<Void> deleteSalesTaxByStateName(final @PathVariable String stateName, final Authentication authentication) {
         return this.logTracer.tracedWith(() ->
-            this.userRoleChecker.ifReadWrite(authentication, () -> {
-                this.salesTaxService.deleteSalesTaxByStateName(stateName);
-
-                this.logger.info("User {} deleted sales tax by state name: {}", authentication.getName(), stateName);
-
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }), stateName, authentication);
+            this.performDelete(
+                    stateName,
+                    authentication,
+                    "state name",
+                    this.salesTaxService::deleteSalesTaxByStateName
+            ), stateName, authentication);
     }
 
     /// The delete sales tax by state abbreviation method
@@ -225,12 +217,33 @@ public class SalesTaxApiController {
     @DeleteMapping("/abbr/{stateAbbreviation}")
     public ResponseEntity<Void> deleteSalesTaxByStateAbbreviation(final @PathVariable String stateAbbreviation, final Authentication authentication) {
         return this.logTracer.tracedWith(() ->
-            this.userRoleChecker.ifReadWrite(authentication, () -> {
-                this.salesTaxService.deleteSalesTaxByStateAbbreviation(stateAbbreviation);
+                this.performDelete(
+                        stateAbbreviation,
+                        authentication,
+                        "state abbreviation",
+                        this.salesTaxService::deleteSalesTaxByStateAbbreviation
+                ), stateAbbreviation, authentication);
+    }
 
-                this.logger.info("User {} deleted sales tax by state abbreviation: {}", authentication.getName(), stateAbbreviation);
+    /// Perform the deletion of a sales tax item
+    /// by state name or state abbreviation.
+    ///
+    /// @param   identifier       java.lang.String
+    /// @param   authentication   org.springframework.security.core.Authentication
+    /// @param   logLabel         java.lang.String
+    /// @param   action           java.util.function.Consumer<java.lang.String>
+    /// @return                   org.springframework.http.ResponseEntity<java.lang.Void>
+    private ResponseEntity<Void> performDelete(final String identifier,
+                                               final Authentication authentication,
+                                               final String logLabel,
+                                               final Consumer<String> action) {
+        return this.logTracer.tracedWith(() ->
+            this.userRoleChecker.ifReadWrite(authentication, () -> {
+                action.accept(identifier);
+
+                this.logger.info("User {} deleted sales tax by {}: {}", authentication.getName(), logLabel, identifier);
 
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }), stateAbbreviation, authentication);
+            }), identifier, authentication, logLabel);
     }
 }

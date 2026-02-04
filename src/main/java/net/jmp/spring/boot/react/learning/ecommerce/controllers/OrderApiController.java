@@ -32,13 +32,13 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
  */
 
 import java.util.List;
-import java.util.Optional;
 
 import net.jmp.spring.boot.react.learning.ecommerce.Order;
 
 import net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.OptionalToResponseEntityMapper;
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.UserRoleChecker;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.OrderService;
@@ -112,13 +112,8 @@ public class OrderApiController {
     /// @return org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>
     @GetMapping("/order/{orderId}")
     public ResponseEntity<OrderDocument> orderById(final @PathVariable String orderId) {
-        return this.logTracer.tracedWith(() -> {
-            final Optional<OrderDocument> order = this.orderService.getOrderById(orderId);
-
-            return order
-                    .map(found -> new ResponseEntity<>(found, HttpStatus.OK))
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-        }, orderId);
+        return this.logTracer.tracedWith(() ->
+            OptionalToResponseEntityMapper.map(this.orderService.getOrderById(orderId)), orderId);
     }
 
     /// The save order method
