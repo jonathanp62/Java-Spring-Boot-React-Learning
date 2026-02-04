@@ -39,6 +39,7 @@ import net.jmp.spring.boot.react.learning.ecommerce.Order;
 import net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.UserRoleChecker;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.OrderService;
 
@@ -49,7 +50,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +66,9 @@ public class OrderApiController {
     /// The log tracer
     private final LogTracer logTracer;
 
+    /// The user role checker
+    private final UserRoleChecker userRoleChecker;
+
     /// The constructor
     ///
     /// @param   orderService   net.jmp.spring.boot.react.learning.ecommerce.services.OrderService
@@ -74,6 +77,7 @@ public class OrderApiController {
 
         this.orderService = orderService;
         this.logTracer = new LogTracer(this.logger);
+        this.userRoleChecker = new UserRoleChecker();
     }
 
     /// The OK method
@@ -124,26 +128,15 @@ public class OrderApiController {
     /// @return                 org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>
     @PostMapping("/order")
     public ResponseEntity<OrderDocument> save(final @RequestBody Order order, final Authentication authentication) {
-        return this.logTracer.tracedWith(() -> {
-            ResponseEntity<OrderDocument> result;
-
-            final List<String> userRoles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-
-            if (userRoles.contains("ROLE_READWRITE")) {
+        return this.logTracer.tracedWith(() ->
+            this.userRoleChecker.ifReadWrite(authentication, () -> {
                 final OrderDocument document = this.createOrderDocument(order);
                 final OrderDocument saved = this.orderService.saveOrder(document);
 
                 this.logger.info("User {} saved order document: {}", authentication.getName(), saved);
 
-                result = new ResponseEntity<>(saved, HttpStatus.CREATED);
-            } else {
-                this.logger.warn("User {} does not have the READWRITE role", authentication.getName());
-
-                result = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-
-            return result;
-        }, order, authentication);
+                return new ResponseEntity<>(saved, HttpStatus.CREATED);
+        }), order, authentication);
     }
 
     /// The create order document method

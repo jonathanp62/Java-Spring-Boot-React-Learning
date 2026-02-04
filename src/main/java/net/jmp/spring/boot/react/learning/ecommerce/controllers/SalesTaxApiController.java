@@ -141,9 +141,7 @@ public class SalesTaxApiController {
             this.userRoleChecker.ifReadWrite(authentication, () -> {
                 final SalesTaxDocument document = new SalesTaxDocument();
 
-                document.setState(salesTax.state());
-                document.setAbbreviation(salesTax.abbreviation());
-                document.setRate(salesTax.rate());
+                this.applySalesTax(document, salesTax);
 
                 final SalesTaxDocument saved = this.salesTaxService.saveSalesTax(document);
 
@@ -175,9 +173,8 @@ public class SalesTaxApiController {
                     final SalesTaxDocument document = new SalesTaxDocument();
 
                     document.setDocumentId(existing.get().getDocumentId());
-                    document.setState(salesTax.state());
-                    document.setAbbreviation(salesTax.abbreviation());
-                    document.setRate(salesTax.rate());
+
+                    this.applySalesTax(document, salesTax);
 
                     final SalesTaxDocument saved = this.salesTaxService.saveSalesTax(document);
 
@@ -189,6 +186,18 @@ public class SalesTaxApiController {
 
             return result;
         }, documentId, salesTax, authentication);
+    }
+
+    /// The apply sales tax method
+    ///
+    /// @param   document   net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument
+    /// @param   salesTax   net.jmp.spring.boot.react.learning.ecommerce.SalesTax
+    private void applySalesTax(final SalesTaxDocument document, final SalesTax salesTax) {
+        this.logTracer.tracedWith(() -> {
+            document.setState(salesTax.state());
+            document.setAbbreviation(salesTax.abbreviation());
+            document.setRate(salesTax.rate());
+        }, document, salesTax);
     }
 
     /// The delete sales tax by state name method
