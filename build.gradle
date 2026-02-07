@@ -116,9 +116,19 @@ tasks.named('test') {
 	}
 }
 
+// The bootJar task needs to be run with the --no-configuration-cache command line option
+//   ./gradlew --no-configuration-cache bootJar
+
 bootJar {
 	mainClass = 'net.jmp.spring.boot.react.learning.MainApplication'
 	archiveFileName = "spring-boot-react-learning-${project.version}.jar"
+
+	doLast {
+		copy {
+			from archiveFile
+			into "/usr/local/spring-boot-react-learning/lib"
+		}
+	}
 }
 
 // Tasks named bootRun need to be run with the --no-configuration-cache command line option
