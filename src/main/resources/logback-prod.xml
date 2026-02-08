@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ (#)logback-prod.xml    0.2.0   02/08/2026
+
+ @author   Jonathan Parker
+ @version  0.2.0
+ @since    0.2.0
+
+ MIT License
+
+ Copyright (c) 2026 Jonathan M. Parker
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+-->
+
+<included>
+    <include resource="co/elastic/logging/logback/boot/ecs-file-appender.xml" />
+
+    <springProperty name="SERVICE_NAME" source="spring.application.name" />
+    <springProperty name="SERVICE_VERSION" source="spring.application.version" />
+    <springProperty name="SERVICE_ENVIRONMENT" source="logging.structured.ecs.service.environment" />
+
+    <appender name="MAIN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder class="co.elastic.logging.logback.EcsEncoder">
+            <serviceName>${SERVICE_NAME:-default-service-name}</serviceName>
+            <serviceVersion>${SERVICE_VERSION:-0.0.0}</serviceVersion>
+            <serviceEnvironment>${SERVICE_ENVIRONMENT:-default-service-environment}</serviceEnvironment>
+        </encoder>
+
+        <file>/usr/local/spring-boot-react-learning/logs/spring-boot-react-learning-prod.json</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <cleanHistoryOnStart>${LOGBACK_ROLLINGPOLICY_CLEAN_HISTORY_ON_START:-true}}</cleanHistoryOnStart>
+            <fileNamePattern>/usr/local/spring-boot-react-learning/logs/spring-boot-react-learning-prod-%d{yyyy-MM-dd}.%i.gz}.json.gz</fileNamePattern>
+            <maxFileSize>${LOGBACK_ROLLINGPOLICY_MAX_FILE_SIZE:-500KB}}</maxFileSize>
+            <maxHistory>${LOGBACK_ROLLINGPOLICY_MAX_HISTORY:-30}}</maxHistory>
+            <totalSizeCap>${LOGBACK_ROLLINGPOLICY_TOTAL_SIZE_CAP:-10MB}}</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="net.jmp.spring.boot.react.learning" additivity="false" level="info">
+        <appender-ref ref="MAIN" />
+    </logger>
+    <logger name="net.jmp.spring.boot.react.learning.bankkycform" additivity="false" level="info">
+        <appender-ref ref="MAIN" />
+    </logger>
+    <logger name="net.jmp.spring.boot.react.learning.configuration" additivity="false" level="info">
+        <appender-ref ref="MAIN" />
+    </logger>
+    <logger name="net.jmp.spring.boot.react.learning.controller" additivity="false" level="info">
+        <appender-ref ref="MAIN" />
+    </logger>
+    <logger name="net.jmp.spring.boot.react.learning.ecommerce" additivity="false" level="info">
+        <appender-ref ref="MAIN" />
+    </logger>
+    <logger name="org.springframework.beans" additivity="false" level="warn">
+        <appender-ref ref="MAIN" />
+    </logger>
+    <logger name="org.springframework.context" additivity="false" level="warn">
+        <appender-ref ref="MAIN" />
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="MAIN"/>
+    </root>
+</included>
