@@ -37,7 +37,7 @@
     <springProperty name="SERVICE_VERSION" source="spring.application.version" />
     <springProperty name="SERVICE_ENVIRONMENT" source="logging.structured.ecs.service.environment" />
 
-    <appender name="MAIN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="ECS_JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder class="co.elastic.logging.logback.EcsEncoder">
             <serviceName>${SERVICE_NAME:-default-service-name}</serviceName>
             <serviceVersion>${SERVICE_VERSION:-0.0.0}</serviceVersion>
@@ -56,28 +56,28 @@
     </appender>
 
     <logger name="net.jmp.spring.boot.react.learning" additivity="false" level="info">
-        <appender-ref ref="MAIN" />
+        <appender-ref ref="ECS_JSON_FILE" />
     </logger>
     <logger name="net.jmp.spring.boot.react.learning.bankkycform" additivity="false" level="info">
-        <appender-ref ref="MAIN" />
+        <appender-ref ref="ECS_JSON_FILE" />
     </logger>
     <logger name="net.jmp.spring.boot.react.learning.configuration" additivity="false" level="info">
-        <appender-ref ref="MAIN" />
+        <appender-ref ref="ECS_JSON_FILE" />
     </logger>
     <logger name="net.jmp.spring.boot.react.learning.controller" additivity="false" level="info">
-        <appender-ref ref="MAIN" />
+        <appender-ref ref="ECS_JSON_FILE" />
     </logger>
     <logger name="net.jmp.spring.boot.react.learning.ecommerce" additivity="false" level="info">
-        <appender-ref ref="MAIN" />
+        <appender-ref ref="ECS_JSON_FILE" />
     </logger>
     <logger name="org.springframework.beans" additivity="false" level="warn">
-        <appender-ref ref="MAIN" />
+        <appender-ref ref="ECS_JSON_FILE" />
     </logger>
     <logger name="org.springframework.context" additivity="false" level="warn">
-        <appender-ref ref="MAIN" />
+        <appender-ref ref="ECS_JSON_FILE" />
     </logger>
 
     <root level="INFO">
-        <appender-ref ref="MAIN"/>
+        <appender-ref ref="ECS_JSON_FILE"/>
     </root>
 </included>
