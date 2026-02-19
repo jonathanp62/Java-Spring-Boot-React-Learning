@@ -1,10 +1,9 @@
 <!--
- (#)home.html   0.3.0   02/19/2026
- (#)home.html   0.1.0   01/02/2026
+ (#)generate-error.html 0.3.0   02/19/2026
 
  @author  Jonathan Parker
  @version 0.3.0
- @since   0.1.0
+ @since   0.3.0
 
  MIT License
 
@@ -34,23 +33,22 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <link rel="stylesheet" th:href="@{/styles/styles.css}" href="../../static/styles/styles.css">
-        <title>E-Commerce Home</title>
+        <title>E-Commerce Error Generator</title>
     </head>
     <body class="pageCenteredBody">
         <div class="pageCentered">
-            <h2>E-Commerce Home</h2>
+            <h2>E-Commerce Error Generator</h2>
 
-            <nav class="navigationContainer">
-                <ul class="navigationList">
-                    <li><a href="/e-commerce/generate-error">Generate Error</a></li>
-                    <li><a href="/e-commerce/orders/">Orders</a></li>
-                    <li><a href="/e-commerce/sales-tax/">Sales Tax</a></li>
-                    <li><a href="/">React Learning Home</a></li>
-                    <li><a href="https://fakestoreapi.com/products">Fake Store Products JSON</a></li>
-                    <li><a href="http://localhost:8080/react/learning/api/e-commerce/orders">Orders JSON</a></li>
-                    <li><a href="http://localhost:8080/react/learning/api/e-commerce/sales-tax/">Sales Tax JSON</a></li>
-                </ul>
-            </nav>
+            <p th:text="${error}"/>
+
+            <div style="margin-top: 2rem;">
+                <nav class="navigationContainer">
+                    <ul class="navigationList">
+                        <li><a href="/e-commerce/">E-Commerce Home</a></li>
+                        <li><a href="/">React Learning Home</a></li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </body>
 </html>

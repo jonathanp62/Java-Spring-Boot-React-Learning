@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.helpers;
 
 /*
+ * (#)LogTracer.java    0.3.0   02/19/2026
  * (#)LogTracer.java    0.2.0   01/31/2026
  *
  * @author    Jonathan Parker
- * @version   0.2.0
+ * @version   0.3.0
  * @since     0.2.0
  *
  * MIT License
@@ -79,6 +80,13 @@ public final class LogTracer {
         super();
 
         this.logger = Objects.requireNonNull(logger, "logger");
+    }
+
+    /// Get the logger
+    ///
+    /// @return org.slf4j.Logger
+    public Logger getLogger() {
+        return this.logger;
     }
 
     /// The traced method
