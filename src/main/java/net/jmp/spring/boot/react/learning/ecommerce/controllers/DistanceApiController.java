@@ -37,9 +37,9 @@ import java.util.function.Consumer;
 
 import net.jmp.spring.boot.react.learning.ecommerce.SalesTax;
 
-import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
+import net.jmp.spring.boot.react.learning.ecommerce.documents.DistanceDocument;
 
-import net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService;
+import net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.OptionalToResponseEntityMapper;
@@ -62,8 +62,8 @@ public class DistanceApiController {
     /// The logger
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /// The sales tax service
-//    private final SalesTaxService salesTaxService;
+    /// The distance service
+    private final DistanceService distanceService;
 
     /// The log tracer
     private final LogTracer logTracer;
@@ -73,11 +73,11 @@ public class DistanceApiController {
 
     /// The constructor
     ///
-    /// @param   salesTaxService net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService
-    public DistanceApiController(/*final SalesTaxService salesTaxService*/) {
+    /// @param   distanceService net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService
+    public DistanceApiController(final DistanceService distanceService) {
         super();
 
-//        this.salesTaxService = salesTaxService;
+        this.distanceService = distanceService;
         this.logTracer = new LogTracer(this.logger);
         this.userRoleChecker = new UserRoleChecker();
     }
@@ -88,5 +88,17 @@ public class DistanceApiController {
     @GetMapping("/ok")
     public ResponseEntity<String> ok() {
         return this.logTracer.traced(() -> new ResponseEntity<>("OK", HttpStatus.OK));
+    }
+
+    /// The get all distance documents method
+    ///
+    /// @return org.springframework.http.ResponseEntity<java.util.List<net.jmp.spring.boot.react.learning.ecommerce.documents.DistanceDocument>>
+    @GetMapping("/")
+    public ResponseEntity<List<DistanceDocument>> salesTaxes() {
+        return this.logTracer.traced(() -> {
+            final List<DistanceDocument> documents = this.distanceService.getSalesTaxes();
+
+            return new ResponseEntity<>(documents, HttpStatus.OK);
+        });
     }
 }
