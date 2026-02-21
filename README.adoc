@@ -25,11 +25,12 @@ A program that supports React learning projects with REST services provided by S
 
 == Gradle JavaExec Tasks
 
-Add the --no-configuration-cache option to disable the configuration cache when running bootRun tasks.
+Add the --no-configuration-cache option to disable the configuration cache when running bootRun and bootJar tasks.
 
 [options="header"]
 |=======================
 |Task Name              |Application Invocation
+|bootJar                |No arguments
 |bootRun                |No arguments
 |bootRunDev             |No arguments
 |bootRunTest            |No arguments
@@ -54,4 +55,4 @@ Add the --no-configuration-cache option to disable the configuration cache when 
 * bin/shutdown.sh
 * bin/update-sales-tax.sh
 
-== Current version: 0.3.0.
+== Current version: 0.4.0.
