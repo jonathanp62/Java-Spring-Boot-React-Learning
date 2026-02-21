@@ -32,6 +32,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.repositories;
  */
 
 import net.jmp.spring.boot.react.learning.ecommerce.documents.SalesTaxDocument;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -39,7 +40,7 @@ import java.util.Optional;
 
 /// The sales tax document repository
 ///
-/// @version    0.1.0
+/// @version    0.2.0
 /// @since      0.1.0
 public interface SalesTaxDocumentRepository extends MongoRepository<SalesTaxDocument, String> {
     /// Get a sales tax document by state name.

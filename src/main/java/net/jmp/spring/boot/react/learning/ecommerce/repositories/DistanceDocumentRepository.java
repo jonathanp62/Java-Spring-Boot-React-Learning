@@ -1,15 +1,15 @@
 package net.jmp.spring.boot.react.learning.ecommerce.repositories;
 
 /*
- * (#)OrderDocumentRepository.java  0.1.0   12/13/2025
+ * (#)DistanceDocumentRepository.java   0.4.0   02/20/2026
  *
  * @author    Jonathan Parker
- * @version   0.1.0
- * @since     0.1.0
+ * @version   0.4.0
+ * @since     0.4.0
  *
  * MIT License
  *
- * Copyright (c) 2025 Jonathan M. Parker
+ * Copyright (c) 2026 Jonathan M. Parker
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,22 +30,16 @@ package net.jmp.spring.boot.react.learning.ecommerce.repositories;
  * SOFTWARE.
  */
 
-import java.util.Optional;
-
-import net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument;
+import net.jmp.spring.boot.react.learning.ecommerce.documents.DistanceDocument;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-/// The order document repository
+import java.util.Optional;
+
+/// The distance document repository
 ///
-/// @version    0.1.0
-/// @since      0.1.0
-public interface OrderDocumentRepository extends MongoRepository<OrderDocument, String>{
-    /// Get an order by order identifier.
-    ///
-    /// @param  orderId java.lang.String
-    /// @return         java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>
-    @Query("{ 'orderId' :  ?0}")
-    Optional<OrderDocument> findByOrderId(final String orderId);
+/// @version    0.4.0
+/// @since      0.4.0
+public interface DistanceDocumentRepository extends MongoRepository<DistanceDocument, String> {
 }

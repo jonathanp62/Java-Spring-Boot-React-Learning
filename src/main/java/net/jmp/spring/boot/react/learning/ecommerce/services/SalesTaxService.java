@@ -40,9 +40,6 @@ import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
 import net.jmp.spring.boot.react.learning.ecommerce.repositories.SalesTaxDocumentRepository;
 
-import static net.jmp.util.logging.LoggerUtils.*;
-
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.data.domain.Sort;
@@ -52,9 +49,6 @@ import org.springframework.stereotype.Service;
 /// The sales tax service
 @Service
 public class SalesTaxService {
-    /// The logger
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     /// The log tracer
     private final LogTracer logTracer;
 
