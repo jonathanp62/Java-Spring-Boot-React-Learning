@@ -42,4 +42,10 @@ import java.util.Optional;
 /// @version    0.4.0
 /// @since      0.4.0
 public interface DistanceDocumentRepository extends MongoRepository<DistanceDocument, String> {
+    /// Get a distance document by 'to' zip code.
+    ///
+    /// @param  toZipCode   java.lang.String
+    /// @return             java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.documents.DistanceDocument>
+    @Query("{ 'toZipCode' :  ?0}")
+    Optional<DistanceDocument> findByToZipCode(final String toZipCode);
 }

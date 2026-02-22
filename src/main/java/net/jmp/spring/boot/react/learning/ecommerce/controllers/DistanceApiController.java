@@ -31,27 +31,20 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
  */
 
 import java.util.List;
-import java.util.Optional;
-
-import java.util.function.Consumer;
-
-import net.jmp.spring.boot.react.learning.ecommerce.SalesTax;
 
 import net.jmp.spring.boot.react.learning.ecommerce.documents.DistanceDocument;
-
-import net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.OptionalToResponseEntityMapper;
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.UserRoleChecker;
+
+import net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.security.core.Authentication;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -96,9 +89,19 @@ public class DistanceApiController {
     @GetMapping("/")
     public ResponseEntity<List<DistanceDocument>> salesTaxes() {
         return this.logTracer.traced(() -> {
-            final List<DistanceDocument> documents = this.distanceService.getSalesTaxes();
+            final List<DistanceDocument> documents = this.distanceService.getDistances();
 
             return new ResponseEntity<>(documents, HttpStatus.OK);
         });
+    }
+
+    /// The get distance document by 'to' zip code method
+    ///
+    /// @param   toZipCode  java.lang.String
+    /// @return             org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.DistanceDocument>
+    @GetMapping("/{toZipCode}")
+    public ResponseEntity<DistanceDocument> salesTaxByStateName(final @PathVariable String toZipCode) {
+        return this.logTracer.tracedWith(() ->
+                OptionalToResponseEntityMapper.map(this.distanceService.getDistanceByToZipCode(toZipCode)), toZipCode);
     }
 }

@@ -67,7 +67,15 @@ public class DistanceService {
     /// The get distances method
     ///
     /// @return java.util.List<net.jmp.spring.boot.react.learning.ecommerce.documents.DistanceDocument>
-    public List<DistanceDocument> getSalesTaxes() {
+    public List<DistanceDocument> getDistances() {
         return this.logTracer.traced(() -> this.distanceDocumentRepository.findAll(Sort.by(Sort.Direction.ASC, "toZipCode")));
+    }
+
+    /// The get distance by 'to' zip code method
+    ///
+    /// @param  toZipCode   java.lang.String
+    /// @return             java.util.Optional<net.jmp.spring.boot.react.learning.ecommerce.documents.DistanceDocument>
+    public Optional<DistanceDocument> getDistanceByToZipCode(final String toZipCode) {
+        return this.logTracer.tracedWith(() -> this.distanceDocumentRepository.findByToZipCode(toZipCode), toZipCode);
     }
 }
