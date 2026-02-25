@@ -49,6 +49,12 @@ public class DistanceDocument {
     /// The 'to' zip code
     private String toZipCode;
 
+    /// The 'to' city
+    private String toCity;
+
+    /// The 'to' state
+    private String toState;
+
     /// The distance in miles
     private double distanceInMiles;
 
@@ -102,6 +108,34 @@ public class DistanceDocument {
         this.toZipCode = toZipCode;
     }
 
+    /// Get the 'to' city
+    ///
+    /// @return java.lang.String
+    public String getToCity() {
+        return this.toCity;
+    }
+
+    /// Set the 'to' city
+    ///
+    /// @param  toCity  java.lang.String
+    public void setToCity(final String toCity) {
+        this.toCity = toCity;
+    }
+
+    /// Get the 'to' state
+    ///
+    /// @return java.lang.String
+    public String getToState() {
+        return this.toState;
+    }
+
+    /// Set the 'to' state
+    ///
+    /// @param  toState java.lang.String
+    public void setToState(final String toState) {
+        this.toState = toState;
+    }
+
     /// Get the distance in miles
     ///
     /// @return double
@@ -144,7 +178,9 @@ public class DistanceDocument {
                 && Double.compare(this.distanceInKilometers, that.distanceInKilometers) == 0
                 && Objects.equals(this.documentId, that.documentId)
                 && Objects.equals(this.fromZipCode, that.fromZipCode)
-                && Objects.equals(this.toZipCode, that.toZipCode);
+                && Objects.equals(this.toZipCode, that.toZipCode)
+                && Objects.equals(this.toCity, that.toCity)
+                && Objects.equals(this.toState, that.toState);
     }
 
     /// The hash code method
@@ -156,6 +192,8 @@ public class DistanceDocument {
                 this.documentId,
                 this.fromZipCode,
                 this.toZipCode,
+                this.toCity,
+                this.toState,
                 this.distanceInMiles,
                 this.distanceInKilometers
         );
@@ -170,6 +208,8 @@ public class DistanceDocument {
                 "documentId='" + this.documentId + '\'' +
                 ", fromZipCode='" + this.fromZipCode + '\'' +
                 ", toZipCode='" + this.toZipCode + '\'' +
+                ", toCity='" + this.toCity + '\'' +
+                ", toState='" + this.toState + '\'' +
                 ", distanceInMiles=" + this.distanceInMiles +
                 ", distanceInKilometers=" + this.distanceInKilometers +
                 '}';

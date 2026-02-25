@@ -45,6 +45,8 @@
         <tr>
           <th>From Zip Code</th>
           <th>To Zip Code</th>
+          <th>To City</th>
+          <th>To State</th>
           <th>Distance in Miles</th>
           <th>Distance in Kilometers</th>
           <th>Document ID</th>
@@ -54,6 +56,8 @@
         <tr th:each="distance : ${distanceList}">
           <td th:text="${distance.fromZipCode}"/>
           <td th:text="${distance.toZipCode}"/>
+          <td th:text="${distance.toCity}"/>
+          <td th:text="${distance.toState}"/>
           <td th:text="${@decimalFormatter.format(distance.distanceInMiles)}"/>
           <td th:text="${@decimalFormatter.format(distance.distanceInKilometers)}"/>
           <td th:text="${distance.documentId}"/>
