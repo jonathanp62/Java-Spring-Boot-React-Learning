@@ -36,11 +36,9 @@ import net.jmp.spring.boot.react.learning.ecommerce.documents.DistanceDocument;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.OptionalToResponseEntityMapper;
-import net.jmp.spring.boot.react.learning.ecommerce.helpers.UserRoleChecker;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.http.HttpStatus;
@@ -52,17 +50,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/react/learning/api/e-commerce/distance")
 public class DistanceApiController {
-    /// The logger
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     /// The distance service
     private final DistanceService distanceService;
 
     /// The log tracer
     private final LogTracer logTracer;
-
-    /// The user role checker
-    private final UserRoleChecker userRoleChecker;
 
     /// The constructor
     ///
@@ -71,8 +63,7 @@ public class DistanceApiController {
         super();
 
         this.distanceService = distanceService;
-        this.logTracer = new LogTracer(this.logger);
-        this.userRoleChecker = new UserRoleChecker();
+        this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
     /// The OK method
