@@ -24,6 +24,7 @@ A program that supports React learning projects with REST services provided by S
 |/react/learning/api/e-commerce/sales-tax/abbr/:stateAbbreviation | GET        | None    | 200 OK         | Returns the saved sales tax document for the specified state abbreviation as JSON
 |/react/learning/api/e-commerce/sales-tax/:stateName              | DELETE     | None    | 204 NO CONTENT | Deletes the sales tax document for the specified state name
 |/react/learning/api/e-commerce/sales-tax/abbr/:stateAbbreviation | DELETE     | None    | 204 NO CONTENT | Deletes the sales tax document for the specified state abbreviation
+|/react/learning/api/e-commerce/shipping-cost/calculate           | GET        | None    | 200 OK         | Returns the shipping cost as JSON based on toZipCode, subTotal, and items query parameters
 |=======================
 
 == Gradle JavaExec Tasks
@@ -55,6 +56,7 @@ Add the --no-configuration-cache option to disable the configuration cache when 
 * bin/get-sales-tax-name.sh
 * bin/get-sales-tax-ok.sh
 * bin/get-sales-taxes.sh
+* bin/get-shipping-cost.sh
 * bin/save-form.sh
 * bin/save-product.sh
 * bin/save-sales-tax.sh
