@@ -30,12 +30,15 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
  * SOFTWARE.
  */
 
-import net.jmp.spring.boot.react.learning.ecommerce.ShippingCostRequest;
 import net.jmp.spring.boot.react.learning.ecommerce.ShippingCost;
+
+import net.jmp.spring.boot.react.learning.ecommerce.beans.ShippingCostCalculatorBean;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
 import org.slf4j.LoggerFactory;
+
+import org.springframework.context.ApplicationContext;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,11 +55,15 @@ public class ShippingCostApiController {
     /// The log tracer
     private final LogTracer logTracer;
 
+    /// The application context
+    private final ApplicationContext applicationContext;
+
     /// The default constructor
-    public ShippingCostApiController() {
+    public ShippingCostApiController(ApplicationContext applicationContext) {
         super();
 
         this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
+        this.applicationContext = applicationContext;
     }
 
     /// The calculate method
@@ -67,9 +74,14 @@ public class ShippingCostApiController {
                                             final @RequestParam double subTotal,
                                             final @RequestParam int items) {
         return this.logTracer.tracedWith(() -> {
-            final ShippingCostRequest request = new ShippingCostRequest(toZipCode, subTotal, items);
-            final double cost = 0.0;
-            final ShippingCost shippingCost = new ShippingCost(request, cost);
+            final ShippingCostCalculatorBean calculatorBean = this.applicationContext.getBean(
+                    ShippingCostCalculatorBean.class,
+                    toZipCode,
+                    subTotal,
+                    items
+            );
+
+            final ShippingCost shippingCost = calculatorBean.calculate();
 
             return new ResponseEntity<>(shippingCost, HttpStatus.OK);
         }, toZipCode, subTotal, items);
