@@ -36,6 +36,8 @@ import java.math.RoundingMode;
 import net.jmp.spring.boot.react.learning.ecommerce.ShippingCost;
 import net.jmp.spring.boot.react.learning.ecommerce.ShippingCostRequest;
 
+import net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService;
+
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 import org.springframework.context.annotation.Scope;
@@ -46,6 +48,9 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ShippingCostCalculatorBean {
+    /// The distance service
+    private final DistanceService distanceService;
+
     /// The 'to' zip code
     private final String toZipCode;
 
@@ -57,12 +62,14 @@ public class ShippingCostCalculatorBean {
 
     /// The constructor
     ///
-    /// @param  toZipCode   java.lang.String
-    /// @param  subTotal    double
-    /// @param  items       int
-    public ShippingCostCalculatorBean(final String toZipCode, final double subTotal, final int items) {
+    /// @param  distanceService net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService
+    /// @param  toZipCode       java.lang.String
+    /// @param  subTotal        double
+    /// @param  items           int
+    public ShippingCostCalculatorBean(final DistanceService distanceService, final String toZipCode, final double subTotal, final int items) {
         super();
 
+        this.distanceService = distanceService;
         this.toZipCode = toZipCode;
         this.subTotal = subTotal;
         this.items = items;

@@ -34,6 +34,8 @@ import net.jmp.spring.boot.react.learning.ecommerce.ShippingCost;
 
 import net.jmp.spring.boot.react.learning.ecommerce.beans.ShippingCostCalculatorBean;
 
+import net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService;
+
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
 import org.slf4j.LoggerFactory;
@@ -58,12 +60,16 @@ public class ShippingCostApiController {
     /// The application context
     private final ApplicationContext applicationContext;
 
+    /// The distance service
+    private final DistanceService distanceService;
+
     /// The default constructor
-    public ShippingCostApiController(ApplicationContext applicationContext) {
+    public ShippingCostApiController(final ApplicationContext applicationContext, final DistanceService distanceService) {
         super();
 
         this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
         this.applicationContext = applicationContext;
+        this.distanceService = distanceService;
     }
 
     /// The calculate method
@@ -76,6 +82,7 @@ public class ShippingCostApiController {
         return this.logTracer.tracedWith(() -> {
             final ShippingCostCalculatorBean calculatorBean = this.applicationContext.getBean(
                     ShippingCostCalculatorBean.class,
+                    this.distanceService,
                     toZipCode,
                     subTotal,
                     items
