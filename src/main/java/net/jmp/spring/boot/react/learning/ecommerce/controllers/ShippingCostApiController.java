@@ -79,7 +79,7 @@ public class ShippingCostApiController {
     public ResponseEntity<ShippingCost> calculate(final @RequestParam String toZipCode,
                                             final @RequestParam double subTotal,
                                             final @RequestParam int items) {
-        return this.logTracer.tracedWith(() -> {
+        return this.logTracer.<ResponseEntity<ShippingCost>>tracedWith(() -> {
             final ShippingCostCalculatorBean calculatorBean = this.applicationContext.getBean(
                     ShippingCostCalculatorBean.class,
                     this.distanceService,
@@ -90,7 +90,13 @@ public class ShippingCostApiController {
 
             final ShippingCost shippingCost = calculatorBean.calculate();
 
-            return new ResponseEntity<>(shippingCost, HttpStatus.OK);
+            if (shippingCost.status().equals("OK")) {
+                return new ResponseEntity<>(shippingCost, HttpStatus.OK);
+            } else if (shippingCost.status().equals("Not Found")) {
+                return new ResponseEntity<>(shippingCost, HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(shippingCost, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }, toZipCode, subTotal, items);
     }
 }
