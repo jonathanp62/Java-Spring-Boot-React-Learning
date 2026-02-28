@@ -94,6 +94,10 @@ public class ShippingCostCalculatorBean {
             cost += surcharge;
             cost += travel;
 
+            final double costRounded = BigDecimal.valueOf(cost)
+                                        .setScale(2, RoundingMode.HALF_UP)
+                                        .doubleValue();
+
             return new ShippingCost(
                     request,
                     "OK",
@@ -101,11 +105,14 @@ public class ShippingCostCalculatorBean {
                     surcharge,
                     travel,
                     cost,
-                    BigDecimal.valueOf(cost)
-                        .setScale(2, RoundingMode.HALF_UP)
-                        .doubleValue()
+                    costRounded,
+                    String.format("$%.2f", costRounded)
             );
         } else {
+            final double surchargeRounded = BigDecimal.valueOf(surcharge)
+                                        .setScale(2, RoundingMode.HALF_UP)
+                                        .doubleValue();
+
             return new ShippingCost(
                     request,
                     "Not Found",
@@ -113,9 +120,8 @@ public class ShippingCostCalculatorBean {
                     surcharge,
                     0.0,
                     surcharge,
-                    BigDecimal.valueOf(surcharge)
-                        .setScale(2, RoundingMode.HALF_UP)
-                        .doubleValue()
+                    surchargeRounded,
+                    String.format("$%.2f", surchargeRounded)
             );
         }
     }

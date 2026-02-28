@@ -32,20 +32,22 @@ package net.jmp.spring.boot.react.learning.ecommerce;
 
 /// The shipping cost that is returned by the server.
 ///
-/// @param  request                     net.jmp.spring.boot.react.learning.ecommerce.ShippingCostRequest
-/// @param  status                      java.lang.String
-/// @param  message                     java.lang.String
-/// @param  surcharge                   double
-/// @param  shipping                    double
-/// @param  totalShippingCost           double
-/// @param  totalShippingCostRounded    double
+/// @param  request                 net.jmp.spring.boot.react.learning.ecommerce.ShippingCostRequest
+/// @param  status                  java.lang.String
+/// @param  message                 java.lang.String
+/// @param  surcharge               double
+/// @param  shipping                double
+/// @param  totalCost               double
+/// @param  totalCostRounded        double
+/// @param  totalCostRoundedAsMoney double
 public record ShippingCost(
         ShippingCostRequest request,
         String status,
         String message,
         double surcharge,
         double shipping,
-        double totalShippingCost,
-        double totalShippingCostRounded
+        double totalCost,
+        double totalCostRounded,
+        String totalCostRoundedAsMoney
 ) {
 }
