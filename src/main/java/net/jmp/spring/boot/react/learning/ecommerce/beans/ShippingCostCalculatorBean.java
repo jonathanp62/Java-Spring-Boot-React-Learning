@@ -33,8 +33,12 @@ package net.jmp.spring.boot.react.learning.ecommerce.beans;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import java.util.Optional;
+
 import net.jmp.spring.boot.react.learning.ecommerce.ShippingCost;
 import net.jmp.spring.boot.react.learning.ecommerce.ShippingCostRequest;
+
+import net.jmp.spring.boot.react.learning.ecommerce.documents.DistanceDocument;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService;
 
@@ -82,13 +86,38 @@ public class ShippingCostCalculatorBean {
         final ShippingCostRequest request = new ShippingCostRequest(this.toZipCode, this.subTotal, this.items);
 
         double cost = 0.0;
-        double surcharge = this.calculateSurcharge();
-        double travel = this.calculateTravel();
 
-        cost += surcharge;
-        cost += travel;
+        final double surcharge = this.calculateSurcharge();
+        final double travel = this.calculateTravel();
 
-        return new ShippingCost(request, cost);
+        if (travel >= 0.0) {
+            cost += surcharge;
+            cost += travel;
+
+            return new ShippingCost(
+                    request,
+                    "OK",
+                    "",
+                    surcharge,
+                    travel,
+                    cost,
+                    BigDecimal.valueOf(cost)
+                        .setScale(2, RoundingMode.HALF_UP)
+                        .doubleValue()
+            );
+        } else {
+            return new ShippingCost(
+                    request,
+                    "Not Found",
+                    String.format("The 'to' zip code of %s was not found", this.toZipCode),
+                    surcharge,
+                    0.0,
+                    surcharge,
+                    BigDecimal.valueOf(surcharge)
+                        .setScale(2, RoundingMode.HALF_UP)
+                        .doubleValue()
+            );
+        }
     }
 
     /// The calculate surcharge method
@@ -107,17 +136,47 @@ public class ShippingCostCalculatorBean {
             surcharge = this.subTotal * 0.0096;
         }
 
-        return BigDecimal.valueOf(surcharge)
-                .setScale(2, RoundingMode.HALF_UP)
-                .doubleValue();
+        return surcharge;
     }
 
-    /// The calculate travel based on distance method
+    /// The calculate travel based on distance method. Costs based on
+    /// shipping distance are returned unless the 'to' zip code was
+    /// not found in which case -1.0 is returned.
     ///
     /// @return double
     private double calculateTravel() {
-        return BigDecimal.valueOf(0.0)
-                .setScale(2, RoundingMode.HALF_UP)
-                .doubleValue();
+        final Optional<DistanceDocument> distance = this.distanceService.getDistanceByToZipCode(this.toZipCode);
+
+        if (distance.isPresent()) {
+            final double distanceInMiles = distance.get().getDistanceInMiles();
+
+            return this.calculateTravelForFirstItem(distanceInMiles) + this.calculateTravelForAdditionalItems(distanceInMiles);
+        } else {
+            return -1.0;
+        }
+    }
+
+    /// Calculate travel based on distance for the first item.
+    /// The cost is $0.01 per mile.
+    ///
+    /// @param  distanceInMiles double
+    /// @return                 double
+    private double calculateTravelForFirstItem(final double distanceInMiles) {
+        return distanceInMiles * 0.01;
+    }
+
+    /// Calculate travel based on distance for the additional items.
+    /// The cost for each additional item is $0.005 per mile.
+    ///
+    /// @param  distanceInMiles double
+    /// @return                 double
+    private double calculateTravelForAdditionalItems(final double distanceInMiles) {
+        double accumulator = 0.0;
+
+        for (int i = 0; i < this.items - 1; i++) {
+            accumulator += distanceInMiles * 0.005;
+        }
+
+        return accumulator;
     }
 }
