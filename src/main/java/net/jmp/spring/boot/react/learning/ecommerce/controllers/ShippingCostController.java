@@ -30,13 +30,25 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
  * SOFTWARE.
  */
 
+import net.jmp.spring.boot.react.learning.ecommerce.ShippingCost;
+
+import net.jmp.spring.boot.react.learning.ecommerce.beans.ShippingCostCalculatorBean;
+
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
+
+import net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService;
 
 import org.slf4j.LoggerFactory;
 
+import org.springframework.context.ApplicationContext;
+
 import org.springframework.stereotype.Controller;
 
+import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /// The shipping cost controller class.
 @Controller
@@ -44,20 +56,61 @@ public class ShippingCostController {
     /// The log tracer
     private final LogTracer logTracer;
 
-    /// The default constructor
-    public ShippingCostController() {
+    /// The application context
+    private final ApplicationContext applicationContext;
+
+    /// The distance service
+    private final DistanceService distanceService;
+
+    /// The constructor
+    ///
+    /// @param  applicationContext    org.springframework.context.ApplicationContext
+    /// @param  distanceService       net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService
+    public ShippingCostController(final ApplicationContext applicationContext, final DistanceService distanceService) {
         super();
 
         this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
+        this.applicationContext = applicationContext;
+        this.distanceService = distanceService;
     }
 
     /// Maps GET requests for the e-commerce shipping cost path to the "e-commerce/shipping-cost" view.
     ///
     /// @return java.lang.String
-    @GetMapping("/e-commerce/shipping-cost/")
-    public String distances() {
-        return this.logTracer.traced(() -> {
-            return "e-commerce/shipping-cost";
-        });
+    @GetMapping("/e-commerce/shipping-cost/calculator")
+    public String calculateForm() {
+        return this.logTracer.traced(() -> "e-commerce/shipping-cost-calculator");
+    }
+
+    /// Maps POST requests for the e-commerce shipping cost results path to the "e-commerce/shipping-cost=result" view.
+    ///
+    /// @param  toZipCode   java.lang.String
+    /// @param  subTotal    double
+    /// @param  items       int
+    /// @param  model       org.springframework.ui.Model
+    /// @return             java.lang.String
+    @PostMapping("/e-commerce/shipping-cost/calculated-results")
+    public String showResult(
+            final @RequestParam String toZipCode,
+            final @RequestParam double subTotal,
+            final @RequestParam int items,
+            final Model model
+    ) {
+        final ShippingCostCalculatorBean calculatorBean = this.applicationContext.getBean(
+                ShippingCostCalculatorBean.class,
+                this.distanceService,
+                toZipCode,
+                subTotal,
+                items
+        );
+
+        final ShippingCost shippingCost = calculatorBean.calculate();
+
+        model.addAttribute("shippingCost", shippingCost);
+        model.addAttribute("toZipCode", toZipCode);
+        model.addAttribute("subTotal", subTotal);
+        model.addAttribute("items", items);
+
+        return this.logTracer.tracedWith(() -> "e-commerce/shipping-cost-results", toZipCode, subTotal, items, model);
     }
 }
