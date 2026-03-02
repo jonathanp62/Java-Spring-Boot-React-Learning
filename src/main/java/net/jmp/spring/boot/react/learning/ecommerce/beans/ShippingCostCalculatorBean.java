@@ -101,7 +101,7 @@ public class ShippingCostCalculatorBean {
             return new ShippingCost(
                     request,
                     "OK",
-                    "",
+                    "OK",
                     surcharge,
                     travel,
                     cost,
@@ -116,7 +116,7 @@ public class ShippingCostCalculatorBean {
             return new ShippingCost(
                     request,
                     "Not Found",
-                    String.format("The 'to' zip code of %s was not found", this.toZipCode),
+                    String.format("The 'to' zip code %s was not found", this.toZipCode),
                     surcharge,
                     0.0,
                     surcharge,

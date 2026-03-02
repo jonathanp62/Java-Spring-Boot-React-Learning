@@ -45,24 +45,6 @@
       <tbody>
         <tr>
           <td style="padding: 0.35rem 1rem 0.35rem 0; white-space: nowrap;">
-            Zip Code
-          </td>
-          <td th:text="${toZipCode}" style="padding: 0.35rem 0;"/>
-        </tr>
-        <tr>
-          <td style="padding: 0.35rem 1rem 0.35rem 0; white-space: nowrap;">
-            Sub-Total
-          </td>
-          <td th:text="${subTotal}" style="padding: 0.35rem 0;"/>
-        </tr>
-        <tr>
-          <td style="padding: 0.35rem 1rem 0.35rem 0; white-space: nowrap;">
-            Number of Items
-          </td>
-          <td th:text="${items}" style="padding: 0.35rem 0;"/>
-        </tr>
-        <tr>
-          <td style="padding: 0.35rem 1rem 0.35rem 0; white-space: nowrap;">
             Status
           </td>
           <td th:text="${shippingCost.status}" style="padding: 0.35rem 0;"/>
@@ -74,28 +56,40 @@
           <td th:text="${shippingCost.message}" style="padding: 0.35rem 0;"/>
         </tr>
         <tr>
+        <td style="padding: 0.35rem 1rem 0.35rem 0; white-space: nowrap;">
+            Zip Code
+          </td>
+          <td th:text="${toZipCode}" style="padding: 0.35rem 0;"/>
+        </tr>
+        <tr>
+          <td style="padding: 0.35rem 1rem 0.35rem 0; white-space: nowrap;">
+            Number of Items
+          </td>
+          <td th:text="${items}" style="padding: 0.35rem 0;"/>
+        </tr>
+        <tr>
+          <td style="padding: 0.35rem 1rem 0.35rem 0; white-space: nowrap;">
+            Sub-Total
+          </td>
+          <td th:text="${@currencyFormatter.format(subTotal)}" style="padding: 0.35rem 0; text-align: right;"/>
+        </tr>
+        <tr>
           <td style="padding: 0.35rem 1rem 0.35rem 0; white-space: nowrap;">
             Surcharge
           </td>
-          <td th:text="${shippingCost.surcharge}" style="padding: 0.35rem 0;"/>
+          <td th:text="${@currencyFormatter.format(shippingCost.surcharge)}" style="padding: 0.35rem 0; text-align: right;"/>
         </tr>
         <tr>
           <td style="padding: 0.35rem 1rem 0.35rem 0; white-space: nowrap;">
             Shipping
           </td>
-          <td th:text="${shippingCost.shipping}" style="padding: 0.35rem 0;"/>
+          <td th:text="${@currencyFormatter.format(shippingCost.shipping)}" style="padding: 0.35rem 0; text-align: right;"/>
         </tr>
         <tr>
           <td style="padding: 0.35rem 1rem 0.35rem 0; white-space: nowrap;">
             Total Cost
           </td>
-          <td th:text="${shippingCost.totalCost}" style="padding: 0.35rem 0;"/>
-        </tr>
-        <tr>
-          <td style="padding: 0.35rem 1rem 0.35rem 0; white-space: nowrap;">
-            Total Cost Rounded
-          </td>
-          <td th:text="${shippingCost.totalCostRounded}" style="padding: 0.35rem 0;"/>
+          <td th:text="${@currencyFormatter.format(shippingCost.totalCost)}" style="padding: 0.35rem 0; text-align: right;"/>
         </tr>
         <tr>
           <td style="padding: 0.75rem 1rem 0 0;"></td>
