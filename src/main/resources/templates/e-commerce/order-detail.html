@@ -1,8 +1,9 @@
 <!--
+ (#)order-detail.html 0.4.0   03/03/2026
  (#)order-detail.html 0.1.0   01/03/2026
 
  @author  Jonathan Parker
- @version 0.1.0
+ @version 0.4.0
  @since   0.1.0
 
  MIT License
@@ -64,6 +65,7 @@
           <th>Total Items</th>
           <th>Sub Total</th>
           <th>Tax</th>
+          <th>Shipping</th>
           <th>Total</th>
         </tr>
         </thead>
@@ -72,6 +74,7 @@
           <td><span th:text="${order.products.size()}"></span></td>
           <td><span th:text="${@orderCostCalculator.calculateSubTotalAsMoney(order)}"></span></td>
           <td><span th:text="${@orderCostCalculator.calculateTaxAsMoney(order)}"></span></td>
+          <td><span th:text="${@orderCostCalculator.calculateShippingAsMoney(order)}"></span></td>
           <td><span th:text="${@orderCostCalculator.calculateTotalCostAsMoney(order)}"></span></td>
         </tr>
         </tbody>
