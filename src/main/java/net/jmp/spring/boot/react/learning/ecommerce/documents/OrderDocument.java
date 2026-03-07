@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.documents;
 
 /*
+ * (#)OrderDocument.java    0.4.0   03/07/2026
  * (#)OrderDocument.java    0.1.0   12/13/2025
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.4.0
  * @since     0.1.0
  *
  * MIT License
@@ -33,6 +34,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.documents;
 import net.jmp.spring.boot.react.learning.ecommerce.Product;
 import org.springframework.data.annotation.Id;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
@@ -82,6 +84,10 @@ public class OrderDocument {
 
     /// The tax rate
     private double taxRate;
+
+    /// The shipping cost
+    @Transient
+    private double shippingCost;
 
     /// The products
     private List<Product> products;
@@ -288,6 +294,20 @@ public class OrderDocument {
         this.taxRate = taxRate;
     }
 
+    /// Get the shipping cost.
+    ///
+    /// @return double
+    public double getShippingCost() {
+        return this.shippingCost;
+    }
+
+    /// Set the shipping cost.
+    ///
+    /// @param  shippingCost    double
+    public void setShippingCost(final double shippingCost) {
+        this.shippingCost = shippingCost;
+    }
+
     /// The equals method
     ///
     /// @param  o  java.lang.Object
@@ -311,6 +331,7 @@ public class OrderDocument {
                 Objects.equals(this.phone, that.phone) &&
                 Objects.equals(this.email, that.email) &&
                 Objects.equals(this.taxRate, that.taxRate) &&
+                Objects.equals(this.shippingCost, that.shippingCost) &&
                 Objects.equals(this.products, that.products);
     }
 
@@ -333,6 +354,7 @@ public class OrderDocument {
                 this.phone,
                 this.email,
                 this.taxRate,
+                this.shippingCost,
                 this.products
         );
     }
@@ -356,6 +378,7 @@ public class OrderDocument {
                 ", phone='" + this.phone + '\'' +
                 ", email='" + this.email + '\'' +
                 ", taxRate=" + this.taxRate +
+                ", shippingCost=" + this.shippingCost +
                 ", products=" + this.products +
                 '}';
     }

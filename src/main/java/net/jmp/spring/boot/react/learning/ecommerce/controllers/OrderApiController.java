@@ -1,11 +1,12 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 /*
+ * (#)OrderApiController.java   0.4.0   03/07/2026
  * (#)OrderApiController.java   0.2.0   02/02/2026
  * (#)OrderApiController.java   0.1.0   12/10/2025
  *
  * @author    Jonathan Parker
- * @version   0.2.0
+ * @version   0.4.0
  * @since     0.1.0
  *
  * MIT License
@@ -32,8 +33,13 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
  */
 
 import java.util.List;
+import java.util.Optional;
 
 import net.jmp.spring.boot.react.learning.ecommerce.Order;
+import net.jmp.spring.boot.react.learning.ecommerce.Product;
+import net.jmp.spring.boot.react.learning.ecommerce.ShippingCost;
+
+import net.jmp.spring.boot.react.learning.ecommerce.beans.ShippingCostCalculatorBean;
 
 import net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument;
 
@@ -41,10 +47,13 @@ import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.OptionalToResponseEntityMapper;
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.UserRoleChecker;
 
+import net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService;
 import net.jmp.spring.boot.react.learning.ecommerce.services.OrderService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.context.ApplicationContext;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,8 +69,14 @@ public class OrderApiController {
     /// The logger
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /// The application context
+    private final ApplicationContext applicationContext;
+
     /// The order service
     private final OrderService orderService;
+
+    /// The distance service
+    private final DistanceService distanceService;
 
     /// The log tracer
     private final LogTracer logTracer;
@@ -71,11 +86,15 @@ public class OrderApiController {
 
     /// The constructor
     ///
-    /// @param   orderService   net.jmp.spring.boot.react.learning.ecommerce.services.OrderService
-    public OrderApiController(final OrderService orderService) {
+    /// @param   applicationContext org.springframework.context.ApplicationContext
+    /// @param   orderService       net.jmp.spring.boot.react.learning.ecommerce.services.OrderService
+    /// @param   distanceService    net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService
+    public OrderApiController(final ApplicationContext applicationContext, final OrderService orderService, final DistanceService distanceService) {
         super();
 
+        this.applicationContext = applicationContext;
         this.orderService = orderService;
+        this.distanceService = distanceService;
         this.logTracer = new LogTracer(this.logger);
         this.userRoleChecker = new UserRoleChecker();
     }
@@ -103,6 +122,8 @@ public class OrderApiController {
         return this.logTracer.traced(() -> {
             final List<OrderDocument> orders = this.orderService.getOrders();
 
+            orders.forEach(order -> order.setShippingCost(this.getShippingCost(order)));
+
             return new ResponseEntity<>(orders, HttpStatus.OK);
         });
     }
@@ -112,8 +133,13 @@ public class OrderApiController {
     /// @return org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument>
     @GetMapping("/order/{orderId}")
     public ResponseEntity<OrderDocument> orderById(final @PathVariable String orderId) {
-        return this.logTracer.tracedWith(() ->
-            OptionalToResponseEntityMapper.map(this.orderService.getOrderById(orderId)), orderId);
+        return this.logTracer.tracedWith(() -> {
+            final Optional<OrderDocument> document = this.orderService.getOrderById(orderId);
+
+            document.ifPresent(order -> order.setShippingCost(this.getShippingCost(order)));
+
+            return OptionalToResponseEntityMapper.map(document);
+        }, orderId);
     }
 
     /// The save order method
@@ -157,6 +183,34 @@ public class OrderApiController {
             orderDocument.setProducts(order.products());
 
             return orderDocument;
+        }, order);
+    }
+
+    /// The get shipping cost method
+    ///
+    /// @param  order   net.jmp.spring.boot.react.learning.ecommerce.documents.OrderDocument
+    /// @return         double
+    private double getShippingCost(final OrderDocument order) {
+        return this.logTracer.tracedWith(() -> {
+            final double subTotal = order.getProducts().stream().mapToDouble(Product::price).sum();
+
+            final ShippingCostCalculatorBean calculatorBean = this.applicationContext.getBean(
+                    ShippingCostCalculatorBean.class,
+                    this.distanceService,
+                    order.getZipCode().substring(0, 5),
+                    subTotal,
+                    order.getProducts().size()
+            );
+
+            final ShippingCost shippingCost = calculatorBean.calculate();
+
+            if (shippingCost.status().equals("OK")) {
+                return shippingCost.totalCostRounded();
+            } else if (shippingCost.status().equals("Not Found")) {
+                return shippingCost.totalCostRounded();
+            } else {
+                return 0.0;
+            }
         }, order);
     }
 }
