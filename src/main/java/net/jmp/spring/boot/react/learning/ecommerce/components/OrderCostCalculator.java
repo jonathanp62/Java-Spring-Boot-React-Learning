@@ -91,21 +91,24 @@ public class OrderCostCalculator {
                     ? orderDocument.getProducts().stream().mapToDouble(Product::price).sum()
                     : 0.0;
 
-            double unroundedTotal = subtotal * (1.0 + orderDocument.getTaxRate());  // Add the sales tax
+            double roundedTotal = BigDecimal.valueOf(subtotal * (1.0 + orderDocument.getTaxRate()))
+                    .setScale(2, RoundingMode.HALF_UP)
+                    .doubleValue(); // Add the sales tax
 
             final int items = orderDocument.getProducts() != null
                     ? orderDocument.getProducts().size()
                     : 0;
 
             final String toZipCode = orderDocument.getZipCode();
-
             final ShippingCost shippingCost = this.getShippingCost(toZipCode, subtotal, items);
 
-            unroundedTotal += shippingCost.totalCost();  // Add the shipping cost
-
-            return BigDecimal.valueOf(unroundedTotal)
+            double roundedShipping = BigDecimal.valueOf(shippingCost.totalCost())
                     .setScale(2, RoundingMode.HALF_UP)
                     .doubleValue();
+
+            roundedTotal += roundedShipping;    // Add the shipping cost
+
+            return roundedTotal;
         }, orderDocument);
     }
 
