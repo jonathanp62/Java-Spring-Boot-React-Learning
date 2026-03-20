@@ -1,5 +1,5 @@
 #
-# (#)libs.versions.toml 0.1.0   03/04/2026
+# (#)libs.versions.toml 0.4.0   03/04/2026
 # (#)libs.versions.toml 0.1.0   12/10/2025
 #
 #  @author   Jonathan Parker
@@ -33,11 +33,13 @@ co-elastic-logging-logback-ecs-encoder = "1.7.0"
 com-google-code-gson-gson = "2.13.2"
 net-javacrumbs-json-unit-json-unit-spring = "5.1.0"
 net-jmp-util-logging-logging-utilities = "1.2.0"
+org-apache-solr-solr-solrj = "10.0.0"
 
 [libraries]
 co-elastic-logging-logback-ecs-encoder = { module = "co.elastic.logging:logback-ecs-encoder", version.ref = "co-elastic-logging-logback-ecs-encoder" }
 com-google-code-gson-gson = { module = "com.google.code.gson:gson", version.ref = "com-google-code-gson-gson" }
 net-jmp-util-logging-logging-utilities = { module = "net.jmp.util.logging:logging-utilities", version.ref = "net-jmp-util-logging-logging-utilities" }
 net-javacrumbs-json-unit-json-unit-spring = { module = "net.javacrumbs.json-unit:json-unit-spring", version.ref = "net-javacrumbs-json-unit-json-unit-spring" }
+org-apache-solr-solr-solrj = { module = "org.apache.solr:solr-solrj", version.ref = "org-apache-solr-solr-solrj" }
 
 [bundles]
