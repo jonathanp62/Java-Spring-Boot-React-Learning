@@ -24,8 +24,8 @@ A program that supports React learning projects with REST services provided by S
 |/react/learning/api/e-commerce/sales-tax/abbr/:stateAbbreviation | GET        | None    | 200 OK         | Returns the saved sales tax document for the specified state abbreviation as JSON
 |/react/learning/api/e-commerce/sales-tax/:stateName              | DELETE     | None    | 204 NO CONTENT | Deletes the sales tax document for the specified state name
 |/react/learning/api/e-commerce/sales-tax/abbr/:stateAbbreviation | DELETE     | None    | 204 NO CONTENT | Deletes the sales tax document for the specified state abbreviation
-|/react/learning/api/e-commerce/search/ecommerce-products/ok      | GET        | None    | 200 OK         | Returns a string: OK
-|/react/learning/api/e-commerce/search/ecommerce-products/ping    | GET        | None    | 200 OK         | Returns a string: Pinged Solr OK
+|/react/learning/api/e-commerce/search/ok                         | GET        | None    | 200 OK         | Returns a string: OK
+|/react/learning/api/e-commerce/search/:collection/ping           | GET        | None    | 200 OK         | Returns a string: Pinged Solr collection :collection OK
 |/react/learning/api/e-commerce/shipping-cost/calculate           | GET        | None    | 200 OK         | Returns the shipping cost as JSON based on toZipCode, subTotal, and items query parameters
 |=======================
 

@@ -39,12 +39,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /// The search API controller
 @RestController
-@RequestMapping("/react/learning/api/e-commerce/search/ecommerce-products")
+@RequestMapping("/react/learning/api/e-commerce/search")
 public class SearchApiController {
     /// The log tracer
     private final LogTracer logTracer;
@@ -70,21 +71,27 @@ public class SearchApiController {
 
     /// The ping method
     ///
-    /// @return org.springframework.http.ResponseEntity<java.lang.String>
-    @GetMapping("/ping")
-    public ResponseEntity<String> ping() {
-        return this.logTracer.traced(() -> {
-            final int status = this.searchService.ping();
+    /// @param  collection  java.lang.String
+    /// @return             org.springframework.http.ResponseEntity<java.lang.String>
+    @GetMapping("/{collection}/ping")
+    public ResponseEntity<String> ping(final @PathVariable String collection) {
+        return this.logTracer.tracedWith(() -> {
+            final int status = this.searchService.ping(collection);
 
-            String message;
-
-            if (status == 0) {
-                message = "Pinged Solr OK";
-            } else {
-                message = "Failed to ping Solr";
-            }
-
-            return new ResponseEntity<>(message, HttpStatus.OK);
-        });
+            return switch (status) {
+                case 0 -> new ResponseEntity<>(
+                        String.format("Pinged Solr collection %s OK", collection),
+                        HttpStatus.OK
+                );
+                case 404 -> new ResponseEntity<>(
+                        String.format("Solr collection %s was not found", collection),
+                        HttpStatus.NOT_FOUND
+                );
+                default -> new ResponseEntity<>(
+                        String.format("Failed to ping Solr collection %s", collection),
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                );
+            };
+        }, collection);
     }
 }

@@ -30,10 +30,15 @@ package net.jmp.spring.boot.react.learning.ecommerce.services;
  * SOFTWARE.
  */
 
+import java.util.List;
+
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
 import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
 
+import org.apache.solr.client.solrj.request.CollectionAdminRequest;
+
+import org.apache.solr.client.solrj.response.CollectionAdminResponse;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
 
 import org.slf4j.Logger;
@@ -60,24 +65,53 @@ public class SearchService {
 
     /// The ping method
     ///
-    /// @return int
-    public int ping() {
-        return this.logTracer.traced(() -> {
+    /// @param  collection  java.lang.String
+    /// @return             int
+    public int ping(final String collection) {
+        return this.logTracer.tracedWith(() -> {
             int status;
 
-            try {
-                final SolrPingResponse response = this.solrClient.ping("ecommerce-products");
+            if (this.isSolrCollectionValid(collection)) {
+                try {
+                    final SolrPingResponse response = this.solrClient.ping(collection);
 
-                status = response.getStatus();
-            } catch (final Exception exception) {
-                final Logger logger = this.logTracer.getLogger();
+                    status = response.getStatus();
+                } catch (final Exception e) {
+                    final Logger logger = this.logTracer.getLogger();
 
-                logger.error("Failed to ping Solr: {}", exception.getMessage());
+                    logger.error("Failed to ping Solr: {}", e.getMessage());
 
-                status = 500;
+                    status = 500;
+                }
+            } else {
+                status = 404;
             }
 
             return status;
-        });
+        }, collection);
+    }
+
+    /// The validate Solr collection method
+    ///
+    /// @param  collection  java.lang.String
+    /// @return             boolean
+    private boolean isSolrCollectionValid(final String collection) {
+        return this.logTracer.tracedWith(() -> {
+            try {
+                final CollectionAdminRequest.List listRequest = new CollectionAdminRequest.List();
+                final CollectionAdminResponse response = listRequest.process(this.solrClient);
+
+                @SuppressWarnings("unchecked")
+                final List<String> collections = (List<String>) response.getResponse().get("collections");
+
+                return collections.contains(collection);
+            } catch (final Exception e) {
+                final Logger logger = this.logTracer.getLogger();
+
+                logger.error("Failed to get Solr collections: {}", e.getMessage());
+
+                return false;
+            }
+        }, collection);
     }
 }
