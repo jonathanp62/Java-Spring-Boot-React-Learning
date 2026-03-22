@@ -1,10 +1,11 @@
 <!--
+ (#)home.html   0.5.0   03/22/2026
  (#)home.html   0.4.0   02/20/2026
  (#)home.html   0.3.0   02/19/2026
  (#)home.html   0.1.0   01/02/2026
 
  @author  Jonathan Parker
- @version 0.4.0
+ @version 0.5.0
  @since   0.1.0
 
  MIT License
@@ -31,16 +32,11 @@
 -->
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <link rel="icon" type="image/png" th:href="@{/favicon.png}" href="../../static/favicon.png">
-        <link rel="stylesheet" th:href="@{/styles/styles.css}" href="../../static/styles/styles.css">
-        <title>E-Commerce Home</title>
-    </head>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us" th:with="pageTitle=${'E-Commerce Home'}">
+    <head th:replace="~{fragments/header :: common-head(${pageTitle})}"></head>
     <body class="pageCenteredBody">
         <div class="pageCentered">
-            <h2>E-Commerce Home</h2>
+            <h2 th:text="${pageTitle}">Unresolved Page Title</h2>
 
             <nav class="navigationContainer">
                 <ul class="navigationList">

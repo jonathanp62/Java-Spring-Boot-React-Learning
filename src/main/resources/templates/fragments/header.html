@@ -1,10 +1,9 @@
 <!--
- (#)index.html  0.5.0   03/22/2026
- (#)index.html  0.1.0   01/02/2026
+ (#)header.html 0.5.0   03/22/2026
 
  @author  Jonathan Parker
  @version 0.5.0
- @since   0.1.0
+ @since   0.5.0
 
  MIT License
 
@@ -29,18 +28,9 @@
  SOFTWARE.
 -->
 
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us" th:with="pageTitle=${'Spring Boot React Learning'}">
-    <head th:replace="~{fragments/header :: common-head(${pageTitle})}"></head>
-    <body class="pageCenteredBody">
-        <div class="pageCentered">
-            <h2 th:text="${pageTitle}">Unresolved Page Title</h2>
-
-            <nav class="navigationContainer">
-                <ul class="navigationList">
-                    <li><a href="/e-commerce/">E-Commerce Home</a></li>
-                </ul>
-            </nav>
-        </div>
-    </body>
-</html>
+<head th:fragment="common-head(pageTitle)">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel="icon" type="image/png" th:href="@{/favicon.png}" href="../../static/favicon.png">
+  <link rel="stylesheet" th:href="@{/styles/styles.css}" href="../../static/styles/styles.css">
+  <title th:text="${pageTitle}">Unresolved Page Title</title>
+</head>
