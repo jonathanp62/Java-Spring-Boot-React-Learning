@@ -1,4 +1,4 @@
-package net.jmp.spring.boot.react.learning.ecommerce.controllers;
+package net.jmp.spring.boot.react.learning.ecommerce.controllers.template;
 
 /*
  * (#)ShippingCostController.java   0.4.0   02/28/2026
@@ -50,9 +50,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-/// The shipping cost controller class.
+/// The shipping cost HTML controller class.
 @Controller
-public class ShippingCostController {
+public class ShippingCostHtmlController {
     /// The log tracer
     private final LogTracer logTracer;
 
@@ -66,7 +66,7 @@ public class ShippingCostController {
     ///
     /// @param  applicationContext    org.springframework.context.ApplicationContext
     /// @param  distanceService       net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService
-    public ShippingCostController(final ApplicationContext applicationContext, final DistanceService distanceService) {
+    public ShippingCostHtmlController(final ApplicationContext applicationContext, final DistanceService distanceService) {
         super();
 
         this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));

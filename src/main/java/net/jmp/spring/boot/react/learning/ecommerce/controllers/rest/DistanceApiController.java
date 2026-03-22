@@ -1,4 +1,4 @@
-package net.jmp.spring.boot.react.learning.ecommerce.controllers;
+package net.jmp.spring.boot.react.learning.ecommerce.controllers.rest;
 
 /*
  * (#)DistanceApiController.java    0.4.0   02/20/2026

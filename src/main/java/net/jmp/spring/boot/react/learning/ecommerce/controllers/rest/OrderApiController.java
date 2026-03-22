@@ -1,4 +1,4 @@
-package net.jmp.spring.boot.react.learning.ecommerce.controllers;
+package net.jmp.spring.boot.react.learning.ecommerce.controllers.rest;
 
 /*
  * (#)OrderApiController.java   0.4.0   03/07/2026

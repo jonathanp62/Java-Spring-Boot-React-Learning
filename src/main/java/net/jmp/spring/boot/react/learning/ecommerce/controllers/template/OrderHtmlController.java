@@ -1,4 +1,4 @@
-package net.jmp.spring.boot.react.learning.ecommerce.controllers;
+package net.jmp.spring.boot.react.learning.ecommerce.controllers.template;
 
 /*
  * (#)OrderController.java  0.2.0   02/01/2026
@@ -50,9 +50,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-/// The order controller class.
+/// The order HTML controller class.
 @Controller
-public class OrderController {
+public class OrderHtmlController {
     /// The order service
     private final OrderService orderService;
 
@@ -62,7 +62,7 @@ public class OrderController {
     /// The constructor
     ///
     /// @param  orderService    net.jmp.spring.boot.react.learning.ecommerce.services.OrderService
-    public OrderController(final OrderService orderService) {
+    public OrderHtmlController(final OrderService orderService) {
         super();
 
         this.orderService = orderService;

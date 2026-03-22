@@ -1,8 +1,8 @@
-package net.jmp.spring.boot.react.learning.ecommerce.controllers;
+package net.jmp.spring.boot.react.learning.ecommerce.controllers.template;
 
 /*
- * (#)SalesTaxController.java   0.2.0   02/01/2026
- * (#)SalesTaxController.java   0.1.0   01/03/2026
+ * (#)HomeController.java   0.2.0   02/01/2026
+ * (#)HomeController.java   0.1.0   01/02/2026
  *
  * @author    Jonathan Parker
  * @version   0.2.0
@@ -31,47 +31,32 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
  * SOFTWARE.
  */
 
-import net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService;
-
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
 
-import org.springframework.ui.Model;
-
 import org.springframework.web.bind.annotation.GetMapping;
 
-/// The sales tax controller class.
+/// The home HTML controller class.
 @Controller
-public class SalesTaxController {
-    /// The sales tax service
-    private final SalesTaxService salesTaxService;
-
+public class HomeHtmlController {
     /// The log tracer
     private final LogTracer logTracer;
 
-    /// The constructor
-    ///
-    /// @param  salesTaxService net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService
-    public SalesTaxController(final SalesTaxService salesTaxService) {
+    /// The default constructor
+    public HomeHtmlController() {
         super();
 
-        this.salesTaxService = salesTaxService;
         this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
-    /// Maps GET requests for the e-commerce sales-tax path to the "e-commerce/sales-tax" view.
+    /// Maps GET requests for the e-commerce root path to the "e-commerce/home" view.
     ///
     /// @return java.lang.String
-    @GetMapping("/e-commerce/sales-tax/")
-    public String salesTaxes(final Model model) {
-        return this.logTracer.tracedWith(() -> {
-            model.addAttribute("salesTaxList", this.salesTaxService.getSalesTaxes());
-
-            return "e-commerce/sales-tax";
-
-        }, model);
+    @GetMapping("/e-commerce/")
+    public String eCommerceHome() {
+        return this.logTracer.traced(() -> "e-commerce/home");
     }
 }

@@ -1,11 +1,12 @@
-package net.jmp.spring.boot.react.learning.ecommerce.controllers;
+package net.jmp.spring.boot.react.learning.ecommerce.controllers.template;
 
 /*
- * (#)GenerateErrorController.java  0.3.0   02/19/2026
+ * (#)SalesTaxController.java   0.2.0   02/01/2026
+ * (#)SalesTaxController.java   0.1.0   01/03/2026
  *
  * @author    Jonathan Parker
- * @version   0.3.0
- * @since     0.3.0
+ * @version   0.2.0
+ * @since     0.1.0
  *
  * MIT License
  *
@@ -30,9 +31,10 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
  * SOFTWARE.
  */
 
+import net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService;
+
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
@@ -41,37 +43,35 @@ import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
-/// The generate error controller class.
+/// The sales tax HTML controller class.
 @Controller
-public class GenerateErrorController {
+public class SalesTaxHtmlController {
+    /// The sales tax service
+    private final SalesTaxService salesTaxService;
+
     /// The log tracer
     private final LogTracer logTracer;
 
-    /// The default constructor
-    public GenerateErrorController() {
+    /// The constructor
+    ///
+    /// @param  salesTaxService net.jmp.spring.boot.react.learning.ecommerce.services.SalesTaxService
+    public SalesTaxHtmlController(final SalesTaxService salesTaxService) {
         super();
 
+        this.salesTaxService = salesTaxService;
         this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
-    /// Maps GET requests for the e-commerce generate error path to the "e-commerce/generate-error" view.
+    /// Maps GET requests for the e-commerce sales-tax path to the "e-commerce/sales-tax" view.
     ///
-    /// @param  model   org.springframework.ui.Model
-    /// @return         java.lang.String
-    @GetMapping("/e-commerce/generate-error")
-    public String generateError(final Model model) {
-        return this.logTracer.traced(() -> {
-            final Logger logger = this.logTracer.getLogger();
+    /// @return java.lang.String
+    @GetMapping("/e-commerce/sales-tax/")
+    public String salesTaxes(final Model model) {
+        return this.logTracer.tracedWith(() -> {
+            model.addAttribute("salesTaxList", this.salesTaxService.getSalesTaxes());
 
-            try {
-                throw new Exception("This is the error generated");
-            } catch (final Exception e) {
-                logger.error("Generated error caught", e);
+            return "e-commerce/sales-tax";
 
-                model.addAttribute("error", e.getMessage());
-            }
-
-            return "e-commerce/generate-error";
-        });
+        }, model);
     }
 }

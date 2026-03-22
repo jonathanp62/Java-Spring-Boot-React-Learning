@@ -1,4 +1,4 @@
-package net.jmp.spring.boot.react.learning.ecommerce.controllers;
+package net.jmp.spring.boot.react.learning.ecommerce.controllers.rest;
 
 /*
  * (#)SalesTaxApiController.java    0.2.0   01/11/2026

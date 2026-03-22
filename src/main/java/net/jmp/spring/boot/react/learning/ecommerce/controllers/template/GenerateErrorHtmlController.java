@@ -1,11 +1,11 @@
-package net.jmp.spring.boot.react.learning.ecommerce.controllers;
+package net.jmp.spring.boot.react.learning.ecommerce.controllers.template;
 
 /*
- * (#)DistanceController.java   0.4.0   02/23/2026
+ * (#)GenerateErrorController.java  0.3.0   02/19/2026
  *
  * @author    Jonathan Parker
- * @version   0.4.0
- * @since     0.4.0
+ * @version   0.3.0
+ * @since     0.3.0
  *
  * MIT License
  *
@@ -32,8 +32,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
-import net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService;
-
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
@@ -42,35 +41,37 @@ import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
-/// The distance controller class.
+/// The generate error HTML controller class.
 @Controller
-public class DistanceController {
-    /// The distance service
-    private final DistanceService distanceService;
-
+public class GenerateErrorHtmlController {
     /// The log tracer
     private final LogTracer logTracer;
 
-    /// The constructor
-    ///
-    /// @param  distanceService net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService
-    public DistanceController(final DistanceService distanceService) {
+    /// The default constructor
+    public GenerateErrorHtmlController() {
         super();
 
-        this.distanceService = distanceService;
         this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
-    /// Maps GET requests for the e-commerce distance path to the "e-commerce/distance" view.
+    /// Maps GET requests for the e-commerce generate error path to the "e-commerce/generate-error" view.
     ///
-    /// @return java.lang.String
-    @GetMapping("/e-commerce/distance/")
-    public String distances(final Model model) {
-        return this.logTracer.tracedWith(() -> {
-            model.addAttribute("distanceList", this.distanceService.getDistances());
+    /// @param  model   org.springframework.ui.Model
+    /// @return         java.lang.String
+    @GetMapping("/e-commerce/generate-error")
+    public String generateError(final Model model) {
+        return this.logTracer.traced(() -> {
+            final Logger logger = this.logTracer.getLogger();
 
-            return "e-commerce/distance";
+            try {
+                throw new Exception("This is the error generated");
+            } catch (final Exception e) {
+                logger.error("Generated error caught", e);
 
-        }, model);
+                model.addAttribute("error", e.getMessage());
+            }
+
+            return "e-commerce/generate-error";
+        });
     }
 }

@@ -1,4 +1,4 @@
-package net.jmp.spring.boot.react.learning.ecommerce.controllers;
+package net.jmp.spring.boot.react.learning.ecommerce.controllers.rest;
 
 /*
  * (#)ShippingCostApiController.java    0.4.0   02/26/2026

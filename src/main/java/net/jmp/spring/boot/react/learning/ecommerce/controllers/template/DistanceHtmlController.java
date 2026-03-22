@@ -1,12 +1,11 @@
-package net.jmp.spring.boot.react.learning.ecommerce.controllers;
+package net.jmp.spring.boot.react.learning.ecommerce.controllers.template;
 
 /*
- * (#)HomeController.java   0.2.0   02/01/2026
- * (#)HomeController.java   0.1.0   01/02/2026
+ * (#)DistanceController.java   0.4.0   02/23/2026
  *
  * @author    Jonathan Parker
- * @version   0.2.0
- * @since     0.1.0
+ * @version   0.4.0
+ * @since     0.4.0
  *
  * MIT License
  *
@@ -33,30 +32,45 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
+import net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService;
+
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
 
+import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.GetMapping;
 
-/// The home controller class.
+/// The distance HTML controller class.
 @Controller
-public class HomeController {
+public class DistanceHtmlController {
+    /// The distance service
+    private final DistanceService distanceService;
+
     /// The log tracer
     private final LogTracer logTracer;
 
-    /// The default constructor
-    public HomeController() {
+    /// The constructor
+    ///
+    /// @param  distanceService net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService
+    public DistanceHtmlController(final DistanceService distanceService) {
         super();
 
+        this.distanceService = distanceService;
         this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
-    /// Maps GET requests for the e-commerce root path to the "e-commerce/home" view.
+    /// Maps GET requests for the e-commerce distance path to the "e-commerce/distance" view.
     ///
     /// @return java.lang.String
-    @GetMapping("/e-commerce/")
-    public String eCommerceHome() {
-        return this.logTracer.traced(() -> "e-commerce/home");
+    @GetMapping("/e-commerce/distance/")
+    public String distances(final Model model) {
+        return this.logTracer.tracedWith(() -> {
+            model.addAttribute("distanceList", this.distanceService.getDistances());
+
+            return "e-commerce/distance";
+
+        }, model);
     }
 }
