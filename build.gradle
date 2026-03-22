@@ -1,11 +1,12 @@
 /*
+ * (#)build.gradle  0.5.0   03/22/2026
  * (#)build.gradle  0.4.0   02/20/2026
  * (#)build.gradle  0.3.0   02/08/2026
  * (#)build.gradle  0.2.0   01/31/2026
  * (#)build.gradle  0.1.0   12/10/2025
  *
  * @author   Jonathan Parker
- * @version  0.4.0
+ * @version  0.5.0
  * @since    0.1.0
  *
  * MIT License
@@ -48,15 +49,15 @@ apply plugin: 'net.jmp.gradle.plugin.projectinfo-info'
 
 ext {
 	project.group = 'net.jmp.spring.boot.react.learning'
-	project.version = '0.4.0-SNAPSHOT'
+	project.version = '0.5.0-SNAPSHOT'
 	project.description = 'to support React learning'
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_25
+java.sourceCompatibility = JavaVersion.VERSION_26
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(25)
+		languageVersion = JavaLanguageVersion.of(26)
 	}
 }
 
@@ -105,7 +106,7 @@ tasks.withType(Javadoc).configureEach {
     StandardJavadocDocletOptions sjdo = options as StandardJavadocDocletOptions
 
     cjo.encoding("UTF-8")
-    cjo.addStringOption("source", "25")
+    cjo.addStringOption("source", "26")
     cjo.memberLevel = JavadocMemberLevel.PRIVATE
 
     sjdo.version(true)
