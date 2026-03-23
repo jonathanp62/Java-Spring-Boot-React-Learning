@@ -1,8 +1,9 @@
 <!--
+ (#)shipping-cost-results.html  0.5.0   03/23/2026
  (#)shipping-cost-results.html  0.4.0   03/01/2026
 
  @author  Jonathan Parker
- @version 0.4.0
+ @version 0.5.0
  @since   0.4.0
 
  MIT License
@@ -29,16 +30,11 @@
 -->
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link rel="icon" type="image/png" th:href="@{/favicon.png}" href="../../static/favicon.png">
-  <link rel="stylesheet" th:href="@{/styles/styles.css}" href="../../static/styles/styles.css">
-  <title>E-Commerce Shipping Cost Calculated Results</title>
-</head>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us" th:with="pageTitle=${'E-Commerce Shipping Cost Calculated Results'}">
+<head th:replace="~{fragments/header :: common-head(${pageTitle})}"></head>
 <body class="pageCenteredBody">
 <div class="pageCentered">
-  <h2>E-Commerce Shipping Cost Calculated Results</h2>
+  <h2 th:text="${pageTitle}">Unresolved Page Title</h2>
 
   <div style="margin-top: 1.5rem;">
     <table style="border-collapse: collapse; margin: 0 auto; text-align: left;">

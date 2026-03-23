@@ -1,8 +1,9 @@
 <!--
+ (#)401.html    0.5.0   03/22/2026
  (#)401.html    0.1.0   01/24/2026
 
  @author  Jonathan Parker
- @version 0.1.0
+ @version 0.5.0
  @since   0.1.0
 
  MIT License
@@ -30,12 +31,7 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <link rel="icon" type="image/png" th:href="@{/favicon.png}" href="../../static/favicon.png">
-        <link rel="stylesheet" th:href="@{/styles/styles.css}" href="../../static/styles/styles.css">
-        <title>Spring Boot React Learning</title>
-    </head>
+    <head th:replace="~{fragments/header :: common-head('Spring Boot React Learning')}"></head>
     <body>
         <h2>An unauthorized error occurred</h2>
         <div>
