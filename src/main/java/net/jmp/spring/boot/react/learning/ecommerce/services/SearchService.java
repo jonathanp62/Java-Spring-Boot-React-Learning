@@ -110,22 +110,26 @@ public class SearchService {
 
                 try {
                     final SolrQuery query = new SolrQuery("*:*");
+
+                    query.setRows(20);
+                    query.setStart(0);
+                    query.setSort("product_id", SolrQuery.ORDER.asc);
+
                     final QueryResponse response = this.solrClient.query(collection, query);
 
-                    logger.info("QueryResponse: {}", response); // @todo Make these loggings debug
+                    logger.debug("QueryResponse: {}", response);
 
                     status = response.getStatus();
 
                     if (status == 0) {
-                        // Returns 10 right now
-                        logger.info("SolrDocumentList size: {}", response.getResults() != null ? response.getResults().size() : 0);
-                        // Returns 20
-                        logger.info("NumFound: {}", response.getResults() != null ? response.getResults().getNumFound() : 0);
-                        logger.info("NumFound Exact: {}", response.getResults() != null ? response.getResults().getNumFoundExact() : 0);
-                        logger.info("Start: {}", response.getResults() != null ? response.getResults().getStart() : 0);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Results size  : {}", response.getResults() != null ? response.getResults().size() : 0); // Returns 20
+                            logger.debug("NumFound      : {}", response.getResults() != null ? response.getResults().getNumFound() : 0);  // Returns 20
+                            logger.debug("NumFound Exact: {}", response.getResults() != null ? response.getResults().getNumFoundExact() : 0);
+                            logger.debug("Start         : {}", response.getResults() != null ? response.getResults().getStart() : 0);
+                        }
 
                         products = response.getBeans(SolrProduct.class);
-
                     } else {
                         products = new ArrayList<>();
                     }
