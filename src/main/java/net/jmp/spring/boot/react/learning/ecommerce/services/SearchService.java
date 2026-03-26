@@ -81,10 +81,14 @@ public class SearchService {
                     final SolrPingResponse response = this.solrClient.ping(collection);
 
                     status = response.getStatus();
+
+                    if (status == 0) {
+                        status = 200;
+                    }
                 } catch (final Exception e) {
                     final Logger logger = this.logTracer.getLogger();
 
-                    logger.error("Failed to ping Solr: {}", e.getMessage());
+                    logger.error("Failed to ping Solr", e);
 
                     status = 500;
                 }
@@ -126,7 +130,7 @@ public class SearchService {
                         products = new ArrayList<>();
                     }
                 } catch (final Exception e) {
-                    logger.error("Failed to select all from Solr: {}", e.getMessage());
+                    logger.error("Failed to select all from Solr", e);
 
                     status = 500;
                     products = new ArrayList<>();
@@ -152,12 +156,12 @@ public class SearchService {
 
                 @SuppressWarnings("unchecked")
                 final List<String> collections = (List<String>) response.getResponse().get("collections");
-
+                
                 return collections.contains(collection);
             } catch (final Exception e) {
                 final Logger logger = this.logTracer.getLogger();
 
-                logger.error("Failed to get Solr collections: {}", e.getMessage());
+                logger.error("Failed to get Solr collections", e);
 
                 return false;
             }

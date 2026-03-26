@@ -82,7 +82,7 @@ public class SearchApiController {
             final int status = this.searchService.ping(collection);
 
             return switch (status) {
-                case 0 -> new ResponseEntity<>(
+                case 200 -> new ResponseEntity<>(
                         String.format("Pinged Solr collection %s OK", collection),
                         HttpStatus.OK
                 );
