@@ -42,8 +42,8 @@ public class SolrProduct {
     private String id;
 
     /// The product identifier
-    @Field("productId")
-    private List<Long> productId;
+    @Field("product_id")
+    private Integer productId;
 
     /// The title
     @Field
@@ -63,15 +63,15 @@ public class SolrProduct {
 
     /// The link to the image
     @Field
-    private List<String> image;
+    private String image;
 
     /// The rating rate
-    @Field("ratingRate")
-    private List<Double> ratingRate;
+    @Field("rating_rate")
+    private Double ratingRate;
 
     /// The rating count
-    @Field("ratingCount")
-    private List<Long> ratingCount;
+    @Field("rating_count")
+    private Integer ratingCount;
 
     /// The default constructor
     public SolrProduct() {
@@ -94,15 +94,15 @@ public class SolrProduct {
 
     /// Get the product identifier
     ///
-    /// @return java.util.List<java.lang.Long>
-    public List<Long> getProductId() {
+    /// @return java.lang.Integer
+    public Integer getProductId() {
         return this.productId;
     }
 
     /// Set the product identifier
     ///
-    /// @param  productId  java.util.List<java.lang.Long>
-    public void setProductId(final List<Long> productId) {
+    /// @param  productId  java.lang.Integer
+    public void setProductId(final Integer productId) {
         this.productId = productId;
     }
 
@@ -164,43 +164,43 @@ public class SolrProduct {
 
     /// Get the link to the image
     ///
-    /// @return java.util.List<java.lang.String>
-    public List<String> getImage() {
+    /// @return java.lang.String
+    public String getImage() {
         return this.image;
     }
 
     /// Set the link to the image
     ///
-    /// @param  image  java.util.List<java.lang.String>
-    public void setImage(final List<String> image) {
+    /// @param  image  java.lang.String
+    public void setImage(final String image) {
         this.image = image;
     }
 
     /// Get the rating rate
     ///
-    /// @return java.util.List<java.lang.Double>
-    public List<Double> getRatingRate() {
+    /// @return java.lang.Double
+    public Double getRatingRate() {
         return this.ratingRate;
     }
 
     /// Set the rating rate
     ///
-    /// @param  ratingRate  java.util.List<java.lang.Double>
-    public void setRatingRate(final List<Double> ratingRate) {
+    /// @param  ratingRate  java.lang.Double
+    public void setRatingRate(final Double ratingRate) {
         this.ratingRate = ratingRate;
     }
 
     /// Get the rating count
     ///
-    /// @return java.util.List<java.lang.Long>
-    public List<Long> getRatingCount() {
+    /// @return java.lang.Integer
+    public Integer getRatingCount() {
         return this.ratingCount;
     }
 
     /// Set the rating count
     ///
-    /// @param  ratingCount  java.util.List<java.lang.Long>
-    public void setRatingCount(final List<Long> ratingCount) {
+    /// @param  ratingCount  java.lang.Integer
+    public void setRatingCount(final Integer ratingCount) {
         this.ratingCount = ratingCount;
     }
 
