@@ -29,6 +29,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers.rest;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import net.jmp.spring.boot.react.learning.ecommerce.SolrProduct;
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.SearchService;
@@ -42,6 +43,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /// The search API controller
 @RestController
@@ -92,6 +95,19 @@ public class SearchApiController {
                         HttpStatus.INTERNAL_SERVER_ERROR
                 );
             };
+        }, collection);
+    }
+
+    /// The select all method
+    ///
+    /// @param  collection  java.lang.String
+    /// @return             org.springframework.http.ResponseEntity<java.lang.String>
+    @GetMapping("/{collection}/select")
+    public ResponseEntity<List<SolrProduct>> selectAll(final @PathVariable String collection) {
+        return this.logTracer.tracedWith(() -> {
+            final List<SolrProduct> products = this.searchService.selectAll(collection);
+
+            return new ResponseEntity<>(products, HttpStatus.OK);
         }, collection);
     }
 }

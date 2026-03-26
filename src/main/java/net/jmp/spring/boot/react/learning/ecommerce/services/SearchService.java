@@ -30,15 +30,20 @@ package net.jmp.spring.boot.react.learning.ecommerce.services;
  * SOFTWARE.
  */
 
+import java.util.ArrayList;
 import java.util.List;
+
+import net.jmp.spring.boot.react.learning.ecommerce.SolrProduct;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
 import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
 
 import org.apache.solr.client.solrj.request.CollectionAdminRequest;
+import org.apache.solr.client.solrj.request.SolrQuery;
 
 import org.apache.solr.client.solrj.response.CollectionAdminResponse;
+import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
 
 import org.slf4j.Logger;
@@ -88,6 +93,50 @@ public class SearchService {
             }
 
             return status;
+        }, collection);
+    }
+
+    public List<SolrProduct> selectAll(final String collection) {
+        return this.logTracer.tracedWith(() -> {
+            List<SolrProduct> products;
+            int status;
+
+            if (this.isSolrCollectionValid(collection)) {
+                final Logger logger = this.logTracer.getLogger();
+
+                try {
+                    final SolrQuery query = new SolrQuery("*:*");
+                    final QueryResponse response = this.solrClient.query(collection, query);
+
+                    logger.info("QueryResponse: {}", response); // @todo Make these loggings debug
+
+                    status = response.getStatus();
+
+                    if (status == 0) {
+                        // Returns 10 right now
+                        logger.info("SolrDocumentList size: {}", response.getResults() != null ? response.getResults().size() : 0);
+                        // Returns 20
+                        logger.info("NumFound: {}", response.getResults() != null ? response.getResults().getNumFound() : 0);
+                        logger.info("NumFound Exact: {}", response.getResults() != null ? response.getResults().getNumFoundExact() : 0);
+                        logger.info("Start: {}", response.getResults() != null ? response.getResults().getStart() : 0);
+
+                        products = response.getBeans(SolrProduct.class);
+
+                    } else {
+                        products = new ArrayList<>();
+                    }
+                } catch (final Exception e) {
+                    logger.error("Failed to select all from Solr: {}", e.getMessage());
+
+                    status = 500;
+                    products = new ArrayList<>();
+                }
+            } else {
+                status = 404;
+                products = new ArrayList<>();
+            }
+
+            return products;
         }, collection);
     }
 
