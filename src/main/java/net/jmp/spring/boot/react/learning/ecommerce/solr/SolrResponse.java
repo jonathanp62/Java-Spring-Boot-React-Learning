@@ -35,34 +35,41 @@ import java.util.Objects;
 /// This SolrResponse class is a base class for all Solr responses
 public class SolrResponse {
     /// The elapsed time
-    private final long elapsedTime;
+    private long elapsedTime;
 
     /// The query time
-    private final int  qTime;
+    private int  qTime;
 
     /// The status code
     private final int status;
+
+    /// The message
+    private final String message;
 
     /// The default constructor
     private SolrResponse() {
         super();
 
-        this.elapsedTime = 0;
-        this.qTime = 0;
         this.status = 0;
+        this.message = "";
     }
 
     /// The constructor
     ///
-    /// @param  elapsedTime long
-    /// @param  qTime       int
-    /// @param  status      int
-    protected SolrResponse(final long elapsedTime, final int qTime, final int status) {
+    /// @param  status  int
+    /// @param  message java.lang.String
+    protected SolrResponse(final int status, final String message) {
         super();
 
-        this.elapsedTime = elapsedTime;
-        this.qTime = qTime;
         this.status = status;
+        this.message = message;
+    }
+
+    /// Set the elapsed time
+    ///
+    /// @param  elapsedTime  long
+    public void setElapsedTime(final long elapsedTime) {
+        this.elapsedTime = elapsedTime;
     }
 
     /// Get the elapsed time
@@ -70,6 +77,13 @@ public class SolrResponse {
     /// @return long
     public long getElapsedTime() {
         return this.elapsedTime;
+    }
+
+    /// Set the query time
+    ///
+    /// @param  qTime  int
+    public void setQTime(final int qTime) {
+        this.qTime = qTime;
     }
 
     /// Get the query time
@@ -86,6 +100,13 @@ public class SolrResponse {
         return this.status;
     }
 
+    /// Get the message
+    ///
+    /// @return java.lang.String
+    public String getMessage() {
+        return this.message;
+    }
+
     /// The equals method
     ///
     /// @param  o   java.lang.Object
@@ -98,7 +119,8 @@ public class SolrResponse {
 
         return this.elapsedTime == that.elapsedTime
                 && this.qTime == that.qTime
-                && this.status == that.status;
+                && this.status == that.status
+                && Objects.equals(this.message, that.message);
     }
 
     /// The hash code
@@ -106,7 +128,7 @@ public class SolrResponse {
     /// @return int
     @Override
     public int hashCode() {
-        return Objects.hash(this.elapsedTime, this.qTime, this.status);
+        return Objects.hash(this.elapsedTime, this.qTime, this.status, this.message);
     }
 
     /// The string representation
@@ -118,6 +140,7 @@ public class SolrResponse {
                 "elapsedTime=" + this.elapsedTime +
                 ", qTime=" + this.qTime +
                 ", status=" + this.status +
+                ", message='" + this.message + "'" +
                 '}';
     }
 }

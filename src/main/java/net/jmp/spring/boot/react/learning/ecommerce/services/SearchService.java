@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.services;
 
 /*
+ * (#)SearchService.java    0.5.0   03/21/2026
  * (#)SearchService.java    0.4.0   03/21/2026
  *
  * @author    Jonathan Parker
- * @version   0.4.0
+ * @version   0.5.0
  * @since     0.4.0
  *
  * MIT License
@@ -36,6 +37,8 @@ import java.util.List;
 import net.jmp.spring.boot.react.learning.ecommerce.SolrProduct;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
+
+import net.jmp.spring.boot.react.learning.ecommerce.solr.PingSolrResponse;
 
 import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
 
@@ -71,32 +74,36 @@ public class SearchService {
     /// The ping method
     ///
     /// @param  collection  java.lang.String
-    /// @return             int
-    public int ping(final String collection) {
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.PingSolrResponse
+    public PingSolrResponse ping(final String collection) {
         return this.logTracer.tracedWith(() -> {
-            int status;
+            PingSolrResponse pingSolrResponse;
 
             if (this.isSolrCollectionValid(collection)) {
                 try {
                     final SolrPingResponse response = this.solrClient.ping(collection);
 
-                    status = response.getStatus();
+                    if (response.getStatus() == 0) {
+                        pingSolrResponse = new PingSolrResponse(200, "OK");
 
-                    if (status == 0) {
-                        status = 200;
+                        pingSolrResponse.setElapsedTime(response.getElapsedTime());
+                        pingSolrResponse.setQTime(response.getQTime());
+                    } else {
+                        pingSolrResponse = new PingSolrResponse(500, "Not OK");
                     }
                 } catch (final Exception e) {
                     final Logger logger = this.logTracer.getLogger();
+                    final String message = String.format("Failed to ping Solr: %s", e.getMessage());
 
-                    logger.error("Failed to ping Solr", e);
+                    logger.error(message);
 
-                    status = 500;
+                    pingSolrResponse = new PingSolrResponse(500, message);
                 }
             } else {
-                status = 404;
+                pingSolrResponse = new PingSolrResponse(404, String.format("Solr collection %s was not found", collection));
             }
 
-            return status;
+            return pingSolrResponse;
         }, collection);
     }
 

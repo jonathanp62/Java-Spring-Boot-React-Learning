@@ -34,6 +34,8 @@ import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.SearchService;
 
+import net.jmp.spring.boot.react.learning.ecommerce.solr.PingSolrResponse;
+
 import org.slf4j.LoggerFactory;
 
 import org.springframework.http.HttpStatus;
@@ -79,16 +81,20 @@ public class SearchApiController {
     @GetMapping("/{collection}/ping")
     public ResponseEntity<String> ping(final @PathVariable String collection) {
         return this.logTracer.tracedWith(() -> {
-            final int status = this.searchService.ping(collection);
+            final PingSolrResponse response = this.searchService.ping(collection);
 
-            return switch (status) {
+            return switch (response.getStatus()) {
                 case 200 -> new ResponseEntity<>(
                         String.format("Pinged Solr collection %s OK", collection),
                         HttpStatus.OK
                 );
                 case 404 -> new ResponseEntity<>(
-                        String.format("Solr collection %s was not found", collection),
+                        response.getMessage(),
                         HttpStatus.NOT_FOUND
+                );
+                case 500 -> new ResponseEntity<>(
+                        response.getMessage(),
+                        HttpStatus.INTERNAL_SERVER_ERROR
                 );
                 default -> new ResponseEntity<>(
                         String.format("Failed to ping Solr collection %s", collection),

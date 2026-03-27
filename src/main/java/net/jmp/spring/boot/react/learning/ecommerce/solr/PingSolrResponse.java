@@ -34,10 +34,9 @@ package net.jmp.spring.boot.react.learning.ecommerce.solr;
 public class PingSolrResponse extends SolrResponse {
     /// The constructor
     ///
-    /// @param  elapsedTime long
-    /// @param  qTime       int
-    /// @param  status      int
-    public PingSolrResponse(final long elapsedTime, final int qTime, final int status) {
-        super(elapsedTime, qTime, status);
+    /// @param  status  int
+    /// @param  message java.lang.String
+    public PingSolrResponse(final int status, final String message) {
+        super(status, message);
     }
 }

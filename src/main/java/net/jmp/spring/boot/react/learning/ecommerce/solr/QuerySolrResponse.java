@@ -41,21 +41,20 @@ public class QuerySolrResponse<T> extends SolrResponse {
     private float maxScore;
 
     /// The number of documents found
-    private long   numFound;
+    private long numFound;
 
     /// Where the returned documents started
-    private long   start;
+    private long start;
 
     /// The list of documents
     private List<T> documents;
 
     /// The constructor
     ///
-    /// @param  elapsedTime long
-    /// @param  qTime       int
     /// @param  status      int
-    public QuerySolrResponse(final long elapsedTime, final int qTime, final int status) {
-        super(elapsedTime, qTime, status);
+    /// @param  message     java.lang.String
+    public QuerySolrResponse(final int status, final String message) {
+        super(status, message);
     }
 
     /// Get the max score
