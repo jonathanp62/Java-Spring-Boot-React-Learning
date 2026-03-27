@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers.rest;
 
 /*
+ * (#)SearchApiController.java  0.5.0   03/27/2026
  * (#)SearchApiController.java  0.4.0   03/21/2026
  *
  * @author    Jonathan Parker
- * @version   0.4.0
+ * @version   0.5.0
  * @since     0.4.0
  *
  * MIT License
