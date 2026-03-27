@@ -36,7 +36,9 @@ import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 import net.jmp.spring.boot.react.learning.ecommerce.services.SearchService;
 
 import net.jmp.spring.boot.react.learning.ecommerce.solr.PingSolrResponse;
+import net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.http.HttpStatus;
@@ -47,6 +49,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /// The search API controller
@@ -107,13 +110,35 @@ public class SearchApiController {
 
     /// The select all from ecommerce-products method
     ///
-    /// @return org.springframework.http.ResponseEntity<java.lang.String>
+    /// @return org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
     @GetMapping("/ecommerce-products/select")
     public ResponseEntity<List<SolrProduct>> selectAll() {
         return this.logTracer.traced(() -> {
-            final List<SolrProduct> products = this.searchService.selectAll("ecommerce-products");
+            final Logger logger = this.logTracer.getLogger();
+            final QuerySolrResponse<SolrProduct> response = this.searchService.selectAll("ecommerce-products");
 
-            return new ResponseEntity<>(products, HttpStatus.OK);
+            return switch (response.getStatus()) {
+                case 200 -> new ResponseEntity<>(
+                        response.getDocuments(),
+                        HttpStatus.OK
+                );
+                case 404 -> {
+                    logger.error(response.getMessage());
+
+                    yield new ResponseEntity<>(
+                        new ArrayList<>(),
+                        HttpStatus.NOT_FOUND
+                    );
+                }
+                default -> {
+                    logger.error(response.getMessage());
+
+                    yield new ResponseEntity<>(
+                        new ArrayList<>(),
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                    );
+                }
+            };
         });
     }
 }
