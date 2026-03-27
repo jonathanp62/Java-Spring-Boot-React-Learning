@@ -98,16 +98,15 @@ public class SearchApiController {
         }, collection);
     }
 
-    /// The select all method
+    /// The select all from ecommerce-products method
     ///
-    /// @param  collection  java.lang.String
-    /// @return             org.springframework.http.ResponseEntity<java.lang.String>
-    @GetMapping("/{collection}/select")
-    public ResponseEntity<List<SolrProduct>> selectAll(final @PathVariable String collection) {
-        return this.logTracer.tracedWith(() -> {
-            final List<SolrProduct> products = this.searchService.selectAll(collection);
+    /// @return org.springframework.http.ResponseEntity<java.lang.String>
+    @GetMapping("/ecommerce-products/select")
+    public ResponseEntity<List<SolrProduct>> selectAll() {
+        return this.logTracer.traced(() -> {
+            final List<SolrProduct> products = this.searchService.selectAll("ecommerce-products");
 
             return new ResponseEntity<>(products, HttpStatus.OK);
-        }, collection);
+        });
     }
 }
