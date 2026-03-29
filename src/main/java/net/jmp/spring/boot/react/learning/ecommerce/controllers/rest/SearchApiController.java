@@ -141,4 +141,39 @@ public class SearchApiController {
             };
         });
     }
+
+    /// The select by ID from ecommerce-products method
+    ///
+    /// @param  id  java.lang.String
+    /// @return     org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    @GetMapping("/ecommerce-products/select/{id}")
+    public ResponseEntity<SolrProduct> selectById(final @PathVariable String id) {
+        return this.logTracer.tracedWith(() -> {
+            final Logger logger = this.logTracer.getLogger();
+            final QuerySolrResponse<SolrProduct> response = this.searchService.selectById("ecommerce-products", id);
+
+            return switch (response.getStatus()) {
+                case 200 -> new ResponseEntity<>(
+                        response.getDocuments().getFirst(),
+                        HttpStatus.OK
+                    );
+                case 404 -> {
+                    logger.warn(response.getMessage());
+
+                    yield new ResponseEntity<>(
+                            new SolrProduct(),
+                            HttpStatus.NOT_FOUND
+                    );
+                }
+                default -> {
+                    logger.error(response.getMessage());
+
+                    yield new ResponseEntity<>(
+                            new SolrProduct(),
+                            HttpStatus.INTERNAL_SERVER_ERROR
+                    );
+                }
+            };
+        }, id);
+    }
 }

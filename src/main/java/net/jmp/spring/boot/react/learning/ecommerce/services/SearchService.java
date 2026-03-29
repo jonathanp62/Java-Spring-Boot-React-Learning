@@ -31,7 +31,6 @@ package net.jmp.spring.boot.react.learning.ecommerce.services;
  * SOFTWARE.
  */
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.jmp.spring.boot.react.learning.ecommerce.SolrProduct;
@@ -115,7 +114,6 @@ public class SearchService {
     public QuerySolrResponse<SolrProduct> selectAll(final String collection) {
         return this.logTracer.tracedWith(() -> {
             QuerySolrResponse<SolrProduct> querySolrResponse;
-            List<SolrProduct> products;
 
             if (this.isSolrCollectionValid(collection)) {
                 final Logger logger = this.logTracer.getLogger();
@@ -139,7 +137,8 @@ public class SearchService {
                             logger.debug("Start         : {}", response.getResults() != null ? response.getResults().getStart() : 0);
                         }
 
-                        products = response.getBeans(SolrProduct.class);
+                        final List<SolrProduct> products = response.getBeans(SolrProduct.class);
+
                         querySolrResponse = new QuerySolrResponse<>(200, "OK");
 
                         querySolrResponse.setQTime(response.getQTime());
@@ -164,6 +163,61 @@ public class SearchService {
 
             return querySolrResponse;
         }, collection);
+    }
+
+    /// The select by ID method
+    ///
+    /// @param  collection  java.lang.String
+    /// @param  id          java.lang.String
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    public QuerySolrResponse<SolrProduct> selectById(final String collection, final String id) {
+        return this.logTracer.tracedWith(() -> {
+            QuerySolrResponse<SolrProduct> querySolrResponse;
+
+            if (this.isSolrCollectionValid(collection)) {
+                final Logger logger = this.logTracer.getLogger();
+
+                try {
+                    final SolrQuery query = new SolrQuery(String.format("id:%s", id));
+                    final QueryResponse response = this.solrClient.query(collection, query);
+
+                    logger.debug("QueryResponse: {}", response);
+
+                    if (response.getStatus() == 0) {
+                        final List<SolrProduct> products = response.getBeans(SolrProduct.class);
+
+                        if (products.isEmpty()) {
+                            querySolrResponse = new QuerySolrResponse<>(404, String.format("ID %s was not found", id));
+
+                            querySolrResponse.setNumFound(0);
+                            querySolrResponse.setStart(0);
+                            querySolrResponse.setMaxScore(0);
+                        } else {
+                            querySolrResponse = new QuerySolrResponse<>(200, "OK");
+
+                            querySolrResponse.setQTime(response.getQTime());
+                            querySolrResponse.setElapsedTime(response.getElapsedTime());
+                            querySolrResponse.setDocuments(products);
+                            querySolrResponse.setNumFound(response.getResults().getNumFound());
+                            querySolrResponse.setStart(response.getResults().getStart());
+                            querySolrResponse.setMaxScore(response.getResults().getMaxScore() != null ? response.getResults().getMaxScore() : 0);
+                        }
+                    } else {
+                        querySolrResponse = new QuerySolrResponse<>(500, "Not OK");
+                    }
+                } catch (final Exception e) {
+                    final String message = String.format("Failed to select all from Solr: %s", e.getMessage());
+
+                    logger.error(message);
+
+                    querySolrResponse = new QuerySolrResponse<>(500, message);
+                }
+            } else {
+                querySolrResponse = new QuerySolrResponse<>(404, String.format("Solr collection %s was not found", collection));
+            }
+
+            return querySolrResponse;
+        }, collection, id);
     }
 
     /// The validate Solr collection method
