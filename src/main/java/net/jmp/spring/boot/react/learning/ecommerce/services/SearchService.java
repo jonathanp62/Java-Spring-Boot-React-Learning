@@ -33,6 +33,8 @@ package net.jmp.spring.boot.react.learning.ecommerce.services;
 
 import java.util.List;
 
+import java.util.function.Supplier;
+
 import net.jmp.spring.boot.react.learning.ecommerce.SolrProduct;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
@@ -113,55 +115,13 @@ public class SearchService {
     /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
     public QuerySolrResponse<SolrProduct> selectAll(final String collection) {
         return this.logTracer.tracedWith(() -> {
-            QuerySolrResponse<SolrProduct> querySolrResponse;
+            final SolrQuery query = new SolrQuery("*:*");
 
-            if (this.isSolrCollectionValid(collection)) {
-                final Logger logger = this.logTracer.getLogger();
+            query.setRows(20);
+            query.setStart(0);
+            query.setSort("product_id", SolrQuery.ORDER.asc);
 
-                try {
-                    final SolrQuery query = new SolrQuery("*:*");
-
-                    query.setRows(20);
-                    query.setStart(0);
-                    query.setSort("product_id", SolrQuery.ORDER.asc);
-
-                    final QueryResponse response = this.solrClient.query(collection, query);
-
-                    logger.debug("QueryResponse: {}", response);
-
-                    if (response.getStatus() == 0) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Results size  : {}", response.getResults() != null ? response.getResults().size() : 0); // Returns 20
-                            logger.debug("NumFound      : {}", response.getResults() != null ? response.getResults().getNumFound() : 0);  // Returns 20
-                            logger.debug("NumFound Exact: {}", response.getResults() != null ? response.getResults().getNumFoundExact() : 0);
-                            logger.debug("Start         : {}", response.getResults() != null ? response.getResults().getStart() : 0);
-                        }
-
-                        final List<SolrProduct> products = response.getBeans(SolrProduct.class);
-
-                        querySolrResponse = new QuerySolrResponse<>(200, "OK");
-
-                        querySolrResponse.setQTime(response.getQTime());
-                        querySolrResponse.setElapsedTime(response.getElapsedTime());
-                        querySolrResponse.setDocuments(products);
-                        querySolrResponse.setNumFound(response.getResults().getNumFound());
-                        querySolrResponse.setStart(response.getResults().getStart());
-                        querySolrResponse.setMaxScore(response.getResults().getMaxScore() != null ? response.getResults().getMaxScore() : 0);
-                    } else {
-                        querySolrResponse = new QuerySolrResponse<>(500, "Not OK");
-                    }
-                } catch (final Exception e) {
-                    final String message = String.format("Failed to select all from Solr: %s", e.getMessage());
-
-                    logger.error(message);
-
-                    querySolrResponse = new QuerySolrResponse<>(500, message);
-                }
-            } else {
-                querySolrResponse = new QuerySolrResponse<>(404, String.format("Solr collection %s was not found", collection));
-            }
-
-            return querySolrResponse;
+            return this.querySolr(collection, query, () -> "");
         }, collection);
     }
 
@@ -171,53 +131,11 @@ public class SearchService {
     /// @param  id          java.lang.String
     /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
     public QuerySolrResponse<SolrProduct> selectById(final String collection, final String id) {
-        return this.logTracer.tracedWith(() -> {
-            QuerySolrResponse<SolrProduct> querySolrResponse;
-
-            if (this.isSolrCollectionValid(collection)) {
-                final Logger logger = this.logTracer.getLogger();
-
-                try {
-                    final SolrQuery query = new SolrQuery(String.format("id:%s", id));
-                    final QueryResponse response = this.solrClient.query(collection, query);
-
-                    logger.debug("QueryResponse: {}", response);
-
-                    if (response.getStatus() == 0) {
-                        final List<SolrProduct> products = response.getBeans(SolrProduct.class);
-
-                        if (products.isEmpty()) {
-                            querySolrResponse = new QuerySolrResponse<>(404, String.format("ID %s was not found", id));
-
-                            querySolrResponse.setNumFound(0);
-                            querySolrResponse.setStart(0);
-                            querySolrResponse.setMaxScore(0);
-                        } else {
-                            querySolrResponse = new QuerySolrResponse<>(200, "OK");
-
-                            querySolrResponse.setQTime(response.getQTime());
-                            querySolrResponse.setElapsedTime(response.getElapsedTime());
-                            querySolrResponse.setDocuments(products);
-                            querySolrResponse.setNumFound(response.getResults().getNumFound());
-                            querySolrResponse.setStart(response.getResults().getStart());
-                            querySolrResponse.setMaxScore(response.getResults().getMaxScore() != null ? response.getResults().getMaxScore() : 0);
-                        }
-                    } else {
-                        querySolrResponse = new QuerySolrResponse<>(500, "Not OK");
-                    }
-                } catch (final Exception e) {
-                    final String message = String.format("Failed to select all from Solr: %s", e.getMessage());
-
-                    logger.error(message);
-
-                    querySolrResponse = new QuerySolrResponse<>(500, message);
-                }
-            } else {
-                querySolrResponse = new QuerySolrResponse<>(404, String.format("Solr collection %s was not found", collection));
-            }
-
-            return querySolrResponse;
-        }, collection, id);
+        return this.logTracer.tracedWith(() -> this.querySolr(
+                collection,
+                new SolrQuery(String.format("id:%s", id)),
+                () -> String.format("ID %s was not found", id)
+        ), collection, id);
     }
 
     /// The validate Solr collection method
@@ -242,5 +160,84 @@ public class SearchService {
                 return false;
             }
         }, collection);
+    }
+
+    /// The query Solr method
+    ///
+    /// @param  collection      java.lang.String
+    /// @param  query           org.apache.solr.client.solrj.request.SolrQuery
+    /// @param  notFoundMessage java.util.function.Supplier<java.lang.String>
+    /// @return                 net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    private QuerySolrResponse<SolrProduct> querySolr(final String collection, final SolrQuery query, final Supplier<String> notFoundMessage) {
+        return this.logTracer.tracedWith(() -> {
+            QuerySolrResponse<SolrProduct> querySolrResponse;
+
+            if (this.isSolrCollectionValid(collection)) {
+                final Logger logger = this.logTracer.getLogger();
+
+                try {
+                    final QueryResponse response = this.solrClient.query(collection, query);
+
+                    this.logQueryResponse(response, logger);
+
+                    if (response.getStatus() == 0) {
+                        final List<SolrProduct> products = response.getBeans(SolrProduct.class);
+
+                        if (products.isEmpty()) {
+                            querySolrResponse = new QuerySolrResponse<>(404, notFoundMessage.get());
+                        } else {
+                            querySolrResponse = this.createOkQuerySolrResponse(response, products);
+                        }
+                    } else {
+                        querySolrResponse = new QuerySolrResponse<>(500, "Not OK");
+                    }
+                } catch (final Exception e) {
+                    final String message = String.format("Failed to select from Solr: %s", e.getMessage());
+
+                    logger.error(message);
+
+                    querySolrResponse = new QuerySolrResponse<>(500, message);
+                }
+            } else {
+                querySolrResponse = new QuerySolrResponse<>(404, String.format("Solr collection %s was not found", collection));
+            }
+
+            return querySolrResponse;
+        }, collection, query);
+    }
+
+    /// The log query response method
+    ///
+    /// @param  queryResponse  org.apache.solr.client.solrj.response.QueryResponse
+    /// @param  logger         org.slf4j.Logger
+    private void logQueryResponse(final QueryResponse queryResponse, final Logger logger) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("QueryResponse: {}", queryResponse);
+
+            logger.debug("Results size  : {}", queryResponse.getResults() != null ? queryResponse.getResults().size() : 0); // Returns 20
+            logger.debug("NumFound      : {}", queryResponse.getResults() != null ? queryResponse.getResults().getNumFound() : 0);  // Returns 20
+            logger.debug("NumFound Exact: {}", queryResponse.getResults() != null ? queryResponse.getResults().getNumFoundExact() : 0);
+            logger.debug("Start         : {}", queryResponse.getResults() != null ? queryResponse.getResults().getStart() : 0);
+        }
+    }
+
+    /// The create OK QuerySolrRresponse method
+    ///
+    /// @param  response    org.apache.solr.client.solrj.response.QueryResponse
+    /// @param  documents   java.util.List<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    private QuerySolrResponse<SolrProduct> createOkQuerySolrResponse(final QueryResponse response, final List<SolrProduct> documents) {
+        return this.logTracer.tracedWith(() -> {
+            final QuerySolrResponse<SolrProduct> querySolrResponse = new QuerySolrResponse<>(200, "OK");
+
+            querySolrResponse.setQTime(response.getQTime());
+            querySolrResponse.setElapsedTime(response.getElapsedTime());
+            querySolrResponse.setDocuments(documents);
+            querySolrResponse.setNumFound(response.getResults().getNumFound());
+            querySolrResponse.setStart(response.getResults().getStart());
+            querySolrResponse.setMaxScore(response.getResults().getMaxScore() != null ? response.getResults().getMaxScore() : 0);
+
+            return querySolrResponse;
+        }, response);
     }
 }
