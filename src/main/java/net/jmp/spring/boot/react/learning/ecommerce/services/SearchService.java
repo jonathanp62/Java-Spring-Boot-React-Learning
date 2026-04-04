@@ -189,6 +189,40 @@ public class SearchService {
         }, collection, term, facet);
     }
 
+    /// The select by title method
+    ///
+    /// @param  collection  java.lang.String
+    /// @param  term        java.lang.String
+    /// @param  facet       java.lang.String
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    public QuerySolrResponse<SolrProduct> selectByTitle(final String collection, final String term, final String facet) {
+        return this.logTracer.tracedWith(() -> {
+            Supplier<String> notFoundMessage;
+
+            final SolrQuery query = new SolrQuery();
+
+            query.setQuery(term);
+            query.setParam(CommonParams.DF, "title");
+
+            if (facet != null) {
+                notFoundMessage = () -> String.format("No products returned with term '%s' in the title for facet '%s'", term, facet);
+
+                query.setFacet(true);
+                query.addFacetField("category");
+                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(facet)));
+                query.setFacetMinCount(1);
+            } else {
+                notFoundMessage = () -> String.format("No products returned with term '%s' in the title", term);
+            }
+
+            return this.querySolr(
+                    collection,
+                    query,
+                    notFoundMessage
+            );
+        }, collection, term, facet);
+    }
+
     /// The validate Solr collection method
     ///
     /// @param  collection  java.lang.String

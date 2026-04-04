@@ -128,6 +128,7 @@ public class SearchApiController {
                     response = switch (fieldName.toLowerCase()) {
                         case "description" -> this.searchService.selectByDescription(collectionName, fieldValue, facet);
                         case "productid" -> this.searchService.selectByProductId(collectionName, fieldValue);
+                        case "title" -> this.searchService.selectByTitle(collectionName, fieldValue, facet);
                         default -> new QuerySolrResponse<>(400, String.format("Unrecognized field name: %s", fieldName));
                     };
                 } else {
