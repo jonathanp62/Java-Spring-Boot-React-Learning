@@ -124,7 +124,7 @@ public class SearchApiController {
                     final String fieldName = requestParameters.get("field");
                     final String fieldValue = requestParameters.getOrDefault("value", "");
 
-                    switch (fieldName) {
+                    switch (fieldName.toLowerCase()) {
                         case "productid":
                             response = this.searchService.selectByProductId(collectionName, fieldValue);
                             break;
