@@ -44,13 +44,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /// The search API controller
 @RestController
@@ -108,14 +108,41 @@ public class SearchApiController {
         }, collection);
     }
 
-    /// The select all from ecommerce-products method
+    /// The all-purpose select from ecommerce-products method
     ///
     /// @return org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
     @GetMapping("/ecommerce-products/select")
-    public ResponseEntity<List<SolrProduct>> selectAll() {
+    public ResponseEntity<List<SolrProduct>> select(@RequestParam final Map<String, String> requestParameters) {
         return this.logTracer.traced(() -> {
             final Logger logger = this.logTracer.getLogger();
-            final QuerySolrResponse<SolrProduct> response = this.searchService.selectAll("ecommerce-products");
+            final String collectionName = "ecommerce-products";
+
+            QuerySolrResponse<SolrProduct> response;
+
+            if (requestParameters.isEmpty()) {
+                response = this.searchService.selectAll(collectionName);
+            } else {
+                if (requestParameters.containsKey("field")) {
+                    final String fieldName = requestParameters.get("field");
+                    final String fieldValue = requestParameters.getOrDefault("value", "");
+
+                    switch (fieldName) {
+                        case "productid":
+                            response = this.searchService.selectByProductId(collectionName, fieldValue);
+                            break;
+                        default:
+                            final String reason = String.format("Unrecognized field name: %s", fieldName);
+
+                            logger.error(reason);
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, reason);
+                    }
+                } else {
+                    final String reason = String.format("Unrecognized request parameters: %s", requestParameters.toString());
+
+                    logger.error(reason);
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, reason);
+                }
+            }
 
             return switch (response.getStatus()) {
                 case 200 -> new ResponseEntity<>(

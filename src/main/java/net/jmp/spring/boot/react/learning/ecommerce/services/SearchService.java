@@ -138,6 +138,19 @@ public class SearchService {
         ), collection, id);
     }
 
+    /// The select by product ID method
+    ///
+    /// @param  collection  java.lang.String
+    /// @param  productId   java.lang.String
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    public QuerySolrResponse<SolrProduct> selectByProductId(final String collection, final String productId) {
+        return this.logTracer.tracedWith(() -> this.querySolr(
+                collection,
+                new SolrQuery(String.format("product_id:%s", productId)),
+                () -> String.format("Product ID %s was not found", productId)
+        ), collection, productId);
+    }
+
     /// The validate Solr collection method
     ///
     /// @param  collection  java.lang.String
