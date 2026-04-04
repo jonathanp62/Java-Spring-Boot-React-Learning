@@ -51,6 +51,10 @@ import org.apache.solr.client.solrj.response.CollectionAdminResponse;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
 
+import org.apache.solr.client.solrj.util.ClientUtils;
+
+import org.apache.solr.common.params.CommonParams;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,6 +153,40 @@ public class SearchService {
                 new SolrQuery(String.format("product_id:%s", productId)),
                 () -> String.format("Product ID %s was not found", productId)
         ), collection, productId);
+    }
+
+    /// The select by description method
+    ///
+    /// @param  collection  java.lang.String
+    /// @param  term        java.lang.String
+    /// @param  facet       java.lang.String
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    public QuerySolrResponse<SolrProduct> selectByDescription(final String collection, final String term, final String facet) {
+        return this.logTracer.tracedWith(() -> {
+            Supplier<String> notFoundMessage;
+
+            final SolrQuery query = new SolrQuery();
+
+            query.setQuery(term);
+            query.setParam(CommonParams.DF, "description");
+
+            if (facet != null) {
+                notFoundMessage = () -> String.format("No products returned with term '%s' in the description for facet '%s'", term, facet);
+
+                query.setFacet(true);
+                query.addFacetField("category");
+                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(facet)));
+                query.setFacetMinCount(1);
+            } else {
+                notFoundMessage = () -> String.format("No products returned with term '%s' in the description", term);
+            }
+
+            return this.querySolr(
+                    collection,
+                    query,
+                    notFoundMessage
+            );
+        }, collection, term, facet);
     }
 
     /// The validate Solr collection method
