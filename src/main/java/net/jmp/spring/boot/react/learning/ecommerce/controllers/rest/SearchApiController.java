@@ -46,8 +46,6 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -131,16 +129,10 @@ public class SearchApiController {
                             response = this.searchService.selectByProductId(collectionName, fieldValue);
                             break;
                         default:
-                            final String reason = String.format("Unrecognized field name: %s", fieldName);
-
-                            logger.error(reason);
-                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, reason);
+                            response = new QuerySolrResponse<>(400, String.format("Unrecognized field name: %s", fieldName));
                     }
                 } else {
-                    final String reason = String.format("Unrecognized request parameters: %s", requestParameters.toString());
-
-                    logger.error(reason);
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, reason);
+                    response = new QuerySolrResponse<>(400, String.format("Unrecognized request parameters: %s", requestParameters));
                 }
             }
 
@@ -149,6 +141,14 @@ public class SearchApiController {
                         response.getDocuments(),
                         HttpStatus.OK
                 );
+                case 400 -> {
+                    logger.error(response.getMessage());
+
+                    yield new ResponseEntity<>(
+                            new ArrayList<>(),
+                            HttpStatus.BAD_REQUEST
+                    );
+                }
                 case 404 -> {
                     logger.error(response.getMessage());
 
