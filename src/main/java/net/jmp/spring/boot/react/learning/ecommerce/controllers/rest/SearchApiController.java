@@ -123,12 +123,12 @@ public class SearchApiController {
                 if (requestParameters.containsKey("field")) {
                     final String fieldName = requestParameters.get("field");
                     final String fieldValue = requestParameters.getOrDefault("value", "");
-                    final String facet = requestParameters.getOrDefault("facet", null);
+                    final String category = requestParameters.getOrDefault("category", null);
 
                     response = switch (fieldName.toLowerCase()) {
-                        case "description" -> this.searchService.selectByDescription(collectionName, fieldValue, facet);
+                        case "description" -> this.searchService.selectByDescription(collectionName, fieldValue, category);
                         case "productid" -> this.searchService.selectByProductId(collectionName, fieldValue);
-                        case "title" -> this.searchService.selectByTitle(collectionName, fieldValue, facet);
+                        case "title" -> this.searchService.selectByTitle(collectionName, fieldValue, category);
                         default -> new QuerySolrResponse<>(400, String.format("Unrecognized field name: %s", fieldName));
                     };
                 } else {

@@ -159,9 +159,9 @@ public class SearchService {
     ///
     /// @param  collection  java.lang.String
     /// @param  term        java.lang.String
-    /// @param  facet       java.lang.String
+    /// @param  category    java.lang.String
     /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
-    public QuerySolrResponse<SolrProduct> selectByDescription(final String collection, final String term, final String facet) {
+    public QuerySolrResponse<SolrProduct> selectByDescription(final String collection, final String term, final String category) {
         return this.logTracer.tracedWith(() -> {
             Supplier<String> notFoundMessage;
 
@@ -170,12 +170,12 @@ public class SearchService {
             query.setQuery(term);
             query.setParam(CommonParams.DF, "description");
 
-            if (facet != null) {
-                notFoundMessage = () -> String.format("No products returned with term '%s' in the description for facet '%s'", term, facet);
+            if (category != null) {
+                notFoundMessage = () -> String.format("No products returned with term '%s' in the description for category '%s'", term, category);
 
                 query.setFacet(true);
                 query.addFacetField("category");
-                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(facet)));
+                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(category)));
                 query.setFacetMinCount(1);
             } else {
                 notFoundMessage = () -> String.format("No products returned with term '%s' in the description", term);
@@ -186,16 +186,16 @@ public class SearchService {
                     query,
                     notFoundMessage
             );
-        }, collection, term, facet);
+        }, collection, term, category);
     }
 
     /// The select by title method
     ///
     /// @param  collection  java.lang.String
     /// @param  term        java.lang.String
-    /// @param  facet       java.lang.String
+    /// @param  category    java.lang.String
     /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
-    public QuerySolrResponse<SolrProduct> selectByTitle(final String collection, final String term, final String facet) {
+    public QuerySolrResponse<SolrProduct> selectByTitle(final String collection, final String term, final String category) {
         return this.logTracer.tracedWith(() -> {
             Supplier<String> notFoundMessage;
 
@@ -204,12 +204,12 @@ public class SearchService {
             query.setQuery(term);
             query.setParam(CommonParams.DF, "title");
 
-            if (facet != null) {
-                notFoundMessage = () -> String.format("No products returned with term '%s' in the title for facet '%s'", term, facet);
+            if (category != null) {
+                notFoundMessage = () -> String.format("No products returned with term '%s' in the title for category '%s'", term, category);
 
                 query.setFacet(true);
                 query.addFacetField("category");
-                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(facet)));
+                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(category)));
                 query.setFacetMinCount(1);
             } else {
                 notFoundMessage = () -> String.format("No products returned with term '%s' in the title", term);
@@ -220,7 +220,7 @@ public class SearchService {
                     query,
                     notFoundMessage
             );
-        }, collection, term, facet);
+        }, collection, term, category);
     }
 
     /// The validate Solr collection method
