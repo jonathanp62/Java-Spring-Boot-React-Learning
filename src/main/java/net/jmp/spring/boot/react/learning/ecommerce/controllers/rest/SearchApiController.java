@@ -126,6 +126,7 @@ public class SearchApiController {
                     final String category = requestParameters.getOrDefault("category", null);
 
                     response = switch (fieldName.toLowerCase()) {
+                        case "description,title", "title,description" -> this.searchService.selectByDescriptionAndTitle(collectionName, fieldValue, category);
                         case "description" -> this.searchService.selectByDescription(collectionName, fieldValue, category);
                         case "productid" -> this.searchService.selectByProductId(collectionName, fieldValue);
                         case "title" -> this.searchService.selectByTitle(collectionName, fieldValue, category);

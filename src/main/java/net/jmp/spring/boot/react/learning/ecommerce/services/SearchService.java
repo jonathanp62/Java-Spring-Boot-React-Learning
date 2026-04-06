@@ -223,6 +223,40 @@ public class SearchService {
         }, collection, term, category);
     }
 
+    /// The select by description and title method
+    ///
+    /// @param  collection  java.lang.String
+    /// @param  term        java.lang.String
+    /// @param  category    java.lang.String
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    public QuerySolrResponse<SolrProduct> selectByDescriptionAndTitle(final String collection, final String term, final String category) {
+        return this.logTracer.tracedWith(() -> {
+            Supplier<String> notFoundMessage;
+
+            final SolrQuery query = new SolrQuery();
+
+            query.setQuery(term);
+            query.setParam(CommonParams.DF, "description", "title");
+
+            if (category != null) {
+                notFoundMessage = () -> String.format("No products returned with term '%s' in either the description or title for category '%s'", term, category);
+
+                query.setFacet(true);
+                query.addFacetField("category");
+                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(category)));
+                query.setFacetMinCount(1);
+            } else {
+                notFoundMessage = () -> String.format("No products returned with term '%s' in either the description or title", term);
+            }
+
+            return this.querySolr(
+                    collection,
+                    query,
+                    notFoundMessage
+            );
+        }, collection, term, category);
+    }
+
     /// The validate Solr collection method
     ///
     /// @param  collection  java.lang.String
