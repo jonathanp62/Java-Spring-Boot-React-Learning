@@ -43,6 +43,8 @@ plugins {
 	id 'org.springframework.boot'				version '4.0.5'
 	id 'io.spring.dependency-management'		version '1.1.7'
 	id 'net.jmp.gradle.plugin.projectinfo-info'	version '0.2.0'
+	id 'net.ltgt.errorprone'					version '4.2.0'
+	id 'net.ltgt.nullaway'						version '2.3.0'
 }
 
 apply plugin: 'net.jmp.gradle.plugin.projectinfo-info'
@@ -67,6 +69,8 @@ repositories {
 }
 
 dependencies {
+	compileOnly 		(libs.org.jspecify.jspecify)
+
 	implementation		('org.springframework.boot:spring-boot-starter')
 	implementation		('org.springframework.boot:spring-boot-starter-actuator')
 	implementation 		('org.springframework.boot:spring-boot-starter-data-mongodb')
@@ -79,11 +83,18 @@ dependencies {
 	implementation		(libs.net.jmp.util.logging.logging.utilities)
 	implementation		(libs.org.apache.solr.solr.solrj)
 
+	errorprone			('com.uber.nullaway:nullaway:0.13.1')
+	errorprone 			('com.google.errorprone:error_prone_core:2.48.0')
+
 	testImplementation	('org.springframework.boot:spring-boot-starter-test')
 
 	testImplementation	(libs.net.javacrumbs.json.unit.json.unit.spring)
 
 	testRuntimeOnly		('org.junit.platform:junit-platform-launcher')
+}
+
+nullaway {
+    onlyNullMarked = true // Tells NullAway to only check code inside @NullMarked scopes (the JSpecify way)
 }
 
 sourceSets {
