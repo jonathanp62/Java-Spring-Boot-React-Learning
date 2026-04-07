@@ -1,15 +1,16 @@
+@NullMarked
 package net.jmp.spring.boot.react.learning.ecommerce;
 
 /*
- * (#)TargetGroup.java  0.1.0   12/13/2025
+ * (#)package-info.java 0.5.0   04/07/2026
  *
  * @author    Jonathan Parker
- * @version   0.1.0
- * @since     0.1.0
+ * @version   0.5.0
+ * @since     0.5.0
  *
  * MIT License
  *
- * Copyright (c) 2025 Jonathan M. Parker
+ * Copyright (c) 2026 Jonathan M. Parker
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,47 +31,4 @@ package net.jmp.spring.boot.react.learning.ecommerce;
  * SOFTWARE.
  */
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
-import java.util.Locale;
-
-/// The target group
-public enum TargetGroup {
-    MEN("men"),
-    WOMEN("women"),
-    UNISEX("unisex");
-
-    /** The name of the target group. */
-    private final String name;
-
-    /**
-     * The constructor.
-     *
-     * @param   name    java.lang.String
-     */
-    TargetGroup(final String name) {
-        this.name = name;
-    }
-
-    /**
-     * Gets the value of the name property.
-     *
-     * @return  java.lang.String
-     */
-    @JsonValue
-    public String getValue() {
-        return this.name;
-    }
-
-    /**
-     * Converts a string to a TargetGroup enum value.
-     *
-     * @param   value   java.lang.String
-     * @return          net.jmp.spring.boot.react.learning.ecommerce.TargetGroup
-     */
-    @JsonCreator
-    public static TargetGroup fromString(final String value) {
-        return TargetGroup.valueOf(value.toUpperCase(Locale.getDefault()));
-    }
-}
+import org.jspecify.annotations.NullMarked;

@@ -1,15 +1,16 @@
 package net.jmp.spring.boot.react.learning.ecommerce;
 
 /*
+ * (#)ProductType.java  0.5.0   04/07/2026
  * (#)ProductType.java  0.1.0   12/13/2025
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.5.0
  * @since     0.1.0
  *
  * MIT License
  *
- * Copyright (c) 2025 Jonathan M. Parker
+ * Copyright (c) 2025, 2026 Jonathan M. Parker
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +33,8 @@ package net.jmp.spring.boot.react.learning.ecommerce;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import java.util.Locale;
 
 /// The product type
 public enum ProductType {
@@ -69,6 +72,6 @@ public enum ProductType {
      */
     @JsonCreator
     public static ProductType fromString(final String value) {
-        return ProductType.valueOf(value.toUpperCase());
+        return ProductType.valueOf(value.toUpperCase(Locale.getDefault()));
     }
 }

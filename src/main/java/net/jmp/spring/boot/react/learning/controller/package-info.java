@@ -1,11 +1,12 @@
-package net.jmp.spring.boot.react.learning.configuration;
+@NullMarked
+package net.jmp.spring.boot.react.learning.controller;
 
 /*
- * (#)SolrConfigurer.java   0.4.0   03/21/2026
+ * (#)package-info.java 0.5.0   04/07/2026
  *
  * @author    Jonathan Parker
- * @version   0.4.0
- * @since     0.4.0
+ * @version   0.5.0
+ * @since     0.5.0
  *
  * MIT License
  *
@@ -30,26 +31,4 @@ package net.jmp.spring.boot.react.learning.configuration;
  * SOFTWARE.
  */
 
-import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
-
-import org.springframework.beans.factory.annotation.Value;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-/// The solr configurer
-@Configuration
-public class SolrConfigurer {
-    /// The Solr URL
-    @SuppressWarnings("NullAway.Init")
-    @Value("${solr.url:http://localhost:8983/solr}")
-    private String solrUrl;
-
-    /// The Solr client
-    ///
-    /// @return org.apache.solr.client.solrj.impl.HttpJdkSolrClient
-    @Bean
-    public HttpJdkSolrClient solrClient() {
-        return new HttpJdkSolrClient.Builder(this.solrUrl).build();
-    }
-}
+import org.jspecify.annotations.NullMarked;

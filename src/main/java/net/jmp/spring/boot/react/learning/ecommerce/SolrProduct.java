@@ -32,44 +32,54 @@ package net.jmp.spring.boot.react.learning.ecommerce;
 
 import org.apache.solr.client.solrj.beans.Field;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.List;
 import java.util.Objects;
 
 /// The product as stored in Solr
 public class SolrProduct {
     /// The identifier
+    @SuppressWarnings("NullAway.Init")
     @Field
     private String id;
 
     /// The product identifier
+    @Nullable
     @Field("product_id")
     private Integer productId;
 
     /// The title
+    @Nullable
     @Field
-    private List<String> title;
+    private List<@Nullable String> title;
 
     /// The price
     @Field
     private double price;
 
     /// The description
+    @Nullable
     @Field
-    private List<String> description;
+    private List<@Nullable String> description;
 
     /// The category
+    @Nullable
     @Field
     private String category;
 
     /// The link to the image
+    @Nullable
     @Field
     private String image;
 
     /// The rating rate
+    @Nullable
     @Field("rating_rate")
     private Double ratingRate;
 
     /// The rating count
+    @Nullable
     @Field("rating_count")
     private Integer ratingCount;
 
@@ -95,7 +105,7 @@ public class SolrProduct {
     /// Get the product identifier
     ///
     /// @return java.lang.Integer
-    public Integer getProductId() {
+    public @Nullable Integer getProductId() {
         return this.productId;
     }
 
@@ -109,7 +119,7 @@ public class SolrProduct {
     /// Get the title
     ///
     /// @return java.util.List<java.lang.String>
-    public List<String> getTitle() {
+    public @Nullable List<@Nullable String> getTitle() {
         return this.title;
     }
 
@@ -137,7 +147,7 @@ public class SolrProduct {
     /// Get the description
     ///
     /// @return java.util.List<java.lang.String>
-    public List<String> getDescription() {
+    public @Nullable List<@Nullable String> getDescription() {
         return this.description;
     }
 
@@ -151,7 +161,7 @@ public class SolrProduct {
     /// Get the category
     ///
     /// @return java.lang.String
-    public String getCategory() {
+    public @Nullable String getCategory() {
         return this.category;
     }
 
@@ -165,7 +175,7 @@ public class SolrProduct {
     /// Get the link to the image
     ///
     /// @return java.lang.String
-    public String getImage() {
+    public @Nullable String getImage() {
         return this.image;
     }
 
@@ -179,7 +189,7 @@ public class SolrProduct {
     /// Get the rating rate
     ///
     /// @return java.lang.Double
-    public Double getRatingRate() {
+    public @Nullable Double getRatingRate() {
         return this.ratingRate;
     }
 
@@ -193,7 +203,7 @@ public class SolrProduct {
     /// Get the rating count
     ///
     /// @return java.lang.Integer
-    public Integer getRatingCount() {
+    public @Nullable Integer getRatingCount() {
         return this.ratingCount;
     }
 
@@ -210,9 +220,7 @@ public class SolrProduct {
     /// @return    boolean
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-
-        final SolrProduct that = (SolrProduct) o;
+        if (!(o instanceof SolrProduct that)) return false;;
 
         return Double.compare(
                 this.price, that.price) == 0

@@ -109,6 +109,7 @@ tasks.processResources {
 }
 
 tasks.compileJava {
+	options.errorprone.errorproneArgs.add("-Xep:NullAway:WARN")
     options.forkOptions.jvmArgs = ["-Xmx8192m", "--enable-native-access=ALL-UNNAMED"]
 }
 
