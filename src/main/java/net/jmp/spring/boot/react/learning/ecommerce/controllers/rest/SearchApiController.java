@@ -124,7 +124,7 @@ public class SearchApiController {
                 if (requestParameters.containsKey("field")) {
                     final String fieldName = requestParameters.get("field");
                     final String fieldValue = requestParameters.getOrDefault("value", "");
-                    final String category = requestParameters.getOrDefault("category", null);
+                    final String category = requestParameters.getOrDefault("category", "");
 
                     response = switch (fieldName.toLowerCase(Locale.getDefault())) {
                         case "description,title", "title,description" -> this.searchService.selectByDescriptionAndTitle(collectionName, fieldValue, category);
@@ -183,7 +183,7 @@ public class SearchApiController {
 
             return switch (response.getStatus()) {
                 case 200 -> new ResponseEntity<>(
-                        response.getDocuments().getFirst(),
+                        response.getDocuments() != null ? response.getDocuments().getFirst() : new SolrProduct(),
                         HttpStatus.OK
                     );
                 case 404 -> {

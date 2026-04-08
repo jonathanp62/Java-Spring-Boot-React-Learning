@@ -30,6 +30,8 @@ package net.jmp.spring.boot.react.learning.ecommerce.solr;
  * SOFTWARE.
  */
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -47,6 +49,7 @@ public class QuerySolrResponse<T> extends SolrResponse {
     private long start;
 
     /// The list of documents
+    @Nullable
     private List<T> documents;
 
     /// The constructor
@@ -102,7 +105,7 @@ public class QuerySolrResponse<T> extends SolrResponse {
     /// Get the list of documents
     ///
     /// @return java.util.List<T>
-    public List<T> getDocuments() {
+    public @Nullable List<T> getDocuments() {
         return this.documents;
     }
 

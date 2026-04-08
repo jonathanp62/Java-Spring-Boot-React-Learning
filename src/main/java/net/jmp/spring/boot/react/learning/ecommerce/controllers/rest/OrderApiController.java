@@ -33,6 +33,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers.rest;
  */
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import net.jmp.spring.boot.react.learning.ecommerce.Order;
@@ -192,22 +193,26 @@ public class OrderApiController {
     /// @return         double
     private double getShippingCost(final OrderDocument order) {
         return this.logTracer.tracedWith(() -> {
-            final double subTotal = order.getProducts().stream().mapToDouble(Product::price).sum();
+            if (Objects.nonNull(order.getProducts())) {
+                final double subTotal = order.getProducts().stream().mapToDouble(Product::price).sum();
 
-            final ShippingCostCalculatorBean calculatorBean = this.applicationContext.getBean(
-                    ShippingCostCalculatorBean.class,
-                    this.distanceService,
-                    order.getZipCode().substring(0, 5),
-                    subTotal,
-                    order.getProducts().size()
-            );
+                final ShippingCostCalculatorBean calculatorBean = this.applicationContext.getBean(
+                        ShippingCostCalculatorBean.class,
+                        this.distanceService,
+                        order.getZipCode() != null ? order.getZipCode().substring(0, 5) : "",
+                        subTotal,
+                        order.getProducts().size()
+                );
 
-            final ShippingCost shippingCost = calculatorBean.calculate();
+                final ShippingCost shippingCost = calculatorBean.calculate();
 
-            if (shippingCost.status().equals("OK")) {
-                return shippingCost.totalCostRounded();
-            } else if (shippingCost.status().equals("Not Found")) {
-                return shippingCost.totalCostRounded();
+                if (shippingCost.status().equals("OK")) {
+                    return shippingCost.totalCostRounded();
+                } else if (shippingCost.status().equals("Not Found")) {
+                    return shippingCost.totalCostRounded();
+                } else {
+                    return 0.0;
+                }
             } else {
                 return 0.0;
             }
