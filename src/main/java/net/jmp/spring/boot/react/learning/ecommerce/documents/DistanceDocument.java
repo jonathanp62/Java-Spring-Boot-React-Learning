@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.documents;
 
 /*
+ * (#)DistanceDocument.java 0.5.0   04/08/2026
  * (#)DistanceDocument.java 0.4.0   02/20/2026
  *
  * @author    Jonathan Parker
- * @version   0.4.0
+ * @version   0.5.0
  * @since     0.4.0
  *
  * MIT License
@@ -30,6 +31,8 @@ package net.jmp.spring.boot.react.learning.ecommerce.documents;
  * SOFTWARE.
  */
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.data.annotation.Id;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -41,18 +44,23 @@ import java.util.Objects;
 public class DistanceDocument {
     /// The Mongo identifier
     @Id
+    @Nullable
     private String documentId;
 
     /// The 'from' zip code
+    @Nullable
     private String fromZipCode;
 
     /// The 'to' zip code
+    @Nullable
     private String toZipCode;
 
     /// The 'to' city
+    @Nullable
     private String toCity;
 
     /// The 'to' state
+    @Nullable
     private String toState;
 
     /// The distance in miles
@@ -69,7 +77,7 @@ public class DistanceDocument {
     /// Get the document identifier
     ///
     /// @return java.lang.String
-    public String getDocumentId() {
+    public @Nullable String getDocumentId() {
         return this.documentId;
     }
 
@@ -83,7 +91,7 @@ public class DistanceDocument {
     /// Get the 'from' zip code
     ///
     /// @return java.lang.String
-    public String getFromZipCode() {
+    public @Nullable String getFromZipCode() {
         return this.fromZipCode;
     }
 
@@ -97,7 +105,7 @@ public class DistanceDocument {
     /// Get the 'to' zip code
     ///
     /// @return java.lang.String
-    public String getToZipCode() {
+    public @Nullable String getToZipCode() {
         return this.toZipCode;
     }
 
@@ -111,7 +119,7 @@ public class DistanceDocument {
     /// Get the 'to' city
     ///
     /// @return java.lang.String
-    public String getToCity() {
+    public @Nullable String getToCity() {
         return this.toCity;
     }
 
@@ -125,7 +133,7 @@ public class DistanceDocument {
     /// Get the 'to' state
     ///
     /// @return java.lang.String
-    public String getToState() {
+    public @Nullable String getToState() {
         return this.toState;
     }
 
@@ -170,9 +178,7 @@ public class DistanceDocument {
     /// @return    boolean
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-
-        final DistanceDocument that = (DistanceDocument) o;
+        if (!(o instanceof DistanceDocument that)) return false;
 
         return Double.compare(this.distanceInMiles, that.distanceInMiles) == 0
                 && Double.compare(this.distanceInKilometers, that.distanceInKilometers) == 0

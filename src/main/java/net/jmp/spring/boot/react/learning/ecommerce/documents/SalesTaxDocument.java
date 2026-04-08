@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.documents;
 
 /*
+ * (#)SalesTaxDocument.java 0.5.0   04/08/2025
  * (#)SalesTaxDocument.java 0.1.0   12/20/2025
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.5.0
  * @since     0.1.0
  *
  * MIT License
@@ -30,6 +31,8 @@ package net.jmp.spring.boot.react.learning.ecommerce.documents;
  * SOFTWARE.
  */
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.data.annotation.Id;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -41,13 +44,16 @@ import java.util.Objects;
 @Document(collection = "sales_tax")
 public class SalesTaxDocument {
     /// The Mongo identifier
+    @Nullable
     @Id
     private String documentId;
 
     /// The state name
+    @Nullable
     private String state;
 
     /// The state abbreviation
+    @Nullable
     private String abbreviation;
 
     /// The sales tax rate
@@ -63,7 +69,7 @@ public class SalesTaxDocument {
     /// Get the Mongo document identifier.
     ///
     /// @return java.lang.String
-    public String getDocumentId() {
+    public @Nullable String getDocumentId() {
         return this.documentId;
     }
 
@@ -79,7 +85,7 @@ public class SalesTaxDocument {
     /// Get the state.
     ///
     /// @return java.lang.String
-    public String getState() {
+    public @Nullable String getState() {
         return this.state;
     }
 
@@ -95,7 +101,7 @@ public class SalesTaxDocument {
     /// Get the abbreviation.
     ///
     /// @return java.lang.String
-    public String getAbbreviation() {
+    public @Nullable String getAbbreviation() {
         return this.abbreviation;
     }
 
@@ -130,9 +136,7 @@ public class SalesTaxDocument {
     /// @return    boolean
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-
-        final SalesTaxDocument that = (SalesTaxDocument) o;
+        if (!(o instanceof SalesTaxDocument that)) return false;
 
         return Double.compare(this.rate, that.rate) == 0
                 && Objects.equals(this.documentId, that.documentId)

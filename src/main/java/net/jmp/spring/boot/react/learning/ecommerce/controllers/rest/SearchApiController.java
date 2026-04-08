@@ -48,6 +48,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /// The search API controller
@@ -125,7 +126,7 @@ public class SearchApiController {
                     final String fieldValue = requestParameters.getOrDefault("value", "");
                     final String category = requestParameters.getOrDefault("category", null);
 
-                    response = switch (fieldName.toLowerCase()) {
+                    response = switch (fieldName.toLowerCase(Locale.getDefault())) {
                         case "description,title", "title,description" -> this.searchService.selectByDescriptionAndTitle(collectionName, fieldValue, category);
                         case "description" -> this.searchService.selectByDescription(collectionName, fieldValue, category);
                         case "productid" -> this.searchService.selectByProductId(collectionName, fieldValue);

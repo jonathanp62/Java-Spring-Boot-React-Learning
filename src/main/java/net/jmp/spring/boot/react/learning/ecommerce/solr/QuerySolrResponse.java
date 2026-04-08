@@ -119,11 +119,9 @@ public class QuerySolrResponse<T> extends SolrResponse {
     /// @return     boolean
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-
         if (!super.equals(o)) return false;
 
-        final QuerySolrResponse<?> that = (QuerySolrResponse<?>) o;
+        if (!(o instanceof QuerySolrResponse<?> that)) return false;
 
         return Float.compare(this.maxScore, that.maxScore) == 0
                 && this.numFound == that.numFound

@@ -1,11 +1,12 @@
 package net.jmp.spring.boot.react.learning.ecommerce.documents;
 
 /*
+ * (#)OrderDocument.java    0.5.0   04/08/2026
  * (#)OrderDocument.java    0.4.0   03/07/2026
  * (#)OrderDocument.java    0.1.0   12/13/2025
  *
  * @author    Jonathan Parker
- * @version   0.4.0
+ * @version   0.5.0
  * @since     0.1.0
  *
  * MIT License
@@ -32,6 +33,9 @@ package net.jmp.spring.boot.react.learning.ecommerce.documents;
  */
 
 import net.jmp.spring.boot.react.learning.ecommerce.Product;
+
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.data.annotation.Id;
 
 import org.springframework.data.annotation.Transient;
@@ -46,40 +50,52 @@ import java.util.Objects;
 @Document(collection = "e_commerce")
 public class OrderDocument {
     /// The Mongo identifier
+    @Nullable
     @Id
     private String documentId;
 
     /// The order identifier
+    @Nullable
     private String orderId;
 
     /// The order date
+    @Nullable
     private Instant orderDate;
 
     /// The first name
+    @Nullable
     private String firstName;
 
     /// The last name
+    @Nullable
     private String lastName;
 
     /// The address
+    @Nullable
     private String address;
 
     /// The city
+    @Nullable
     private String city;
 
     /// The state
+    @Nullable
     private String state;
 
     /// The zip code
+    @Nullable
     private String zipCode;
 
     /// The country
+    @Nullable
     private String country;
 
     /// The phone number
+    @Nullable
     private String phone;
 
     /// The email address
+    @Nullable
     private String email;
 
     /// The tax rate
@@ -90,6 +106,7 @@ public class OrderDocument {
     private double shippingCost;
 
     /// The products
+    @Nullable
     private List<Product> products;
 
     /// The default constructor
@@ -100,7 +117,7 @@ public class OrderDocument {
     /// Get the Mongo identifier.
     ///
     /// @return  java.lang.String
-    public String getDocumentId() {
+    public @Nullable String getDocumentId() {
         return this.documentId;
     }
 
@@ -115,7 +132,7 @@ public class OrderDocument {
     /// Get the order date.
     ///
     /// @return java.time.Instant
-    public Instant getOrderDate() {
+    public @Nullable Instant getOrderDate() {
         return this.orderDate;
     }
 
@@ -129,77 +146,77 @@ public class OrderDocument {
     /// Get the products.
     ///
     /// @return java.util.List<net.jmp.spring.boot.react.learning.ecommerce.Product>
-    public List<Product> getProducts() {
+    public @Nullable List<Product> getProducts() {
         return this.products;
     }
 
     /// Get the order identifier.
     ///
     /// @return java.lang.String
-    public String getOrderId() {
+    public @Nullable String getOrderId() {
         return this.orderId;
     }
 
     /// Get the first name.
     ///
     /// @return java.lang.String
-    public String getFirstName() {
+    public @Nullable String getFirstName() {
         return this.firstName;
     }
 
     /// Get the last name.
     ///
     /// @return java.lang.String
-    public String getLastName() {
+    public @Nullable String getLastName() {
         return this.lastName;
     }
 
     /// Get the address.
     ///
     /// @return java.lang.String
-    public String getAddress() {
+    public @Nullable String getAddress() {
         return this.address;
     }
 
     /// Get the city.
     ///
     /// @return java.lang.String
-    public String getCity() {
+    public @Nullable String getCity() {
         return this.city;
     }
 
     /// Get the state.
     ///
     /// @return java.lang.String
-    public String getState() {
+    public @Nullable String getState() {
         return this.state;
     }
 
     /// Get the zip code.
     ///
     /// @return java.lang.String
-    public String getZipCode() {
+    public @Nullable String getZipCode() {
         return this.zipCode;
     }
 
     /// Get the country.
     ///
     /// @return java.lang.String
-    public String getCountry() {
+    public @Nullable String getCountry() {
         return this.country;
     }
 
     /// Get the phone number.
     ///
     /// @return java.lang.String
-    public String getPhone() {
+    public @Nullable String getPhone() {
         return this.phone;
     }
 
     /// Get the email address.
     ///
     /// @return java.lang.String
-    public String getEmail() {
+    public @Nullable String getEmail() {
         return this.email;
     }
 
@@ -314,9 +331,7 @@ public class OrderDocument {
     /// @return    boolean
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-
-        final OrderDocument that = (OrderDocument) o;
+        if (!(o instanceof OrderDocument that)) return false;
 
         return Objects.equals(this.documentId, that.documentId) &&
                 Objects.equals(this.orderId, that.orderId) &&

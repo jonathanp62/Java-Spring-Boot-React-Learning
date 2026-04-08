@@ -113,9 +113,7 @@ public class SolrResponse {
     /// @return     boolean
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-
-        final SolrResponse that = (SolrResponse) o;
+        if (!(o instanceof SolrResponse that)) return false;
 
         return this.elapsedTime == that.elapsedTime
                 && this.qTime == that.qTime
