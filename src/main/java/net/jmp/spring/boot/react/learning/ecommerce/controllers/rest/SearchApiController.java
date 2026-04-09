@@ -134,6 +134,7 @@ public class SearchApiController {
                         case "price" -> this.searchService.selectByPrice(collectionName, fieldMin, fieldMax, category);
                         case "productid" -> this.searchService.selectByProductId(collectionName, fieldValue);
                         case "ratingcount" -> this.searchService.selectByRatingCount(collectionName, fieldMin, fieldMax, category);
+                        case "ratingrate" -> this.searchService.selectByRatingRate(collectionName, fieldMin, fieldMax, category);
                         case "title" -> this.searchService.selectByTitle(collectionName, fieldValue, category);
                         default -> new QuerySolrResponse<>(400, String.format("Unrecognized field name: %s", fieldName));
                     };

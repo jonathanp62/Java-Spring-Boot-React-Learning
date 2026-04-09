@@ -167,6 +167,8 @@ public class SearchService {
 
             final SolrQuery query = new SolrQuery();
 
+            query.setRows(20);
+            query.setStart(0);
             query.setQuery(term);
             query.setParam(CommonParams.DF, "description");
 
@@ -201,6 +203,8 @@ public class SearchService {
 
             final SolrQuery query = new SolrQuery();
 
+            query.setRows(20);
+            query.setStart(0);
             query.setQuery(term);
             query.setParam(CommonParams.DF, "title");
 
@@ -235,6 +239,8 @@ public class SearchService {
 
             final SolrQuery query = new SolrQuery();
 
+            query.setRows(20);
+            query.setStart(0);
             query.setQuery(term);
             query.setParam(CommonParams.DF, "description", "title");
 
@@ -269,6 +275,9 @@ public class SearchService {
             Supplier<String> notFoundMessage;
 
             final SolrQuery query = new SolrQuery();
+
+            query.setRows(20);
+            query.setStart(0);
 
             if (max.isEmpty()) {
                 query.setQuery(String.format("price:[%s TO *]", min));
@@ -318,6 +327,9 @@ public class SearchService {
 
             final SolrQuery query = new SolrQuery();
 
+            query.setRows(20);
+            query.setStart(0);
+
             if (max.isEmpty()) {
                 query.setQuery(String.format("rating_count:[%s TO *]", min));
             } else {
@@ -342,6 +354,57 @@ public class SearchService {
                     notFoundMessage = () -> String.format("No products returned with rating count '%s' or more", min);
                 } else {
                     notFoundMessage = () -> String.format("No products returned in rating count range '%s' to '%s'", min, max);
+                }
+            }
+
+            return this.querySolr(
+                    collection,
+                    query,
+                    notFoundMessage
+            );
+        }, collection, min, max, category);
+    }
+
+    /// The select by rating rate method
+    ///
+    /// @param  collection  java.lang.String
+    /// @param  min         java.lang.String
+    /// @param  max         java.lang.String
+    /// @param  category    java.lang.String
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    public QuerySolrResponse<SolrProduct> selectByRatingRate(final String collection, final String min, final String max, final String category) {
+        return this.logTracer.tracedWith(() -> {
+            Supplier<String> notFoundMessage;
+
+            final SolrQuery query = new SolrQuery();
+
+            query.setRows(20);
+            query.setStart(0);
+
+            if (max.isEmpty()) {
+                query.setQuery(String.format("rating_rate:[%s TO *]", min));
+            } else {
+                query.setQuery(String.format("rating_rate:[%s TO %s]", min, max));
+            }
+
+            query.setSort("rating_rate", SolrQuery.ORDER.asc);
+
+            if (!category.isEmpty()) {
+                if (max.isEmpty()) {
+                    notFoundMessage = () -> String.format("No products returned with rating rate '%s' or more for category '%s'", min, category);
+                } else {
+                    notFoundMessage = () -> String.format("No products returned in rating rate range '%s' to '%s' for category '%s'", min, max, category);
+                }
+
+                query.setFacet(true);
+                query.addFacetField("category");
+                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(category)));
+                query.setFacetMinCount(1);
+            } else {
+                if (max.isEmpty()) {
+                    notFoundMessage = () -> String.format("No products returned with rating rate '%s' or more", min);
+                } else {
+                    notFoundMessage = () -> String.format("No products returned in rating rate range '%s' to '%s'", min, max);
                 }
             }
 
