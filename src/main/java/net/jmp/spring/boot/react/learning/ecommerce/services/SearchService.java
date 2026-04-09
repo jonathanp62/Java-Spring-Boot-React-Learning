@@ -305,6 +305,54 @@ public class SearchService {
         }, collection, min, max, category);
     }
 
+    /// The select by rating count method
+    ///
+    /// @param  collection  java.lang.String
+    /// @param  min         java.lang.String
+    /// @param  max         java.lang.String
+    /// @param  category    java.lang.String
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    public QuerySolrResponse<SolrProduct> selectByRatingCount(final String collection, final String min, final String max, final String category) {
+        return this.logTracer.tracedWith(() -> {
+            Supplier<String> notFoundMessage;
+
+            final SolrQuery query = new SolrQuery();
+
+            if (max.isEmpty()) {
+                query.setQuery(String.format("rating_count:[%s TO *]", min));
+            } else {
+                query.setQuery(String.format("rating_count:[%s TO %s]", min, max));
+            }
+
+            query.setSort("rating_count", SolrQuery.ORDER.asc);
+
+            if (!category.isEmpty()) {
+                if (max.isEmpty()) {
+                    notFoundMessage = () -> String.format("No products returned with rating count '%s' or more for category '%s'", min, category);
+                } else {
+                    notFoundMessage = () -> String.format("No products returned in rating count range '%s' to '%s' for category '%s'", min, max, category);
+                }
+
+                query.setFacet(true);
+                query.addFacetField("category");
+                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(category)));
+                query.setFacetMinCount(1);
+            } else {
+                if (max.isEmpty()) {
+                    notFoundMessage = () -> String.format("No products returned with rating count '%s' or more", min);
+                } else {
+                    notFoundMessage = () -> String.format("No products returned in rating count range '%s' to '%s'", min, max);
+                }
+            }
+
+            return this.querySolr(
+                    collection,
+                    query,
+                    notFoundMessage
+            );
+        }, collection, min, max, category);
+    }
+
     /// The validate Solr collection method
     ///
     /// @param  collection  java.lang.String
