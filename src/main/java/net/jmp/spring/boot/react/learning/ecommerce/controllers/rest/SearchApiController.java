@@ -124,11 +124,14 @@ public class SearchApiController {
                 if (requestParameters.containsKey("field")) {
                     final String fieldName = requestParameters.get("field");
                     final String fieldValue = requestParameters.getOrDefault("value", "");
+                    final String fieldMin = requestParameters.getOrDefault("min", "");
+                    final String fieldMax = requestParameters.getOrDefault("max", "");
                     final String category = requestParameters.getOrDefault("category", "");
 
                     response = switch (fieldName.toLowerCase(Locale.getDefault())) {
                         case "description,title", "title,description" -> this.searchService.selectByDescriptionAndTitle(collectionName, fieldValue, category);
                         case "description" -> this.searchService.selectByDescription(collectionName, fieldValue, category);
+                        case "price" -> this.searchService.selectByPrice(collectionName, fieldMin, fieldMax, category);
                         case "productid" -> this.searchService.selectByProductId(collectionName, fieldValue);
                         case "title" -> this.searchService.selectByTitle(collectionName, fieldValue, category);
                         default -> new QuerySolrResponse<>(400, String.format("Unrecognized field name: %s", fieldName));

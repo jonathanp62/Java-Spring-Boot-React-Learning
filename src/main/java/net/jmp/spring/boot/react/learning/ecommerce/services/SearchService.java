@@ -33,6 +33,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.services;
 
 import java.util.List;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import net.jmp.spring.boot.react.learning.ecommerce.SolrProduct;
@@ -170,7 +171,7 @@ public class SearchService {
             query.setQuery(term);
             query.setParam(CommonParams.DF, "description");
 
-            if (category != null) {
+            if (!category.isEmpty()) {
                 notFoundMessage = () -> String.format("No products returned with term '%s' in the description for category '%s'", term, category);
 
                 query.setFacet(true);
@@ -204,7 +205,7 @@ public class SearchService {
             query.setQuery(term);
             query.setParam(CommonParams.DF, "title");
 
-            if (category != null) {
+            if (!category.isEmpty()) {
                 notFoundMessage = () -> String.format("No products returned with term '%s' in the title for category '%s'", term, category);
 
                 query.setFacet(true);
@@ -238,7 +239,7 @@ public class SearchService {
             query.setQuery(term);
             query.setParam(CommonParams.DF, "description", "title");
 
-            if (category != null) {
+            if (!category.isEmpty()) {
                 notFoundMessage = () -> String.format("No products returned with term '%s' in either the description or title for category '%s'", term, category);
 
                 query.setFacet(true);
@@ -255,6 +256,54 @@ public class SearchService {
                     notFoundMessage
             );
         }, collection, term, category);
+    }
+
+    /// The select by price method
+    ///
+    /// @param  collection  java.lang.String
+    /// @param  min         java.lang.String
+    /// @param  max         java.lang.String
+    /// @param  category    java.lang.String
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    public QuerySolrResponse<SolrProduct> selectByPrice(final String collection, final String min, final String max, final String category) {
+        return this.logTracer.tracedWith(() -> {
+            Supplier<String> notFoundMessage;
+
+            final SolrQuery query = new SolrQuery();
+
+            if (max.isEmpty()) {
+                query.setQuery(String.format("price:[%s TO *]", min));
+            } else {
+                query.setQuery(String.format("price:[%s TO %s]", min, max));
+            }
+
+            query.setSort("price", SolrQuery.ORDER.asc);
+
+            if (!category.isEmpty()) {
+                if (max.isEmpty()) {
+                    notFoundMessage = () -> String.format("No products returned with price '%s' or more for category '%s'", min, category);
+                } else {
+                    notFoundMessage = () -> String.format("No products returned in price range '%s' to '%s' for category '%s'", min, max, category);
+                }
+
+                query.setFacet(true);
+                query.addFacetField("category");
+                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(category)));
+                query.setFacetMinCount(1);
+            } else {
+                if (max.isEmpty()) {
+                    notFoundMessage = () -> String.format("No products returned with price '%s' or more", min);
+                } else {
+                    notFoundMessage = () -> String.format("No products returned in price range '%s' to '%s'", min, max);
+                }
+            }
+
+            return this.querySolr(
+                    collection,
+                    query,
+                    notFoundMessage
+            );
+        }, collection, min, max, category);
     }
 
     /// The validate Solr collection method
