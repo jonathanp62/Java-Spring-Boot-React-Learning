@@ -33,7 +33,6 @@ package net.jmp.spring.boot.react.learning.ecommerce.services;
 
 import java.util.List;
 
-import java.util.Objects;
 import java.util.function.Supplier;
 
 import net.jmp.spring.boot.react.learning.ecommerce.SolrProduct;
