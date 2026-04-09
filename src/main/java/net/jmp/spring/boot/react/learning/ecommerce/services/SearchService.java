@@ -175,10 +175,7 @@ public class SearchService {
             if (!category.isEmpty()) {
                 notFoundMessage = () -> String.format("No products returned with term '%s' in the description for category '%s'", term, category);
 
-                query.setFacet(true);
-                query.addFacetField("category");
-                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(category)));
-                query.setFacetMinCount(1);
+                this.addCategoryFacet(query, category);
             } else {
                 notFoundMessage = () -> String.format("No products returned with term '%s' in the description", term);
             }
@@ -211,10 +208,7 @@ public class SearchService {
             if (!category.isEmpty()) {
                 notFoundMessage = () -> String.format("No products returned with term '%s' in the title for category '%s'", term, category);
 
-                query.setFacet(true);
-                query.addFacetField("category");
-                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(category)));
-                query.setFacetMinCount(1);
+                this.addCategoryFacet(query, category);
             } else {
                 notFoundMessage = () -> String.format("No products returned with term '%s' in the title", term);
             }
@@ -247,10 +241,7 @@ public class SearchService {
             if (!category.isEmpty()) {
                 notFoundMessage = () -> String.format("No products returned with term '%s' in either the description or title for category '%s'", term, category);
 
-                query.setFacet(true);
-                query.addFacetField("category");
-                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(category)));
-                query.setFacetMinCount(1);
+                this.addCategoryFacet(query, category);
             } else {
                 notFoundMessage = () -> String.format("No products returned with term '%s' in either the description or title", term);
             }
@@ -294,10 +285,7 @@ public class SearchService {
                     notFoundMessage = () -> String.format("No products returned in price range '%s' to '%s' for category '%s'", min, max, category);
                 }
 
-                query.setFacet(true);
-                query.addFacetField("category");
-                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(category)));
-                query.setFacetMinCount(1);
+                this.addCategoryFacet(query, category);
             } else {
                 if (max.isEmpty()) {
                     notFoundMessage = () -> String.format("No products returned with price '%s' or more", min);
@@ -345,10 +333,7 @@ public class SearchService {
                     notFoundMessage = () -> String.format("No products returned in rating count range '%s' to '%s' for category '%s'", min, max, category);
                 }
 
-                query.setFacet(true);
-                query.addFacetField("category");
-                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(category)));
-                query.setFacetMinCount(1);
+                this.addCategoryFacet(query, category);
             } else {
                 if (max.isEmpty()) {
                     notFoundMessage = () -> String.format("No products returned with rating count '%s' or more", min);
@@ -396,10 +381,7 @@ public class SearchService {
                     notFoundMessage = () -> String.format("No products returned in rating rate range '%s' to '%s' for category '%s'", min, max, category);
                 }
 
-                query.setFacet(true);
-                query.addFacetField("category");
-                query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(category)));
-                query.setFacetMinCount(1);
+                this.addCategoryFacet(query, category);
             } else {
                 if (max.isEmpty()) {
                     notFoundMessage = () -> String.format("No products returned with rating rate '%s' or more", min);
@@ -517,5 +499,18 @@ public class SearchService {
 
             return querySolrResponse;
         }, response);
+    }
+
+    /// The add category facet method
+    ///
+    /// @param  query     org.apache.solr.client.solrj.request.SolrQuery
+    /// @param  category  java.lang.String
+    private void addCategoryFacet(final SolrQuery query, final String category) {
+        this.logTracer.tracedWith(() -> {
+            query.setFacet(true);
+            query.addFacetField("category");
+            query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(category)));
+            query.setFacetMinCount(1);
+        }, query, category);
     }
 }
