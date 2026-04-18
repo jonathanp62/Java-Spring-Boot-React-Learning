@@ -220,7 +220,7 @@ public class SolrProduct {
     /// @return    boolean
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof SolrProduct that)) return false;;
+        if (!(o instanceof SolrProduct that)) return false;
 
         return Double.compare(
                 this.price, that.price) == 0
