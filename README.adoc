@@ -13,6 +13,8 @@ A program that supports React learning projects with REST services provided by S
 |/react/learning/api/e-commerce/distance/                         | GET        | None    | 200 OK         | Returns all distance documents as JSON
 |/react/learning/api/e-commerce/distance/:toZipCode               | GET        | None    | 200 OK         | Returns the distance document for the specified 'to' zip code as JSON
 |/react/learning/api/e-commerce/distance/ok                       | GET        | None    | 200 OK         | Returns a string: OK
+|/react/learning/api/e-commerce/fakestore/ok                      | GET        | None    | 200 OK         | Returns a string: OK
+|/react/learning/api/e-commerce/fakestore/products                | GET        | None    | 200 OK         | Returns the fake store products as JSON
 |/react/learning/api/e-commerce/ok                                | GET        | None    | 200 OK         | Returns a string: OK
 |/react/learning/api/e-commerce/order                             | POST       | JSON    | 201 CREATED    | Returns the saved order as JSON
 |/react/learning/api/e-commerce/order/:orderId                    | GET        | None    | 200 OK         | Returns the saved order for the specified order ID as JSON
