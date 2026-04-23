@@ -33,10 +33,12 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers.rest;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import net.jmp.spring.boot.react.learning.ecommerce.fakestore.Product;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
+import net.jmp.spring.boot.react.learning.ecommerce.helpers.OptionalToResponseEntityMapper;
 
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +48,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,6 +59,9 @@ import tools.jackson.databind.ObjectMapper;
 @RestController
 @RequestMapping("/react/learning/api/e-commerce/fakestore")
 public class FakeStoreApiController {
+    /// The fake store JSON file name
+    private static final String FAKE_STORE_JSON = "fakestore.json";
+
     /// The log tracer
     private final LogTracer logTracer;
 
@@ -84,7 +90,7 @@ public class FakeStoreApiController {
 
             List<Product> products = new ArrayList<>();
 
-            try (final InputStream in = new ClassPathResource("fakestore.json").getInputStream()) {
+            try (final InputStream in = new ClassPathResource(FAKE_STORE_JSON).getInputStream()) {
                 products =  objectMapper.readValue(in, new TypeReference<>() {});
             } catch (final Exception e) {
                 this.logTracer.getLogger().error("Failed to read fake store JSON", e);
@@ -94,5 +100,35 @@ public class FakeStoreApiController {
 
             return new ResponseEntity<>(products, HttpStatus.OK);
         });
+    }
+
+    /// The get product by ID method
+    ///
+    /// @param  id  int
+    /// @return     org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.fakestore.Product>
+    @GetMapping("/products/{id}")
+    public ResponseEntity<Product> productById(final @PathVariable String id) {
+        return this.logTracer.tracedWith(() -> {
+            final ObjectMapper objectMapper = new ObjectMapper();
+
+            List<Product> products;
+
+            try (final InputStream in = new ClassPathResource(FAKE_STORE_JSON).getInputStream()) {
+                products =  objectMapper.readValue(in, new TypeReference<>() {});
+            } catch (final Exception e) {
+                this.logTracer.getLogger().error("Failed to read fake store JSON", e);
+
+                return new ResponseEntity<>(new Product(), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            final Product product = products.stream()
+                    .filter(p -> p.getId() == Integer.parseInt(id))
+                    .findFirst()
+                    .orElse(null);
+
+            final Optional<Product> result = Optional.ofNullable(product);
+
+            return OptionalToResponseEntityMapper.map(result);
+        }, id);
     }
 }
