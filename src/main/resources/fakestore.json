@@ -238,5 +238,245 @@
       "rate": 3.6,
       "count": 145
     }
+  },
+  {
+    "id": 21,
+    "title": "Logitech G502 HERO Gaming Mouse",
+    "price": 49.99,
+    "description": "High-quality Logitech G502 HERO Gaming Mouse designed for comfort and style in the electronics category.",
+    "category": "electronics",
+    "image": "http://localhost:8080/images/Logitech_G502_Gaming_Mouse_HERO.png",
+    "rating": { 
+      "rate": 4.5, 
+      "count": 599 
+    }
+  },
+  {
+    "id": 22,
+    "title": "Sony WH-1000XM4 Wireless Headphones",
+    "price": 348.0,
+    "description": "High-quality Sony WH-1000XM4 Wireless Headphones designed for comfort and style in the electronics category.",
+    "category": "electronics",
+    "image": "http://localhost:8080/images/Sony_WH-1000XM4_Wireless_Noise-Canceling_Headphones.png",
+    "rating": { 
+      "rate": 4.8, 
+      "count": 420 
+    }
+  },
+  {
+    "id": 23,
+    "title": "Apple MacBook Air (M1, 2020)",
+    "price": 999.0,
+    "description": "High-quality Apple MacBook Air (M1, 2020) designed for comfort and style in the electronics category.",
+    "category": "electronics",
+    "image": "http://localhost:8080/images/Apple_MacBook_Air_M1.png",
+    "rating": { 
+      "rate": 4.9, 
+      "count": 310 
+    }
+  },
+  {
+    "id": 24,
+    "title": "Kindle Paperwhite (8 GB)",
+    "price": 139.99,
+    "description": "High-quality Kindle Paperwhite (8 GB) designed for comfort and style in the electronics category.",
+    "category": "electronics",
+    "image": "http://localhost:8080/images/Amazon_Kindle_Paperwhite.png",
+    "rating": { 
+      "rate": 4.7, 
+      "count": 215 
+    }
+  },
+  {
+    "id": 25,
+    "title": "Razer BlackWidow V3 Keyboard",
+    "price": 119.99,
+    "description": "High-quality Razer BlackWidow V3 Keyboard designed for comfort and style in the electronics category.",
+    "category": "electronics",
+    "image": "http://localhost:8080/images/Razor_BlackWidow_V3_Mechanical_Gaming_Keyboard.png",
+    "rating": { 
+      "rate": 4.3, 
+      "count": 180 
+    }
+  },
+  {
+    "id": 26,
+    "title": "Pandora Moments Snake Chain Bracelet",
+    "price": 65.0,
+    "description": "High-quality Pandora Moments Snake Chain Bracelet designed for comfort and style in the jewelery category.",
+    "category": "jewelery",
+    "image": "http://localhost:8080/images/Pandora_Moments_Snake_Chain_Bracelet.png",
+    "rating": { 
+      "rate": 4.6, 
+      "count": 450 
+    }
+  },
+  {
+    "id": 27,
+    "title": "Swarovski Angelic Square Necklace",
+    "price": 115.0,
+    "description": "High-quality Swarovski Angelic Square Necklace designed for comfort and style in the jewelery category.",
+    "category": "jewelery",
+    "image": "http://localhost:8080/images/Swarovski_Angelic_Square_Cut_Crystal_Necklace.png",
+    "rating": { 
+      "rate": 4.4, 
+      "count": 130 
+    }
+  },
+  {
+    "id": 28,
+    "title": "Tiffany & Co. Heart Tag Stud Earrings",
+    "price": 250.0,
+    "description": "High-quality Tiffany & Co. Heart Tag Stud Earrings designed for comfort and style in the jewelery category.",
+    "category": "jewelery",
+    "image": "http://localhost:8080/images/Return_To_Tiffany_Heart_Earrings.png",
+    "rating": { 
+      "rate": 4.8, 
+      "count": 95 
+    }
+  },
+  {
+    "id": 29,
+    "title": "Mejuri Croissant Dôme Hoops",
+    "price": 78.0,
+    "description": "High-quality Mejuri Croissant Dôme Hoops designed for comfort and style in the jewelery category.",
+    "category": "jewelery",
+    "image": "http://localhost:8080/images/Mejuri_Gold_Vermeil_Croissant_Dome_Hoops.png",
+    "rating": { 
+      "rate": 4.5, 
+      "count": 210 
+    }
+  },
+  {
+    "id": 30,
+    "title": "Cartier Love Ring",
+    "price": 1250.0,
+    "description": "High-quality Cartier Love Ring designed for comfort and style in the jewelery category.",
+    "category": "jewelery",
+    "image": "http://localhost:8080/images/Cartier_Love_Ring.png",
+    "rating": { 
+      "rate": 4.9, 
+      "count": 60 
+    }
+  },
+  {
+    "id": 31,
+    "title": "Levi's Men's 501 Original Fit Jeans",
+    "price": 59.5,
+    "description": "High-quality Levi's Men's 501 Original Fit Jeans designed for comfort and style in the men's clothing category.",
+    "category": "men's clothing",
+    "image": "http://localhost:8080/images/Levis_501_Original_Mens_Jeans.png",
+    "rating": { 
+      "rate": 4.2, 
+      "count": 580 
+    }
+  },
+  {
+    "id": 32,
+    "title": "Nike Sportswear Club Fleece Hoodie",
+    "price": 45.0,
+    "description": "High-quality Nike Sportswear Club Fleece Hoodie designed for comfort and style in the men's clothing category.",
+    "category": "men's clothing",
+    "image": "http://localhost:8080/images/Nike_Mens_Sportswear_Club_Fleece_Hoodie.png",
+    "rating": { 
+      "rate": 4.5, 
+      "count": 340 
+    }
+  },
+  {
+    "id": 33,
+    "title": "Patagonia Better Sweater Fleece",
+    "price": 139.0,
+    "description": "High-quality Patagonia Better Sweater Fleece designed for comfort and style in the men's clothing category.",
+    "category": "men's clothing",
+    "image": "http://localhost:8080/images/Patagonia_Mens_Better_Sweater_Fleece_Jacket.png",
+    "rating": { 
+      "rate": 4.7, 
+      "count": 190 
+    }
+  },
+  {
+    "id": 34,
+    "title": "Adidas Men's Tiro 21 Track Pants",
+    "price": 50.0,
+    "description": "High-quality Adidas Men's Tiro 21 Track Pants designed for comfort and style in the men's clothing category.",
+    "category": "men's clothing",
+    "image": "http://localhost:8080/images/Adidas_Mens_Tiro_21_Track_Pants.png",
+    "rating": { 
+      "rate": 4.4, 
+      "count": 275 
+    }
+  },
+  {
+    "id": 35,
+    "title": "Champion Powerblend Retro Joggers",
+    "price": 35.0,
+    "description": "High-quality Champion Powerblend Retro Joggers designed for comfort and style in the men's clothing category.",
+    "category": "men's clothing",
+    "image": "http://localhost:8080/images/Mens_Powerblend_Graphic_Jogger_Pant.png",
+    "rating": { 
+      "rate": 4.1, 
+      "count": 150 
+    }
+  },
+  {
+    "id": 36,
+    "title": "Lululemon Align High-Rise Pant",
+    "price": 98.0,
+    "description": "High-quality Lululemon Align High-Rise Pant designed for comfort and style in the women's clothing category.",
+    "category": "women's clothing",
+    "image": "http://localhost:8080/images/lululemon_Align_Leggings.png",
+    "rating": { 
+      "rate": 4.8, 
+      "count": 620 
+    }
+  },
+  {
+    "id": 37,
+    "title": "Free People Hailee Sweater Set",
+    "price": 128.0,
+    "description": "High-quality Free People Hailee Sweater Set designed for comfort and style in the women's clothing category.",
+    "category": "women's clothing",
+    "image": "http://localhost:8080/images/Hailee_Sweater_Set.png",
+    "rating": { 
+      "rate": 4.3, 
+      "count": 85 
+    }
+  },
+  {
+    "id": 38,
+    "title": "The North Face Denali 2 Jacket",
+    "price": 179.0,
+    "description": "High-quality The North Face Denali 2 Jacket designed for comfort and style in the women's clothing category.",
+    "category": "women's clothing",
+    "image": "http://localhost:8080/images/The_North_Face_Womens_Denali_2_Fleece_Jacket.png",
+    "rating": { 
+      "rate": 4.6, 
+      "count": 230 
+    }
+  },
+  {
+    "id": 39,
+    "title": "Madewell The Perfect Vintage Jean",
+    "price": 128.0,
+    "description": "High-quality Madewell The Perfect Vintage Jean designed for comfort and style in the women's clothing category.",
+    "category": "women's clothing",
+    "image": "http://localhost:8080/images/Madewell_Womens_Perfect_Vintage_Wide-Leg_Jean.png",
+    "rating": { 
+      "rate": 4.2, 
+      "count": 145 
+    }
+  },
+  {
+    "id": 40,
+    "title": "Everlane The Boxy Oxford Shirt",
+    "price": 80.0,
+    "description": "High-quality Everlane The Boxy Oxford Shirt designed for comfort and style in the women's clothing category.",
+    "category": "women's clothing",
+    "image": "http://localhost:8080/images/Everlane_Cotton_Oxford_Shirt.png",
+    "rating": { 
+      "rate": 4.4, 
+      "count": 110 
+    }
   }
 ]
