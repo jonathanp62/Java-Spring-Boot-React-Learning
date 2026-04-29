@@ -58,11 +58,21 @@ import org.apache.solr.common.params.CommonParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Service;
 
 /// The search service
 @Service
 public class SearchService {
+    /// The Solr start number
+    @Value("${solr.start:0}")
+    private int solrStart;
+
+    /// The Solr rows number
+    @Value("${solr.rows:100}")
+    private int solrRows;
+
     /// The log tracer
     private final LogTracer logTracer;
 
@@ -121,8 +131,8 @@ public class SearchService {
         return this.logTracer.tracedWith(() -> {
             final SolrQuery query = new SolrQuery("*:*");
 
-            query.setRows(20);
-            query.setStart(0);
+            query.setRows(this.solrRows);
+            query.setStart(this.solrStart);
             query.setSort("product_id", SolrQuery.ORDER.asc);
 
             return this.querySolr(collection, query, () -> "");
@@ -167,8 +177,8 @@ public class SearchService {
 
             final SolrQuery query = new SolrQuery();
 
-            query.setRows(20);
-            query.setStart(0);
+            query.setRows(this.solrRows);
+            query.setStart(this.solrStart);
             query.setQuery(term);
             query.setParam(CommonParams.DF, "description");
 
@@ -200,8 +210,8 @@ public class SearchService {
 
             final SolrQuery query = new SolrQuery();
 
-            query.setRows(20);
-            query.setStart(0);
+            query.setRows(this.solrRows);
+            query.setStart(this.solrStart);
             query.setQuery(term);
             query.setParam(CommonParams.DF, "title");
 
@@ -233,8 +243,8 @@ public class SearchService {
 
             final SolrQuery query = new SolrQuery();
 
-            query.setRows(20);
-            query.setStart(0);
+            query.setRows(this.solrRows);
+            query.setStart(this.solrStart);
             query.setQuery(term);
             query.setParam(CommonParams.DF, "description", "title");
 
@@ -267,8 +277,8 @@ public class SearchService {
 
             final SolrQuery query = new SolrQuery();
 
-            query.setRows(20);
-            query.setStart(0);
+            query.setRows(this.solrRows);
+            query.setStart(this.solrStart);
 
             if (max.isEmpty()) {
                 query.setQuery(String.format("price:[%s TO *]", min));
@@ -315,8 +325,8 @@ public class SearchService {
 
             final SolrQuery query = new SolrQuery();
 
-            query.setRows(20);
-            query.setStart(0);
+            query.setRows(this.solrRows);
+            query.setStart(this.solrStart);
 
             if (max.isEmpty()) {
                 query.setQuery(String.format("rating_count:[%s TO *]", min));
@@ -363,8 +373,8 @@ public class SearchService {
 
             final SolrQuery query = new SolrQuery();
 
-            query.setRows(20);
-            query.setStart(0);
+            query.setRows(this.solrRows);
+            query.setStart(this.solrStart);
 
             if (max.isEmpty()) {
                 query.setQuery(String.format("rating_rate:[%s TO *]", min));
