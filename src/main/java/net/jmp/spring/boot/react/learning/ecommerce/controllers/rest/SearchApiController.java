@@ -129,6 +129,7 @@ public class SearchApiController {
                     final String category = requestParameters.getOrDefault("category", "");
 
                     response = switch (fieldName.toLowerCase(Locale.getDefault())) {
+                        case "category" -> this.searchService.selectByCategory(collectionName, fieldValue);
                         case "description,title", "title,description" -> this.searchService.selectByDescriptionAndTitle(collectionName, fieldValue, category);
                         case "description" -> this.searchService.selectByDescription(collectionName, fieldValue, category);
                         case "price" -> this.searchService.selectByPrice(collectionName, fieldMin, fieldMax, category);

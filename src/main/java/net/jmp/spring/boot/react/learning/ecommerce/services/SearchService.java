@@ -181,6 +181,7 @@ public class SearchService {
             query.setStart(this.solrStart);
             query.setQuery(term);
             query.setParam(CommonParams.DF, "description");
+            query.setSort("product_id", SolrQuery.ORDER.asc);
 
             if (!category.isEmpty()) {
                 notFoundMessage = () -> String.format("No products returned with term '%s' in the description for category '%s'", term, category);
@@ -214,6 +215,7 @@ public class SearchService {
             query.setStart(this.solrStart);
             query.setQuery(term);
             query.setParam(CommonParams.DF, "title");
+            query.setSort("product_id", SolrQuery.ORDER.asc);
 
             if (!category.isEmpty()) {
                 notFoundMessage = () -> String.format("No products returned with term '%s' in the title for category '%s'", term, category);
@@ -406,6 +408,33 @@ public class SearchService {
                     notFoundMessage
             );
         }, collection, min, max, category);
+    }
+
+    /// The select by category method
+    ///
+    /// @param  collection  java.lang.String
+    /// @param  category    java.lang.String
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    public QuerySolrResponse<SolrProduct> selectByCategory(final String collection, final String category) {
+        return this.logTracer.tracedWith(() -> {
+            Supplier<String> notFoundMessage;
+
+            final SolrQuery query = new SolrQuery();
+
+            query.setRows(this.solrRows);
+            query.setStart(this.solrStart);
+            query.setQuery("*:*");
+            query.addFilterQuery(String.format("category:%s", ClientUtils.escapeQueryChars(category)));
+            query.setSort("product_id", SolrQuery.ORDER.asc);
+
+            notFoundMessage = () -> String.format("No products returned with category '%s'", category);
+
+            return this.querySolr(
+                    collection,
+                    query,
+                    notFoundMessage
+            );
+        }, collection, category);
     }
 
     /// The validate Solr collection method
