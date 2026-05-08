@@ -249,6 +249,7 @@ public class SearchService {
             query.setStart(this.solrStart);
             query.setQuery(term);
             query.setParam(CommonParams.DF, "description", "title");
+            query.setSort("product_id", SolrQuery.ORDER.asc);
 
             if (!category.isEmpty()) {
                 notFoundMessage = () -> String.format("No products returned with term '%s' in either the description or title for category '%s'", term, category);
