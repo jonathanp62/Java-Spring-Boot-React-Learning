@@ -30,6 +30,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers.rest;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 import net.jmp.spring.boot.react.learning.ecommerce.SolrProduct;
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 

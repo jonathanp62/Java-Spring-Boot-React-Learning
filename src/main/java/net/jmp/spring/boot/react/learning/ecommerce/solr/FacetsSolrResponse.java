@@ -30,6 +30,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.solr;
  * SOFTWARE.
  */
 
+/// The Solr response for facets requests
 public class FacetsSolrResponse extends SolrResponse {
     /// The constructor
     ///

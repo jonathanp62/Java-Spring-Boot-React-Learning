@@ -42,6 +42,7 @@ import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 import net.jmp.spring.boot.react.learning.ecommerce.solr.FacetsSolrResponse;
 import net.jmp.spring.boot.react.learning.ecommerce.solr.PingSolrResponse;
 import net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse;
+import net.jmp.spring.boot.react.learning.ecommerce.solr.SolrSearchConfiguration;
 
 import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
 
@@ -75,6 +76,9 @@ public class SearchService {
     @Value("${solr.rows:100}")
     private int solrRows;
 
+    /// The Solr search configuration
+    private final SolrSearchConfiguration solrSearchConfiguration;
+
     /// The log tracer
     private final LogTracer logTracer;
 
@@ -83,9 +87,11 @@ public class SearchService {
 
     /// The constructor
     ///
-    /// @param  solrClient  org.apache.solr.client.solrj.impl.HttpJdkSolrClient
-    public SearchService(final HttpJdkSolrClient solrClient) {
+    /// @param  solrClient              org.apache.solr.client.solrj.impl.HttpJdkSolrClient
+    /// @param  solrSearchConfiguration net.jmp.spring.boot.react.learning.ecommerce.solr.SolrSearchConfiguration
+    public SearchService(final HttpJdkSolrClient solrClient, final SolrSearchConfiguration solrSearchConfiguration) {
         this.solrClient = solrClient;
+        this.solrSearchConfiguration = solrSearchConfiguration;
         this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
@@ -140,13 +146,18 @@ public class SearchService {
                     query.setFacet(true);
                     query.setFacetMinCount(1);
 
-                    if ("ecommerce-products".equalsIgnoreCase(collection)) {
-                        query.addFacetField("category");
-                    } else if ("products".equalsIgnoreCase(collection)) {
-                        query.addFacetField("brand", "category");
-                    } else {
-                        return new FacetsSolrResponse(500, String.format("Solr collection %s is unsupported", collection));
+                    final SolrSearchConfiguration.CollectionConfiguration collectionConfiguration = this.solrSearchConfiguration.getCollections()
+                            .stream()
+                            .filter(cc -> cc.getName().equalsIgnoreCase(collection))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (collectionConfiguration == null) {
+                        return new FacetsSolrResponse(500, String.format("Solr collection %s is not configured", collection));
                     }
+
+                    collectionConfiguration.getFacets()
+                            .forEach(query::addFacetField);
 
                     final QueryResponse response = this.solrClient.query(collection, query);
 
