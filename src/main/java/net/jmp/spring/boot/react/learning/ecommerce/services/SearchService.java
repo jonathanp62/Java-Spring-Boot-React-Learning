@@ -39,6 +39,7 @@ import net.jmp.spring.boot.react.learning.ecommerce.SolrProduct;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
+import net.jmp.spring.boot.react.learning.ecommerce.solr.FacetsSolrResponse;
 import net.jmp.spring.boot.react.learning.ecommerce.solr.PingSolrResponse;
 import net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse;
 
@@ -48,6 +49,7 @@ import org.apache.solr.client.solrj.request.CollectionAdminRequest;
 import org.apache.solr.client.solrj.request.SolrQuery;
 
 import org.apache.solr.client.solrj.response.CollectionAdminResponse;
+import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
 
@@ -120,6 +122,67 @@ public class SearchService {
             }
 
             return pingSolrResponse;
+        }, collection);
+    }
+
+    /// The facets method
+    ///
+    /// @param  collection  java.lang.String
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.PingSolrResponse
+    public FacetsSolrResponse facets(final String collection) {
+        return this.logTracer.tracedWith(() -> {
+            FacetsSolrResponse facetsSolrResponse;
+
+            if (this.isSolrCollectionValid(collection)) {
+                try {
+                    final SolrQuery query = new SolrQuery("*:*");
+
+                    query.setFacet(true);
+                    query.setFacetMinCount(1);
+
+                    if ("ecommerce-products".equalsIgnoreCase(collection)) {
+                        query.addFacetField("category");
+                    } else if ("products".equalsIgnoreCase(collection)) {
+                        query.addFacetField("brand", "category");
+                    } else {
+                        return new FacetsSolrResponse(500, String.format("Solr collection %s is unsupported", collection));
+                    }
+
+                    final QueryResponse response = this.solrClient.query(collection, query);
+
+                    if (response.getStatus() == 0) {
+                        final Logger logger = this.logTracer.getLogger();
+
+                        for (final FacetField facetField : response.getFacetFields()) {
+                            logger.info("Facet field: {}", facetField.getName());
+                            logger.info("Facet count: {}", facetField.getValueCount());
+
+                            for (final var value : facetField.getValues()) {
+                                logger.info("Value: {}", value.getName());
+                                logger.info("Count: {}", value.getCount());
+                            }
+                        }
+
+                        facetsSolrResponse = new FacetsSolrResponse(200, "OK");
+
+                        facetsSolrResponse.setElapsedTime(response.getElapsedTime());
+                        facetsSolrResponse.setQTime(response.getQTime());
+                    } else {
+                        facetsSolrResponse = new FacetsSolrResponse(500, "Not OK");
+                    }
+                } catch (final Exception e) {
+                    final Logger logger = this.logTracer.getLogger();
+                    final String message = String.format("Failed to list facets for collection %s: %s", collection, e.getMessage());
+
+                    logger.error(message);
+
+                    facetsSolrResponse = new FacetsSolrResponse(500, message);
+                }
+            } else {
+                facetsSolrResponse = new FacetsSolrResponse(404, String.format("Solr collection %s was not found", collection));
+            }
+
+            return facetsSolrResponse;
         }, collection);
     }
 

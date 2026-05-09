@@ -35,6 +35,7 @@ import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.SearchService;
 
+import net.jmp.spring.boot.react.learning.ecommerce.solr.FacetsSolrResponse;
 import net.jmp.spring.boot.react.learning.ecommerce.solr.PingSolrResponse;
 import net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse;
 
@@ -101,6 +102,36 @@ public class SearchApiController {
                 );
                 default -> new ResponseEntity<>(
                         String.format("Failed to ping Solr collection %s", collection),
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                );
+            };
+        }, collection);
+    }
+
+    /// The facets method
+    ///
+    /// @param  collection  java.lang.String
+    /// @return             org.springframework.http.ResponseEntity<java.lang.String>
+    @GetMapping("/{collection}/facets")
+    public ResponseEntity<String> facets(final @PathVariable String collection) {
+        return this.logTracer.tracedWith(() -> {
+            final FacetsSolrResponse response = this.searchService.facets(collection);
+
+            return switch (response.getStatus()) {
+                case 200 -> new ResponseEntity<>(
+                        String.format("Facets for collection %s OK", collection),
+                        HttpStatus.OK
+                );
+                case 404 -> new ResponseEntity<>(
+                        response.getMessage(),
+                        HttpStatus.NOT_FOUND
+                );
+                case 500 -> new ResponseEntity<>(
+                        response.getMessage(),
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                );
+                default -> new ResponseEntity<>(
+                        String.format("Failed to list facets for collection %s", collection),
                         HttpStatus.INTERNAL_SERVER_ERROR
                 );
             };
