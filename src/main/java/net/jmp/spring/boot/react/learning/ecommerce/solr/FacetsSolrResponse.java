@@ -30,13 +30,134 @@ package net.jmp.spring.boot.react.learning.ecommerce.solr;
  * SOFTWARE.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 /// The Solr response for facets requests
 public class FacetsSolrResponse extends SolrResponse {
+    /// The facet fields
+    private List<FacetField> facetFields = new ArrayList<>();
+
     /// The constructor
     ///
     /// @param  status  int
     /// @param  message java.lang.String
     public FacetsSolrResponse(final int status, final String message) {
         super(status, message);
+    }
+
+    /// Get the facet fields
+    ///
+    /// @return java.util.List<net.jmp.spring.boot.react.learning.ecommerce.solr.FacetsSolrResponse.FacetField>
+    public List<FacetField> getFacetFields() {
+        return facetFields;
+    }
+
+    /// Set the facet fields
+    ///
+    /// @param  facetFields  java.util.List<net.jmp.spring.boot.react.learning.ecommerce.solr.FacetsSolrResponse.FacetField>
+    public void setFacetFields(List<FacetField> facetFields) {
+        this.facetFields = facetFields;
+    }
+
+    /// The facet field class
+    public static class FacetField {
+        /// The name
+        private String name = "";
+
+        /// The number of values
+        private int valueCount = 0;
+
+        /// The values
+        private List<FacetValue> values = new ArrayList<>();
+
+        /// The default constructor
+        public FacetField() {
+            super();
+        }
+
+        /// Get the name
+        ///
+        /// @return java.lang.String
+        public String getName() {
+            return this.name;
+        }
+
+        /// Set the name
+        ///
+        /// @param  name  java.lang.String
+        public void setName(final String name) {
+            this.name = name;
+        }
+
+        /// Get the number of values
+        ///
+        /// @return int
+        public int getValueCount() {
+            return this.valueCount;
+        }
+
+        /// Set the number of values
+        ///
+        /// @param  valueCount  int
+        public void setValueCount(final int valueCount) {
+            this.valueCount = valueCount;
+        }
+
+        /// Get the values
+        ///
+        /// @return java.util.List<net.jmp.spring.boot.react.learning.ecommerce.solr.FacetsSolrResponse.FacetValue>
+        public List<FacetValue> getValues() {
+            return this.values;
+        }
+
+        /// Set the values
+        ///
+        /// @param  values  java.util.List<net.jmp.spring.boot.react.learning.ecommerce.solr.FacetsSolrResponse.Facet>
+        public void setValues(final List<FacetValue> values) {
+            this.values = values;
+        }
+    }
+
+    /// The facet value class
+    public static class FacetValue {
+        /// The name
+        private String name = "";
+
+        /// The count
+        private long count = 0;
+
+        /// The default constructor
+        public FacetValue() {
+            super();
+        }
+
+        /// Get the name
+        ///
+        /// @return java.lang.String
+        public String getName() {
+            return this.name;
+        }
+
+        /// Set the name
+        ///
+        /// @param  name    java.lang.String
+        public void setName(final String name) {
+            this.name = name;
+        }
+
+        /// Get the count
+        ///
+        /// @return long
+        public long getCount() {
+            return this.count;
+        }
+
+        /// Set the count
+        ///
+        /// @param  count   long
+        public void setCount(final long count) {
+            this.count = count;
+        }
     }
 }

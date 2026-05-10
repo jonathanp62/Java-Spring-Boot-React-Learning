@@ -164,17 +164,35 @@ public class SearchService {
                     if (response.getStatus() == 0) {
                         final Logger logger = this.logTracer.getLogger();
 
+                        facetsSolrResponse = new FacetsSolrResponse(200, "OK");
+
                         for (final FacetField facetField : response.getFacetFields()) {
-                            logger.info("Facet field: {}", facetField.getName());
-                            logger.info("Facet count: {}", facetField.getValueCount());
+                            final FacetsSolrResponse.FacetField ff = new FacetsSolrResponse.FacetField();
+
+                            ff.setName(facetField.getName());
+                            ff.setValueCount(facetField.getValueCount());
+
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Facet field: {}", facetField.getName());
+                                logger.debug("Facet count: {}", facetField.getValueCount());
+                            }
 
                             for (final var value : facetField.getValues()) {
-                                logger.info("Value: {}", value.getName());
-                                logger.info("Count: {}", value.getCount());
-                            }
-                        }
+                                final FacetsSolrResponse.FacetValue fv = new FacetsSolrResponse.FacetValue();
 
-                        facetsSolrResponse = new FacetsSolrResponse(200, "OK");
+                                fv.setName(value.getName());
+                                fv.setCount(value.getCount());
+
+                                ff.getValues().add(fv);
+
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("Value: {}", value.getName());
+                                    logger.debug("Count: {}", value.getCount());
+                                }
+                            }
+
+                            facetsSolrResponse.getFacetFields().add(ff);
+                        }
 
                         facetsSolrResponse.setElapsedTime(response.getElapsedTime());
                         facetsSolrResponse.setQTime(response.getQTime());

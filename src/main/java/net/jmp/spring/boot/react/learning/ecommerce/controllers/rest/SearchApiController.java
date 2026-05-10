@@ -114,25 +114,25 @@ public class SearchApiController {
     /// @param  collection  java.lang.String
     /// @return             org.springframework.http.ResponseEntity<java.lang.String>
     @GetMapping("/{collection}/facets")
-    public ResponseEntity<String> facets(final @PathVariable String collection) {
+    public ResponseEntity<FacetsSolrResponse> facets(final @PathVariable String collection) {
         return this.logTracer.tracedWith(() -> {
             final FacetsSolrResponse response = this.searchService.facets(collection);
 
             return switch (response.getStatus()) {
                 case 200 -> new ResponseEntity<>(
-                        String.format("Facets for collection %s OK", collection),
+                        response,
                         HttpStatus.OK
                 );
                 case 404 -> new ResponseEntity<>(
-                        response.getMessage(),
+                        new FacetsSolrResponse(404, response.getMessage()),
                         HttpStatus.NOT_FOUND
                 );
                 case 500 -> new ResponseEntity<>(
-                        response.getMessage(),
+                        new FacetsSolrResponse(500, response.getMessage()),
                         HttpStatus.INTERNAL_SERVER_ERROR
                 );
                 default -> new ResponseEntity<>(
-                        String.format("Failed to list facets for collection %s", collection),
+                        new FacetsSolrResponse(500, String.format("Failed to list facets for collection %s", collection)),
                         HttpStatus.INTERNAL_SERVER_ERROR
                 );
             };
