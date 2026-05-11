@@ -141,11 +141,6 @@ public class SearchService {
 
             if (this.isSolrCollectionValid(collection)) {
                 try {
-                    final SolrQuery query = new SolrQuery("*:*");
-
-                    query.setFacet(true);
-                    query.setFacetMinCount(1);
-
                     final SolrSearchConfiguration.CollectionConfiguration collectionConfiguration = this.solrSearchConfiguration.getCollections()
                             .stream()
                             .filter(cc -> cc.getName().equalsIgnoreCase(collection))
@@ -156,46 +151,11 @@ public class SearchService {
                         return new FacetsSolrResponse(500, String.format("Solr collection %s is not configured", collection));
                     }
 
-                    collectionConfiguration.getFacets()
-                            .forEach(query::addFacetField);
-
+                    final SolrQuery query = this.buildFacetsQuery(collectionConfiguration);
                     final QueryResponse response = this.solrClient.query(collection, query);
 
                     if (response.getStatus() == 0) {
-                        final Logger logger = this.logTracer.getLogger();
-
-                        facetsSolrResponse = new FacetsSolrResponse(200, "OK");
-
-                        for (final FacetField facetField : response.getFacetFields()) {
-                            final FacetsSolrResponse.FacetField ff = new FacetsSolrResponse.FacetField();
-
-                            ff.setName(facetField.getName());
-                            ff.setValueCount(facetField.getValueCount());
-
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Facet field: {}", facetField.getName());
-                                logger.debug("Facet count: {}", facetField.getValueCount());
-                            }
-
-                            for (final var value : facetField.getValues()) {
-                                final FacetsSolrResponse.FacetValue fv = new FacetsSolrResponse.FacetValue();
-
-                                fv.setName(value.getName());
-                                fv.setCount(value.getCount());
-
-                                ff.getValues().add(fv);
-
-                                if (logger.isDebugEnabled()) {
-                                    logger.debug("Value: {}", value.getName());
-                                    logger.debug("Count: {}", value.getCount());
-                                }
-                            }
-
-                            facetsSolrResponse.getFacetFields().add(ff);
-                        }
-
-                        facetsSolrResponse.setElapsedTime(response.getElapsedTime());
-                        facetsSolrResponse.setQTime(response.getQTime());
+                        facetsSolrResponse = this.buildFacetsResponse(response);
                     } else {
                         facetsSolrResponse = new FacetsSolrResponse(500, "Not OK");
                     }
@@ -213,6 +173,64 @@ public class SearchService {
 
             return facetsSolrResponse;
         }, collection);
+    }
+
+    /// The build facets query method
+    ///
+    /// @param  collectionConfiguration net.jmp.spring.boot.react.learning.ecommerce.solr.SolrSearchConfiguration.CollectionConfiguration
+    /// @return                         org.apache.solr.client.solrj.SolrQuery
+    private SolrQuery buildFacetsQuery(final SolrSearchConfiguration.CollectionConfiguration collectionConfiguration) {
+        return this.logTracer.tracedWith(() -> {
+            final SolrQuery query = new SolrQuery("*:*");
+
+            query.setFacet(true);
+            query.setFacetMinCount(1);
+
+            collectionConfiguration.getFacets()
+                    .forEach(query::addFacetField);
+
+            return query;
+        }, collectionConfiguration);
+    }
+
+    private FacetsSolrResponse buildFacetsResponse(final QueryResponse response) {
+        return this.logTracer.tracedWith(() -> {
+            final Logger logger = this.logTracer.getLogger();
+            final FacetsSolrResponse facetsSolrResponse = new FacetsSolrResponse(200, "OK");
+
+            for (final FacetField facetField : response.getFacetFields()) {
+                final FacetsSolrResponse.FacetField ff = new FacetsSolrResponse.FacetField();
+
+                ff.setName(facetField.getName());
+                ff.setValueCount(facetField.getValueCount());
+
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Facet field: {}", facetField.getName());
+                    logger.debug("Facet count: {}", facetField.getValueCount());
+                }
+
+                for (final FacetField.Count value : facetField.getValues()) {
+                    final FacetsSolrResponse.FacetValue fv = new FacetsSolrResponse.FacetValue();
+
+                    fv.setName(value.getName());
+                    fv.setCount(value.getCount());
+
+                    ff.getValues().add(fv);
+
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Value: {}", value.getName());
+                        logger.debug("Count: {}", value.getCount());
+                    }
+                }
+
+                facetsSolrResponse.getFacetFields().add(ff);
+            }
+
+            facetsSolrResponse.setElapsedTime(response.getElapsedTime());
+            facetsSolrResponse.setQTime(response.getQTime());
+
+            return facetsSolrResponse;
+        }, response);
     }
 
     /// The select all method
