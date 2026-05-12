@@ -39,6 +39,7 @@ import net.jmp.spring.boot.react.learning.ecommerce.services.SearchService;
 import net.jmp.spring.boot.react.learning.ecommerce.solr.FacetsSolrResponse;
 import net.jmp.spring.boot.react.learning.ecommerce.solr.PingSolrResponse;
 import net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse;
+import net.jmp.spring.boot.react.learning.ecommerce.solr.TermsSolrResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,6 +138,37 @@ public class SearchApiController {
                 );
             };
         }, collection);
+    }
+
+    /// The terms method
+    ///
+    /// @param  collection  java.lang.String
+    /// @param  field       java.lang.String
+    /// @return             org.springframework.http.ResponseEntity<java.lang.String>
+    @GetMapping("/{collection}/terms")
+    public ResponseEntity<TermsSolrResponse> terms(final @PathVariable String collection, final @RequestParam String field) {
+        return this.logTracer.tracedWith(() -> {
+            final TermsSolrResponse response = new TermsSolrResponse(200, "OK");
+
+            return switch (response.getStatus()) {
+                case 200 -> new ResponseEntity<>(
+                        response,
+                        HttpStatus.OK
+                );
+                case 404 -> new ResponseEntity<>(
+                        new TermsSolrResponse(404, response.getMessage()),
+                        HttpStatus.NOT_FOUND
+                );
+                case 500 -> new ResponseEntity<>(
+                        new TermsSolrResponse(500, response.getMessage()),
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                );
+                default -> new ResponseEntity<>(
+                        new TermsSolrResponse(500, String.format("Failed to list terms for collection %s and field %s", collection, field)),
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                );
+            };
+        }, collection, field);
     }
 
     /// The all-purpose select from ecommerce-products method
