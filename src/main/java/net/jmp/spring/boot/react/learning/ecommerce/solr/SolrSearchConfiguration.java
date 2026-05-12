@@ -70,6 +70,9 @@ public class SolrSearchConfiguration {
         /// The faceted fields
         private List<String> facets = new ArrayList<>();
 
+        /// The fields with terms
+        private List<String> terms = new ArrayList<>();
+
         /// Return the name
         ///
         /// @return java.lang.String
@@ -90,12 +93,22 @@ public class SolrSearchConfiguration {
         /// @param  facets  java.util.List<java.lang.String>
         public void setFacets(List<String> facets) { this.facets = facets; }
 
+        /// Get the fields with terms
+        ///
+        /// @return java.util.List<java.lang.String>
+        public List<String> getTerms() { return this.terms; }
+
+        /// Set the fields with terms
+        ///
+        /// @param  terms   java.util.List<java.lang.String>
+        public void setTerms(List<String> terms) { this.terms = terms; }
+
         /// Return the string representation of the object
         ///
         /// @return java.lang.String
         @Override
         public String toString() {
-            return "CollectionConfiguration [name=" + this.name + ", facets=" + this.facets + "]";
+            return "CollectionConfiguration [name=" + this.name + ", facets=" + this.facets+ ", terms=" + this.terms + "]";
         }
     }
 }
