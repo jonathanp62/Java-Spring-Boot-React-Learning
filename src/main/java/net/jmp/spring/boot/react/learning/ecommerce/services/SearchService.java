@@ -39,10 +39,7 @@ import net.jmp.spring.boot.react.learning.ecommerce.SolrProduct;
 
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
-import net.jmp.spring.boot.react.learning.ecommerce.solr.FacetsSolrResponse;
-import net.jmp.spring.boot.react.learning.ecommerce.solr.PingSolrResponse;
-import net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse;
-import net.jmp.spring.boot.react.learning.ecommerce.solr.SolrSearchConfiguration;
+import net.jmp.spring.boot.react.learning.ecommerce.solr.*;
 
 import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
 
@@ -134,7 +131,7 @@ public class SearchService {
     /// The facets method
     ///
     /// @param  collection  java.lang.String
-    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.PingSolrResponse
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.FacetsSolrResponse
     public FacetsSolrResponse facets(final String collection) {
         return this.logTracer.tracedWith(() -> {
             FacetsSolrResponse facetsSolrResponse;
@@ -148,7 +145,7 @@ public class SearchService {
                             .orElse(null);
 
                     if (collectionConfiguration == null) {
-                        return new FacetsSolrResponse(500, String.format("Solr collection %s is not configured", collection));
+                        return new FacetsSolrResponse(500, String.format("Solr collection %s is not configured for facets", collection));
                     }
 
                     final SolrQuery query = this.buildFacetsQuery(collectionConfiguration);
@@ -231,6 +228,44 @@ public class SearchService {
 
             return facetsSolrResponse;
         }, response);
+    }
+
+    /// The terms method
+    ///
+    /// @param  collection  java.lang.String
+    /// @param  field       java.lang.String
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.TermsSolrResponse
+    public TermsSolrResponse terms(final String collection, final String field) {
+        return this.logTracer.tracedWith(() -> {
+            TermsSolrResponse termsSolrResponse;
+
+            if (this.isSolrCollectionValid(collection)) {
+                try {
+                    final SolrSearchConfiguration.CollectionConfiguration collectionConfiguration = this.solrSearchConfiguration.getCollections()
+                            .stream()
+                            .filter(cc -> cc.getName().equalsIgnoreCase(collection))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (collectionConfiguration == null) {
+                        return new TermsSolrResponse(500, String.format("Solr collection %s is not configured for terms", collection));
+                    }
+
+                    termsSolrResponse = new TermsSolrResponse(200, "OK");
+                } catch (final Exception e) {
+                    final Logger logger = this.logTracer.getLogger();
+                    final String message = String.format("Failed to list terms for collection %s and fiels %s: %s", collection, field, e.getMessage());
+
+                    logger.error(message);
+
+                    termsSolrResponse = new TermsSolrResponse(500, message);
+                }
+            } else {
+                termsSolrResponse = new TermsSolrResponse(404, String.format("Solr collection %s was not found", collection));
+            }
+
+            return termsSolrResponse;
+        }, collection, field);
     }
 
     /// The select all method

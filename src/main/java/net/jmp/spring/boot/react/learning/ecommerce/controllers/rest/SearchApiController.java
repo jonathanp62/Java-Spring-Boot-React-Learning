@@ -148,7 +148,7 @@ public class SearchApiController {
     @GetMapping("/{collection}/terms")
     public ResponseEntity<TermsSolrResponse> terms(final @PathVariable String collection, final @RequestParam String field) {
         return this.logTracer.tracedWith(() -> {
-            final TermsSolrResponse response = new TermsSolrResponse(200, "OK");
+            final TermsSolrResponse response = this.searchService.terms(collection, field);
 
             return switch (response.getStatus()) {
                 case 200 -> new ResponseEntity<>(
