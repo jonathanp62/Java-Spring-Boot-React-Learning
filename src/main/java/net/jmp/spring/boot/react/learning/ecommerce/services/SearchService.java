@@ -46,10 +46,7 @@ import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
 import org.apache.solr.client.solrj.request.CollectionAdminRequest;
 import org.apache.solr.client.solrj.request.SolrQuery;
 
-import org.apache.solr.client.solrj.response.CollectionAdminResponse;
-import org.apache.solr.client.solrj.response.FacetField;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.response.SolrPingResponse;
+import org.apache.solr.client.solrj.response.*;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
 
@@ -251,7 +248,14 @@ public class SearchService {
                         return new TermsSolrResponse(500, String.format("Solr collection %s is not configured for terms", collection));
                     }
 
-                    termsSolrResponse = new TermsSolrResponse(200, "OK");
+                    final SolrQuery query = this.buildTermsQuery(collectionConfiguration, field);
+                    final QueryResponse response = this.solrClient.query(collection, query);
+
+                    if (response.getStatus() == 0) {
+                        termsSolrResponse = this.buildTermsResponse(response.getTermsResponse(), field);
+                    } else {
+                        termsSolrResponse = new TermsSolrResponse(500, "Not OK");
+                    }
                 } catch (final Exception e) {
                     final Logger logger = this.logTracer.getLogger();
                     final String message = String.format("Failed to list terms for collection %s and fiels %s: %s", collection, field, e.getMessage());
@@ -266,6 +270,62 @@ public class SearchService {
 
             return termsSolrResponse;
         }, collection, field);
+    }
+
+    /// The build terms query method
+    ///
+    /// @param  collectionConfiguration net.jmp.spring.boot.react.learning.ecommerce.solr.SolrSearchConfiguration.CollectionConfiguration
+    /// @param  field                   java.lang.String
+    /// @return                         org.apache.solr.client.solrj.SolrQuery
+    private SolrQuery buildTermsQuery(final SolrSearchConfiguration.CollectionConfiguration collectionConfiguration,
+                                      final String field) {
+        return this.logTracer.tracedWith(() -> {
+            final SolrQuery query = new SolrQuery();
+
+            query.setRequestHandler("/terms");
+            query.setTerms(true);
+            query.setTermsLimit(-1);
+
+            collectionConfiguration.getTerms()
+                    .forEach(query::addTermsField);
+
+            return query;
+        }, collectionConfiguration, field);
+    }
+
+    /// The build terms response method
+    ///
+    /// @param  response    org.apache.solr.client.solrj.response.TermsResponse
+    /// @param  field       java.lang.String
+    /// @return             net.jmp.spring.boot.react.learning.ecommerce.solr.TermsSolrResponse
+    private TermsSolrResponse buildTermsResponse(final TermsResponse response, final String field) {
+        return this.logTracer.tracedWith(() -> {
+            final Logger logger = this.logTracer.getLogger();
+            final TermsSolrResponse termsSolrResponse = new TermsSolrResponse(200, "OK");
+            final TermsSolrResponse.TermField tf = new TermsSolrResponse.TermField();
+
+            logger.debug("Term field: {}", field);
+
+            tf.setName(field);
+
+            for (final TermsResponse.Term term : response.getTerms(field)) {
+                final TermsSolrResponse.TermValue tv = new TermsSolrResponse.TermValue();
+
+                tv.setName(term.getTerm());
+                tv.setFrequency(term.getFrequency());
+
+                tf.getValues().add(tv);
+
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Term value    : {}", term.getTerm());
+                    logger.debug("Term frequency: {}", term.getFrequency());
+                }
+            }
+
+            termsSolrResponse.getTermFields().add(tf);
+
+            return termsSolrResponse;
+        }, response, field);
     }
 
     /// The select all method

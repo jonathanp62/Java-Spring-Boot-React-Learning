@@ -108,7 +108,7 @@ public class TermsSolrResponse extends SolrResponse {
         private String name = "";
 
         /// The frequency
-        private int frequency = 0;
+        private long frequency = 0;
 
         /// The default constructor
         public TermValue() {
@@ -131,15 +131,15 @@ public class TermsSolrResponse extends SolrResponse {
 
         /// Get the frequency
         ///
-        /// @return int
-        public int getFrequency() {
+        /// @return long
+        public long getFrequency() {
             return this.frequency;
         }
 
         /// Set the frequency
         ///
-        /// @param  frequency   int
-        public void setFrequency(final int frequency) {
+        /// @param  frequency   long
+        public void setFrequency(final long frequency) {
             this.frequency = frequency;
         }
     }
