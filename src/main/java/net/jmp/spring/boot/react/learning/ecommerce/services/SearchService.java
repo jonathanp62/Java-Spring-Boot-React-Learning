@@ -32,6 +32,7 @@ package net.jmp.spring.boot.react.learning.ecommerce.services;
  */
 
 import java.util.List;
+import java.util.Optional;
 
 import java.util.function.Supplier;
 
@@ -248,17 +249,22 @@ public class SearchService {
                         return new TermsSolrResponse(500, String.format("Solr collection %s is not configured for terms", collection));
                     }
 
-                    final SolrQuery query = this.buildTermsQuery(collectionConfiguration, field);
-                    final QueryResponse response = this.solrClient.query(collection, query);
+                    final Optional<SolrQuery> query = this.buildTermsQuery(collectionConfiguration, field);
 
-                    if (response.getStatus() == 0) {
-                        termsSolrResponse = this.buildTermsResponse(response.getTermsResponse(), field);
+                    if (query.isPresent()) {
+                        final QueryResponse response = this.solrClient.query(collection, query.get());
+
+                        if (response.getStatus() == 0) {
+                            termsSolrResponse = this.buildTermsResponse(response.getTermsResponse(), field);
+                        } else {
+                            termsSolrResponse = new TermsSolrResponse(500, "Not OK");
+                        }
                     } else {
-                        termsSolrResponse = new TermsSolrResponse(500, "Not OK");
+                        termsSolrResponse = new TermsSolrResponse(404, String.format("Solr collection %s is not configured for term field: %s", collection, field));
                     }
                 } catch (final Exception e) {
                     final Logger logger = this.logTracer.getLogger();
-                    final String message = String.format("Failed to list terms for collection %s and fiels %s: %s", collection, field, e.getMessage());
+                    final String message = String.format("Failed to list terms for collection %s and fields %s: %s", collection, field, e.getMessage());
 
                     logger.error(message);
 
@@ -276,10 +282,19 @@ public class SearchService {
     ///
     /// @param  collectionConfiguration net.jmp.spring.boot.react.learning.ecommerce.solr.SolrSearchConfiguration.CollectionConfiguration
     /// @param  field                   java.lang.String
-    /// @return                         org.apache.solr.client.solrj.SolrQuery
-    private SolrQuery buildTermsQuery(final SolrSearchConfiguration.CollectionConfiguration collectionConfiguration,
+    /// @return                         java.util.Optional<org.apache.solr.client.solrj.SolrQuery>
+    private Optional<SolrQuery> buildTermsQuery(final SolrSearchConfiguration.CollectionConfiguration collectionConfiguration,
                                       final String field) {
         return this.logTracer.tracedWith(() -> {
+            final Optional<String> termField = collectionConfiguration.getTerms()
+                    .stream()
+                    .filter(t -> t.equals(field))
+                    .findFirst();
+
+            if (termField.isEmpty()) {
+                return Optional.empty();
+            }
+
             final SolrQuery query = new SolrQuery();
 
             query.setRequestHandler("/terms");
@@ -289,7 +304,7 @@ public class SearchService {
             collectionConfiguration.getTerms()
                     .forEach(query::addTermsField);
 
-            return query;
+            return Optional.of(query);
         }, collectionConfiguration, field);
     }
 
