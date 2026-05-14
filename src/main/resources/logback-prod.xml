@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
+ (#)logback-prod.xml    0.5.0   05/14/2026
  (#)logback-prod.xml    0.2.0   02/08/2026
 
  @author   Jonathan Parker
- @version  0.2.0
+ @version  0.5.0
  @since    0.2.0
 
  MIT License
@@ -59,6 +60,9 @@
         <appender-ref ref="ECS_JSON_FILE" />
     </logger>
     <logger name="net.jmp.spring.boot.react.learning.bankkycform" additivity="false" level="info">
+        <appender-ref ref="ECS_JSON_FILE" />
+    </logger>
+    <logger name="net.jmp.spring.boot.react.learning.components" additivity="false" level="debug">
         <appender-ref ref="ECS_JSON_FILE" />
     </logger>
     <logger name="net.jmp.spring.boot.react.learning.configuration" additivity="false" level="info">
