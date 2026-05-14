@@ -6,29 +6,41 @@ A program that supports React learning projects with REST services provided by S
 
 [options="header"]
 |=======================
-|Endpoint                                                         |HTTP Method | Payload | HTTP Responses | Description
-|/react/learning/api/bank-kyc-form                                | POST       | JSON    | 201 CREATED    | Returns the saved form as JSON
-|/react/learning/api/bank-kyc-form                                | GET        | None    | 200 OK         | Returns all saved forms as JSON
-|/react/learning/api/bank-kyc-form/ok                             | GET        | None    | 200 OK         | Returns a string: OK
-|/react/learning/api/e-commerce/distance/                         | GET        | None    | 200 OK         | Returns all distance documents as JSON
-|/react/learning/api/e-commerce/distance/:toZipCode               | GET        | None    | 200 OK         | Returns the distance document for the specified 'to' zip code as JSON
-|/react/learning/api/e-commerce/distance/ok                       | GET        | None    | 200 OK         | Returns a string: OK
-|/react/learning/api/e-commerce/fakestore/ok                      | GET        | None    | 200 OK         | Returns a string: OK
-|/react/learning/api/e-commerce/fakestore/products                | GET        | None    | 200 OK         | Returns the fake store products as JSON
-|/react/learning/api/e-commerce/ok                                | GET        | None    | 200 OK         | Returns a string: OK
-|/react/learning/api/e-commerce/order                             | POST       | JSON    | 201 CREATED    | Returns the saved order as JSON
-|/react/learning/api/e-commerce/order/:orderId                    | GET        | None    | 200 OK         | Returns the saved order for the specified order ID as JSON
-|/react/learning/api/e-commerce/orders                            | GET        | None    | 200 OK         | Returns all saved orders as JSON
-|/react/learning/api/e-commerce/sales-tax                         | GET        | None    | 200 OK         | Returns all saved sales tax documents as JSON
-|/react/learning/api/e-commerce/sales-tax/                        | POST       | JSON    | 201 CREATED    | Returns the saved sales tax as JSON
-|/react/learning/api/e-commerce/sales-tax/                        | PUT        | JSON    | 200 OK         | Returns the updated sales tax as JSON
-|/react/learning/api/e-commerce/sales-tax/:stateName              | GET        | None    | 200 OK         | Returns the saved sales tax document for the specified state name as JSON
-|/react/learning/api/e-commerce/sales-tax/abbr/:stateAbbreviation | GET        | None    | 200 OK         | Returns the saved sales tax document for the specified state abbreviation as JSON
-|/react/learning/api/e-commerce/sales-tax/:stateName              | DELETE     | None    | 204 NO CONTENT | Deletes the sales tax document for the specified state name
-|/react/learning/api/e-commerce/sales-tax/abbr/:stateAbbreviation | DELETE     | None    | 204 NO CONTENT | Deletes the sales tax document for the specified state abbreviation
-|/react/learning/api/e-commerce/search/ok                         | GET        | None    | 200 OK         | Returns a string: OK
-|/react/learning/api/e-commerce/search/:collection/ping           | GET        | None    | 200 OK         | Returns a string: Pinged Solr collection :collection OK
-|/react/learning/api/e-commerce/shipping-cost/calculate           | GET        | None    | 200 OK         | Returns the shipping cost as JSON based on toZipCode, subTotal, and items query parameters
+|Endpoint                                                                                                                | HTTP Method | Payload | HTTP Responses | Description
+|/react/learning/api/bank-kyc-form                                                                                       | POST        | JSON    | 201 CREATED    | Returns the saved form as JSON
+|/react/learning/api/bank-kyc-form                                                                                       | GET         | None    | 200 OK         | Returns all saved forms as JSON
+|/react/learning/api/bank-kyc-form/ok                                                                                    | GET         | None    | 200 OK         | Returns a string: OK
+|/react/learning/api/e-commerce/distance/                                                                                | GET         | None    | 200 OK         | Returns all distance documents as JSON
+|/react/learning/api/e-commerce/distance/:toZipCode                                                                      | GET         | None    | 200 OK         | Returns the distance document for the specified 'to' zip code as JSON
+|/react/learning/api/e-commerce/distance/ok                                                                              | GET         | None    | 200 OK         | Returns a string: OK
+|/react/learning/api/e-commerce/fakestore/ok                                                                             | GET         | None    | 200 OK         | Returns a string: OK
+|/react/learning/api/e-commerce/fakestore/products                                                                       | GET         | None    | 200 OK         | Returns the fake store products as JSON
+|/react/learning/api/e-commerce/ok                                                                                       | GET         | None    | 200 OK         | Returns a string: OK
+|/react/learning/api/e-commerce/order                                                                                    | POST        | JSON    | 201 CREATED    | Returns the saved order as JSON
+|/react/learning/api/e-commerce/order/:orderId                                                                           | GET         | None    | 200 OK         | Returns the saved order for the specified order ID as JSON
+|/react/learning/api/e-commerce/orders                                                                                   | GET         | None    | 200 OK         | Returns all saved orders as JSON
+|/react/learning/api/e-commerce/sales-tax                                                                                | GET         | None    | 200 OK         | Returns all saved sales tax documents as JSON
+|/react/learning/api/e-commerce/sales-tax/                                                                               | POST        | JSON    | 201 CREATED    | Returns the saved sales tax as JSON
+|/react/learning/api/e-commerce/sales-tax/                                                                               | PUT         | JSON    | 200 OK         | Returns the updated sales tax as JSON
+|/react/learning/api/e-commerce/sales-tax/:stateName                                                                     | GET         | None    | 200 OK         | Returns the saved sales tax document for the specified state name as JSON
+|/react/learning/api/e-commerce/sales-tax/abbr/:stateAbbreviation                                                        | GET         | None    | 200 OK         | Returns the saved sales tax document for the specified state abbreviation as JSON
+|/react/learning/api/e-commerce/sales-tax/:stateName                                                                     | DELETE      | None    | 204 NO CONTENT | Deletes the sales tax document for the specified state name
+|/react/learning/api/e-commerce/sales-tax/abbr/:stateAbbreviation                                                        | DELETE      | None    | 204 NO CONTENT | Deletes the sales tax document for the specified state abbreviation
+|/react/learning/api/e-commerce/search/ok                                                                                | GET         | None    | 200 OK         | Returns a string: OK
+|/react/learning/api/e-commerce/search/:collection/ping                                                                  | GET         | None    | 200 OK         | Returns a string: Pinged Solr collection :collection OK
+|/react/learning/api/e-commerce/search/:collection/facets                                                                | GET         | None    | 200 OK         | Returns the facets for the specified Solr collection as JSON
+|/react/learning/api/e-commerce/search/:collection/terms?field=:field                                                    | GET         | None    | 200 OK         | Returns the terms for the specified Solr collection and field as JSON
+|/react/learning/api/e-commerce/search/ecommerce-products/select                                                         | GET         | None    | 200 OK         | Returns all products in the ecommerce-products collection as JSON
+|/react/learning/api/e-commerce/search/ecommerce-products/select?field=category&value=:value                             | GET         | None    | 200 OK         | Returns the products in the ecommerce-products collection that match the specified category as JSON
+|/react/learning/api/e-commerce/search/ecommerce-products/select?field=price&min=:min&max=:max                           | GET         | None    | 200 OK         | Returns the products in the ecommerce-products collection that match the specified price range as JSON
+|/react/learning/api/e-commerce/search/ecommerce-products/select/:id                                                     | GET         | None    | 200 OK         | Returns the product in the ecommerce-products collection with the specified ID as JSON
+|/react/learning/api/e-commerce/search/ecommerce-products/select?field=description&value=:value&category=:category       | GET         | None    | 200 OK         | Returns the products in the ecommerce-products collection that match the specified description and optional category as JSON
+|/react/learning/api/e-commerce/search/ecommerce-products/select?field=description,title&value=:value&category=:category | GET         | None    | 200 OK         | Returns the products in the ecommerce-products collection that match the specified description and title and optional category as JSON
+|/react/learning/api/e-commerce/search/ecommerce-products/select?field=productid&value=:value                            | GET         | None    | 200 OK         | Returns the product in the ecommerce-products collection with the specified product ID as JSON
+|/react/learning/api/e-commerce/search/ecommerce-products/select?field=ratingcount&min=:min&max=:max&category=:category  | GET         | None    | 200 OK         | Returns the products in the ecommerce-products collection that match the specified rating count and optional category as JSON
+|/react/learning/api/e-commerce/search/ecommerce-products/select?field=ratingrate&min=:min&max=:max&category=:category   | GET         | None    | 200 OK         | Returns the products in the ecommerce-products collection that match the specified rating rate and optional category as JSON
+|/react/learning/api/e-commerce/search/ecommerce-products/select?field=title&value=:value&category=:category             | GET         | None    | 200 OK         | Returns the products in the ecommerce-products collection that match the specified title and optional category as JSON
+|/react/learning/api/e-commerce/shipping-cost/calculate                                                                  | GET         | None    | 200 OK         | Returns the shipping cost as JSON based on toZipCode, subTotal, and items query parameters
 |=======================
 
 == Gradle JavaExec Tasks
