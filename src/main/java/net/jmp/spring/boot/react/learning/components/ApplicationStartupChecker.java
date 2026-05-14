@@ -35,6 +35,8 @@ import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.boot.CommandLineRunner;
 
 import org.springframework.stereotype.Component;
@@ -42,6 +44,11 @@ import org.springframework.stereotype.Component;
 /// The application startup checker
 @Component
 public class ApplicationStartupChecker implements CommandLineRunner {
+    /// The Solr ping collection name
+    @SuppressWarnings("NullAway.Init")
+    @Value("${solr.ping.collection}")
+    private String solrPingCollection;
+
     /// The Solr client
     final HttpJdkSolrClient solrClient;
 
@@ -67,7 +74,7 @@ public class ApplicationStartupChecker implements CommandLineRunner {
             final int status = this.solrClient.ping("products").getStatus();
 
             if (status == 0) {
-                this.logger.info("Connected to Solr at: {}", this.solrClient.getBaseURL());
+                this.logger.info("Connected to Solr at {} for collection {}", this.solrClient.getBaseURL(), this.solrPingCollection);
             } else {
                 throw new IllegalStateException(String.format("Solr ping failed with status: %d", status));
             }
