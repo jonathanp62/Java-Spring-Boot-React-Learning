@@ -69,6 +69,8 @@ repositories {
 }
 
 dependencies {
+	annotationProcessor ('org.springframework.boot:spring-boot-configuration-processor')
+
 	compileOnly 		(libs.org.jspecify.jspecify)
 
 	implementation		('org.springframework.boot:spring-boot-starter')
