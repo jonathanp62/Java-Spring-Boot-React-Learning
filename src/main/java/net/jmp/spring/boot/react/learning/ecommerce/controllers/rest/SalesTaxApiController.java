@@ -1,11 +1,12 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers.rest;
 
 /*
+ * (#)SalesTaxApiController.java    0.5.0   04/08/2026
  * (#)SalesTaxApiController.java    0.2.0   01/11/2026
  * (#)SalesTaxApiController.java    0.1.0   12/20/2025
  *
  * @author    Jonathan Parker
- * @version   0.2.0
+ * @version   0.5.0
  * @since     0.1.0
  *
  * MIT License
@@ -165,7 +166,7 @@ public class SalesTaxApiController {
                 result = this.userRoleChecker.ifReadWrite(authentication, () -> {
                     final SalesTaxDocument document = new SalesTaxDocument();
 
-                    document.setDocumentId(existing.get().getDocumentId());
+                    document.setDocumentId(existing.get().getDocumentId() != null ? existing.get().getDocumentId() : documentId);
 
                     this.applySalesTax(document, salesTax);
 

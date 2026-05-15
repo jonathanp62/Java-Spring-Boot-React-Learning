@@ -1,12 +1,13 @@
 package net.jmp.spring.boot.react.learning.ecommerce.components;
 
 /*
+ * (#)OrderCostCalculator.java  0.5.0   04/08/2026
  * (#)OrderCostCalculator.java  0.4.0   03/03/2026
  * (#)OrderCostCalculator.java  0.2.0   02/02/2026
  * (#)OrderCostCalculator.java  0.1.0   01/03/2026
  *
  * @author    Jonathan Parker
- * @version   0.4.0
+ * @version   0.5.0
  * @since     0.1.0
  *
  * MIT License
@@ -38,6 +39,7 @@ import java.math.RoundingMode;
 import java.text.NumberFormat;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import net.jmp.spring.boot.react.learning.ecommerce.Product;
 import net.jmp.spring.boot.react.learning.ecommerce.ShippingCost;
@@ -100,6 +102,11 @@ public class OrderCostCalculator {
                     : 0;
 
             final String toZipCode = orderDocument.getZipCode();
+
+            if (Objects.isNull(toZipCode)) {
+                throw new IllegalStateException("The 'to' zip code was not found in order document: " + orderDocument.getDocumentId());
+            }
+
             final ShippingCost shippingCost = this.getShippingCost(toZipCode, subtotal, items);
 
             double roundedShipping = BigDecimal.valueOf(shippingCost.totalCost())
@@ -173,6 +180,10 @@ public class OrderCostCalculator {
                     : 0;
 
             final String toZipCode = orderDocument.getZipCode();
+
+            if (Objects.isNull(toZipCode)) {
+                throw new IllegalStateException("The 'to' zip code was not found in order document: " + orderDocument.getDocumentId());
+            }
 
             final ShippingCost shippingCost = this.getShippingCost(toZipCode, subtotal, items);
 

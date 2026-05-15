@@ -1,15 +1,16 @@
 package net.jmp.spring.boot.react.learning.configuration;
 
 /*
+ * (#)SecurityConfigurer.java   0.5.0   04/19/2026
  * (#)SecurityConfigurer.java   0.1.0   12/27/2025
  *
  * @author    Jonathan Parker
- * @version   0.1.0
+ * @version   0.5.0
  * @since     0.1.0
  *
  * MIT License
  *
- * Copyright (c) 2025 Jonathan M. Parker
+ * Copyright (c) 2025, 2026 Jonathan M. Parker
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -86,6 +87,7 @@ public class SecurityConfigurer {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/error/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/react/learning/api/e-commerce/fakestore/**").permitAll()
                         .requestMatchers("/react/learning/api/e-commerce/**").authenticated()
                         .anyRequest().permitAll()
                 )

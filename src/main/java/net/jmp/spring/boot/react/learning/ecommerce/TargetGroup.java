@@ -33,6 +33,8 @@ package net.jmp.spring.boot.react.learning.ecommerce;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import java.util.Locale;
+
 /// The target group
 public enum TargetGroup {
     MEN("men"),
@@ -69,6 +71,6 @@ public enum TargetGroup {
      */
     @JsonCreator
     public static TargetGroup fromString(final String value) {
-        return TargetGroup.valueOf(value.toUpperCase());
+        return TargetGroup.valueOf(value.toUpperCase(Locale.getDefault()));
     }
 }

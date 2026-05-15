@@ -41,6 +41,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SolrConfigurer {
     /// The Solr URL
+    @SuppressWarnings("NullAway.Init")
     @Value("${solr.url:http://localhost:8983/solr}")
     private String solrUrl;
 

@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers.rest;
 
 /*
+ * (#)SearchApiController.java  0.5.0   03/27/2026
  * (#)SearchApiController.java  0.4.0   03/21/2026
  *
  * @author    Jonathan Parker
- * @version   0.4.0
+ * @version   0.5.0
  * @since     0.4.0
  *
  * MIT License
@@ -29,19 +30,29 @@ package net.jmp.spring.boot.react.learning.ecommerce.controllers.rest;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+import net.jmp.spring.boot.react.learning.ecommerce.SolrProduct;
 import net.jmp.spring.boot.react.learning.ecommerce.helpers.LogTracer;
 
 import net.jmp.spring.boot.react.learning.ecommerce.services.SearchService;
 
+import net.jmp.spring.boot.react.learning.ecommerce.solr.FacetsSolrResponse;
+import net.jmp.spring.boot.react.learning.ecommerce.solr.PingSolrResponse;
+import net.jmp.spring.boot.react.learning.ecommerce.solr.QuerySolrResponse;
+import net.jmp.spring.boot.react.learning.ecommerce.solr.TermsSolrResponse;
+
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /// The search API controller
 @RestController
@@ -76,16 +87,20 @@ public class SearchApiController {
     @GetMapping("/{collection}/ping")
     public ResponseEntity<String> ping(final @PathVariable String collection) {
         return this.logTracer.tracedWith(() -> {
-            final int status = this.searchService.ping(collection);
+            final PingSolrResponse response = this.searchService.ping(collection);
 
-            return switch (status) {
-                case 0 -> new ResponseEntity<>(
+            return switch (response.getStatus()) {
+                case 200 -> new ResponseEntity<>(
                         String.format("Pinged Solr collection %s OK", collection),
                         HttpStatus.OK
                 );
                 case 404 -> new ResponseEntity<>(
-                        String.format("Solr collection %s was not found", collection),
+                        response.getMessage(),
                         HttpStatus.NOT_FOUND
+                );
+                case 500 -> new ResponseEntity<>(
+                        response.getMessage(),
+                        HttpStatus.INTERNAL_SERVER_ERROR
                 );
                 default -> new ResponseEntity<>(
                         String.format("Failed to ping Solr collection %s", collection),
@@ -93,5 +108,171 @@ public class SearchApiController {
                 );
             };
         }, collection);
+    }
+
+    /// The facets method
+    ///
+    /// @param  collection  java.lang.String
+    /// @return             org.springframework.http.ResponseEntity<java.lang.String>
+    @GetMapping("/{collection}/facets")
+    public ResponseEntity<FacetsSolrResponse> facets(final @PathVariable String collection) {
+        return this.logTracer.tracedWith(() -> {
+            final FacetsSolrResponse response = this.searchService.facets(collection);
+
+            return switch (response.getStatus()) {
+                case 200 -> new ResponseEntity<>(
+                        response,
+                        HttpStatus.OK
+                );
+                case 404 -> new ResponseEntity<>(
+                        new FacetsSolrResponse(404, response.getMessage()),
+                        HttpStatus.NOT_FOUND
+                );
+                case 500 -> new ResponseEntity<>(
+                        new FacetsSolrResponse(500, response.getMessage()),
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                );
+                default -> new ResponseEntity<>(
+                        new FacetsSolrResponse(500, String.format("Failed to list facets for collection %s", collection)),
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                );
+            };
+        }, collection);
+    }
+
+    /// The terms method
+    ///
+    /// @param  collection  java.lang.String
+    /// @param  field       java.lang.String
+    /// @return             org.springframework.http.ResponseEntity<java.lang.String>
+    @GetMapping("/{collection}/terms")
+    public ResponseEntity<TermsSolrResponse> terms(final @PathVariable String collection, final @RequestParam String field) {
+        return this.logTracer.tracedWith(() -> {
+            final TermsSolrResponse response = this.searchService.terms(collection, field);
+
+            return switch (response.getStatus()) {
+                case 200 -> new ResponseEntity<>(
+                        response,
+                        HttpStatus.OK
+                );
+                case 404 -> new ResponseEntity<>(
+                        new TermsSolrResponse(404, response.getMessage()),
+                        HttpStatus.NOT_FOUND
+                );
+                case 500 -> new ResponseEntity<>(
+                        new TermsSolrResponse(500, response.getMessage()),
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                );
+                default -> new ResponseEntity<>(
+                        new TermsSolrResponse(500, String.format("Failed to list terms for collection %s and field %s", collection, field)),
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                );
+            };
+        }, collection, field);
+    }
+
+    /// The all-purpose select from ecommerce-products method
+    ///
+    /// @return org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    @GetMapping("/ecommerce-products/select")
+    public ResponseEntity<List<SolrProduct>> select(@RequestParam final Map<String, String> requestParameters) {
+        return this.logTracer.traced(() -> {
+            final Logger logger = this.logTracer.getLogger();
+            final String collectionName = "ecommerce-products";
+
+            QuerySolrResponse<SolrProduct> response;
+
+            if (requestParameters.isEmpty()) {
+                response = this.searchService.selectAll(collectionName);
+            } else {
+                if (requestParameters.containsKey("field")) {
+                    final String fieldName = requestParameters.get("field");
+                    final String fieldValue = requestParameters.getOrDefault("value", "");
+                    final String fieldMin = requestParameters.getOrDefault("min", "");
+                    final String fieldMax = requestParameters.getOrDefault("max", "");
+                    final String category = requestParameters.getOrDefault("category", "");
+
+                    response = switch (fieldName.toLowerCase(Locale.getDefault())) {
+                        case "category" -> this.searchService.selectByCategory(collectionName, fieldValue);
+                        case "description,title", "title,description" -> this.searchService.selectByDescriptionAndTitle(collectionName, fieldValue, category);
+                        case "description" -> this.searchService.selectByDescription(collectionName, fieldValue, category);
+                        case "price" -> this.searchService.selectByPrice(collectionName, fieldMin, fieldMax, category);
+                        case "productid" -> this.searchService.selectByProductId(collectionName, fieldValue);
+                        case "ratingcount" -> this.searchService.selectByRatingCount(collectionName, fieldMin, fieldMax, category);
+                        case "ratingrate" -> this.searchService.selectByRatingRate(collectionName, fieldMin, fieldMax, category);
+                        case "title" -> this.searchService.selectByTitle(collectionName, fieldValue, category);
+                        default -> new QuerySolrResponse<>(400, String.format("Unrecognized field name: %s", fieldName));
+                    };
+                } else {
+                    response = new QuerySolrResponse<>(400, String.format("Unrecognized request parameters: %s", requestParameters));
+                }
+            }
+
+            return switch (response.getStatus()) {
+                case 200 -> new ResponseEntity<>(
+                        response.getDocuments(),
+                        HttpStatus.OK
+                );
+                case 400 -> {
+                    logger.error(response.getMessage());
+
+                    yield new ResponseEntity<>(
+                            new ArrayList<>(),
+                            HttpStatus.BAD_REQUEST
+                    );
+                }
+                case 404 -> {
+                    logger.error(response.getMessage());
+
+                    yield new ResponseEntity<>(
+                        new ArrayList<>(),
+                        HttpStatus.NOT_FOUND
+                    );
+                }
+                default -> {
+                    logger.error(response.getMessage());
+
+                    yield new ResponseEntity<>(
+                        new ArrayList<>(),
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                    );
+                }
+            };
+        });
+    }
+
+    /// The select by ID from ecommerce-products method
+    ///
+    /// @param  id  java.lang.String
+    /// @return     org.springframework.http.ResponseEntity<net.jmp.spring.boot.react.learning.ecommerce.SolrProduct>
+    @GetMapping("/ecommerce-products/select/{id}")
+    public ResponseEntity<SolrProduct> selectById(final @PathVariable String id) {
+        return this.logTracer.tracedWith(() -> {
+            final Logger logger = this.logTracer.getLogger();
+            final QuerySolrResponse<SolrProduct> response = this.searchService.selectById("ecommerce-products", id);
+
+            return switch (response.getStatus()) {
+                case 200 -> new ResponseEntity<>(
+                        response.getDocuments() != null ? response.getDocuments().getFirst() : new SolrProduct(),
+                        HttpStatus.OK
+                    );
+                case 404 -> {
+                    logger.warn(response.getMessage());
+
+                    yield new ResponseEntity<>(
+                            new SolrProduct(),
+                            HttpStatus.NOT_FOUND
+                    );
+                }
+                default -> {
+                    logger.error(response.getMessage());
+
+                    yield new ResponseEntity<>(
+                            new SolrProduct(),
+                            HttpStatus.INTERNAL_SERVER_ERROR
+                    );
+                }
+            };
+        }, id);
     }
 }

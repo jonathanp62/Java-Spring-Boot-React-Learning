@@ -231,11 +231,7 @@ public class FormDocument {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
-        FormDocument that = (FormDocument) o;
+        if (!(o instanceof FormDocument that)) return false;
 
         return Objects.equals(this.id, that.id) &&
                 Objects.equals(this.fullName, that.fullName) &&

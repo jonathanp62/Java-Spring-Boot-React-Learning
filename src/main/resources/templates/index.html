@@ -1,8 +1,9 @@
 <!--
+ (#)index.html  0.5.0   03/22/2026
  (#)index.html  0.1.0   01/02/2026
 
  @author  Jonathan Parker
- @version 0.1.0
+ @version 0.5.0
  @since   0.1.0
 
  MIT License
@@ -29,22 +30,17 @@
 -->
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="icon" type="image/png" th:href="@{/favicon.png}" href="../../static/favicon.png">
-    <link rel="stylesheet" th:href="@{/styles/styles.css}" href="../../static/styles/styles.css">
-    <title>Spring Boot React Learning</title>
-</head>
-<body class="pageCenteredBody">
-    <div class="pageCentered">
-        <h2>Spring Boot React Learning</h2>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us" th:with="pageTitle=${'Spring Boot React Learning'}">
+    <head th:replace="~{fragments/header :: common-head(${pageTitle})}"></head>
+    <body class="pageCenteredBody">
+        <div class="pageCentered">
+            <h2 th:text="${pageTitle}">Unresolved Page Title</h2>
 
-        <nav class="navigationContainer">
-            <ul class="navigationList">
-                <li><a href="/e-commerce/">E-Commerce Home</a></li>
-            </ul>
-        </nav>
-    </div>
-</body>
+            <nav class="navigationContainer">
+                <ul class="navigationList">
+                    <li><a href="/e-commerce/">E-Commerce Home</a></li>
+                </ul>
+            </nav>
+        </div>
+    </body>
 </html>
