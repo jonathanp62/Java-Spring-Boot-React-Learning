@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.components;
 
 /*
+ * (#)ApplicationStartupChecker.java    0.6.0   05/16/2026
  * (#)ApplicationStartupChecker.java    0.5.0   05/14/2026
  *
  * @author    Jonathan Parker
- * @version   0.5.0
+ * @version   0.6.0
  * @since     0.5.0
  *
  * MIT License
@@ -39,6 +40,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.boot.CommandLineRunner;
 
+import org.springframework.context.MessageSource;
+
 import org.springframework.stereotype.Component;
 
 /// The application startup checker
@@ -52,16 +55,20 @@ public class ApplicationStartupChecker implements CommandLineRunner {
     /// The Solr client
     final HttpJdkSolrClient solrClient;
 
+    /// The message source
+    final MessageSource messageSource;
+
     /// The logger
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /// The constructor
     ///
     /// @param  solrClient  org.apache.solr.client.solrj.impl.HttpJdkSolrClient
-    public ApplicationStartupChecker(final HttpJdkSolrClient solrClient) {
+    public ApplicationStartupChecker(final HttpJdkSolrClient solrClient, final MessageSource messageSource) {
         super();
 
         this.solrClient = solrClient;
+        this.messageSource = messageSource;
     }
 
     /// The run method
@@ -73,13 +80,13 @@ public class ApplicationStartupChecker implements CommandLineRunner {
         try {
             final int status = this.solrClient.ping("products").getStatus();
 
-            if (status == 0) {
-                this.logger.info("Connected to Solr at {} for collection {}", this.solrClient.getBaseURL(), this.solrPingCollection);
+            if (status == 0 && this.logger.isInfoEnabled()) {
+                this.logger.info(this.messageSource.getMessage("j.solr.connected.ok", new Object[] { this.solrClient.getBaseURL(), this.solrPingCollection }, null));
             } else {
-                throw new IllegalStateException(String.format("Solr ping failed with status: %d", status));
+                throw new IllegalStateException(this.messageSource.getMessage("j.solr.ping.failed", new Object[] { status }, null));
             }
         } catch (final Exception e) {
-            throw new IllegalStateException(String.format("Error connecting to Solr at: %s", this.solrClient.getBaseURL()), e);
+            throw new IllegalStateException(this.messageSource.getMessage("j.solr.connected.error", new Object[] { this.solrClient.getBaseURL() }, null), e);
         }
     }
 }
