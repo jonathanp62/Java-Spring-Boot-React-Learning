@@ -1,9 +1,10 @@
 <!--
+ (#)error.html  0.6.0   05/18/2026
  (#)error.html  0.5.0   03/22/2026
  (#)error.html  0.1.0   01/24/2026
 
  @author  Jonathan Parker
- @version 0.5.0
+ @version 0.6.0
  @since   0.1.0
 
  MIT License
@@ -30,20 +31,20 @@
 -->
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us">
-    <head th:replace="~{fragments/header :: common-head('Spring Boot React Learning')}"></head>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-us" th:with="pageTitle=#{tl.page.title}">
+    <head th:replace="~{fragments/header :: common-head(${pageTitle})}"></head>
     <body>
-        <h2>An error occurred</h2>
+        <h2 th:text="#{tl.an.error.occurred}"></h2>
         <div>
-            <div><strong>Status:</strong> <span th:text="${status}">...</span></div>
-            <div><strong>Error:</strong> <span th:text="${error}">...</span></div>
-            <div><strong>Path:</strong> <span th:text="${path}">...</span></div>
+            <div><strong th:text="#{tl.status}"></strong><span style="color: #6c757d">:</span> <span th:text="${status}">...</span></div>
+            <div><strong th:text="#{tl.error}"></strong><span style="color: #6c757d">:</span> <span th:text="${error}">...</span></div>
+            <div><strong th:text="#{tl.path}"></strong><span style="color: #6c757d">:</span> <span th:text="${path}">...</span></div>
 
-            <div th:if="${exception}"><strong>Exception:</strong> <span th:text="${exception}">...</span></div>
-            <div th:if="${message}"><strong>Message:</strong> <span th:text="${message}">...</span></div>
+            <div th:if="${exception}"><strong th:text="#{tl.exception}"></strong><span style="color: #6c757d">:</span> <span th:text="${exception}">...</span></div>
+            <div th:if="${message}"><strong th:text="#{tl.message}"></strong><span style="color: #6c757d">:</span> <span th:text="${message}">...</span></div>
 
             <div th:if="${trace}">
-                <h3>Stacktrace</h3>
+                <h3 th:text="#{tl.stacktrace}"></h3>
                 <pre th:text="${trace}">...</pre>
             </div>
         </div>
