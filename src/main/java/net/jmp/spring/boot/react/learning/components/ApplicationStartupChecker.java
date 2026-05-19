@@ -42,6 +42,8 @@ import org.springframework.boot.CommandLineRunner;
 
 import org.springframework.context.MessageSource;
 
+import org.springframework.context.i18n.LocaleContextHolder;
+
 import org.springframework.stereotype.Component;
 
 /// The application startup checker
@@ -81,12 +83,12 @@ public class ApplicationStartupChecker implements CommandLineRunner {
             final int status = this.solrClient.ping("products").getStatus();
 
             if (status == 0 && this.logger.isInfoEnabled()) {
-                this.logger.info(this.messageSource.getMessage("j.solr.connected.ok", new Object[] { this.solrClient.getBaseURL(), this.solrPingCollection }, null));
+                this.logger.info(this.messageSource.getMessage("j.solr.connected.ok", new Object[] { this.solrClient.getBaseURL(), this.solrPingCollection }, LocaleContextHolder.getLocale()));
             } else {
-                throw new IllegalStateException(this.messageSource.getMessage("j.solr.ping.failed", new Object[] { status }, null));
+                throw new IllegalStateException(this.messageSource.getMessage("j.solr.ping.failed", new Object[] { status }, LocaleContextHolder.getLocale()));
             }
         } catch (final Exception e) {
-            throw new IllegalStateException(this.messageSource.getMessage("j.solr.connected.error", new Object[] { this.solrClient.getBaseURL() }, null), e);
+            throw new IllegalStateException(this.messageSource.getMessage("j.solr.connected.error", new Object[] { this.solrClient.getBaseURL() }, LocaleContextHolder.getLocale()), e);
         }
     }
 }
