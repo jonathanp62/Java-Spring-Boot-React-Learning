@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.beans;
 
 /*
+ * (#)ShippingCostCalculatorBean.java   0.6.0   05/19/2026
  * (#)ShippingCostCalculatorBean.java   0.4.0   02/27/2026
  *
  * @author    Jonathan Parker
- * @version   0.4.0
+ * @version   0.6.0
  * @since     0.4.0
  *
  * MIT License
@@ -100,7 +101,7 @@ public class ShippingCostCalculatorBean {
 
             return new ShippingCost(
                     request,
-                    "OK",
+                    "OK",           // Do not use the message source
                     "OK",
                     surcharge,
                     travel,
@@ -115,7 +116,7 @@ public class ShippingCostCalculatorBean {
 
             return new ShippingCost(
                     request,
-                    "Not Found",
+                    "Not Found",    // Do not use the message source
                     String.format("The 'to' zip code %s was not found", this.toZipCode),
                     surcharge,
                     0.0,

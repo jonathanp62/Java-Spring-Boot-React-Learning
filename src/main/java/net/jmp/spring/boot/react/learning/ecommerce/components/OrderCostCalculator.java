@@ -1,13 +1,14 @@
 package net.jmp.spring.boot.react.learning.ecommerce.components;
 
 /*
+ * (#)OrderCostCalculator.java  0.6.0   05/19/2026
  * (#)OrderCostCalculator.java  0.5.0   04/08/2026
  * (#)OrderCostCalculator.java  0.4.0   03/03/2026
  * (#)OrderCostCalculator.java  0.2.0   02/02/2026
  * (#)OrderCostCalculator.java  0.1.0   01/03/2026
  *
  * @author    Jonathan Parker
- * @version   0.5.0
+ * @version   0.6.0
  * @since     0.1.0
  *
  * MIT License
@@ -56,6 +57,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
+
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import org.springframework.stereotype.Component;
 
@@ -71,16 +75,23 @@ public class OrderCostCalculator {
     /// The distance service
     private final DistanceService distanceService;
 
+    /// The message source
+    final MessageSource messageSource;
+
     /// The constructor
     ///
     /// @param  applicationContext  org.springframework.context.ApplicationContext
     /// @param  distanceService     net.jmp.spring.boot.react.learning.ecommerce.services.DistanceService
-    public OrderCostCalculator(final ApplicationContext applicationContext, final DistanceService distanceService) {
+    public OrderCostCalculator(
+            final ApplicationContext applicationContext,
+            final DistanceService distanceService,
+            final MessageSource messageSource) {
         super();
 
         this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
         this.applicationContext = applicationContext;
         this.distanceService = distanceService;
+        this.messageSource = messageSource;
     }
 
     /// The calculate total cost method
@@ -104,7 +115,9 @@ public class OrderCostCalculator {
             final String toZipCode = orderDocument.getZipCode();
 
             if (Objects.isNull(toZipCode)) {
-                throw new IllegalStateException("The 'to' zip code was not found in order document: " + orderDocument.getDocumentId());
+                final String message = this.messageSource.getMessage("j.to.zipcode.not.found", new Object[] { orderDocument.getDocumentId() }, LocaleContextHolder.getLocale());
+
+                throw new IllegalStateException(message);
             }
 
             final ShippingCost shippingCost = this.getShippingCost(toZipCode, subtotal, items);
@@ -182,7 +195,9 @@ public class OrderCostCalculator {
             final String toZipCode = orderDocument.getZipCode();
 
             if (Objects.isNull(toZipCode)) {
-                throw new IllegalStateException("The 'to' zip code was not found in order document: " + orderDocument.getDocumentId());
+                final String message = this.messageSource.getMessage("j.to.zipcode.not.found", new Object[] { orderDocument.getDocumentId() }, LocaleContextHolder.getLocale());
+
+                throw new IllegalStateException(message);
             }
 
             final ShippingCost shippingCost = this.getShippingCost(toZipCode, subtotal, items);
@@ -221,8 +236,9 @@ public class OrderCostCalculator {
 
             if (!shippingCost.status().equals("OK")) {
                 final Logger logger = this.logTracer.getLogger();
+                final String message = this.messageSource.getMessage("j.shipping.cost.calc.failed", new Object[] { shippingCost.message() }, LocaleContextHolder.getLocale());
 
-                logger.error("Shipping cost calculation failed: {}", shippingCost.message());
+                logger.error(message);
             }
 
             return shippingCost;
