@@ -115,7 +115,8 @@ public class OrderCostCalculator {
             final String toZipCode = orderDocument.getZipCode();
 
             if (Objects.isNull(toZipCode)) {
-                final String message = this.messageSource.getMessage("j.to.zipcode.not.found", new Object[] { orderDocument.getDocumentId() }, LocaleContextHolder.getLocale());
+                final String documentId = Objects.toString(orderDocument.getDocumentId(), "unsaved");
+                final String message = this.messageSource.getMessage("j.to.zipcode.not.found", new Object[] { documentId }, LocaleContextHolder.getLocale());
 
                 throw new IllegalStateException(message);
             }
@@ -195,7 +196,8 @@ public class OrderCostCalculator {
             final String toZipCode = orderDocument.getZipCode();
 
             if (Objects.isNull(toZipCode)) {
-                final String message = this.messageSource.getMessage("j.to.zipcode.not.found", new Object[] { orderDocument.getDocumentId() }, LocaleContextHolder.getLocale());
+                final String documentId = Objects.toString(orderDocument.getDocumentId(), "unsaved");
+                final String message = this.messageSource.getMessage("j.to.zipcode.not.found", new Object[] { documentId }, LocaleContextHolder.getLocale());
 
                 throw new IllegalStateException(message);
             }
