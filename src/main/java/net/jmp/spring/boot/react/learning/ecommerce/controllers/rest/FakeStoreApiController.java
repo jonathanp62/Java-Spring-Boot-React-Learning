@@ -1,10 +1,11 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers.rest;
 
 /*
+ * (#)FakeStoreApiController.java   0.6.0   05/19/2026
  * (#)FakeStoreApiController.java   0.5.0   04/18/2026
  *
  * @author    Jonathan Parker
- * @version   0.5.0
+ * @version   0.6.0
  * @since     0.5.0
  *
  * MIT License
@@ -42,6 +43,10 @@ import net.jmp.spring.boot.react.learning.ecommerce.helpers.OptionalToResponseEn
 
 import org.slf4j.LoggerFactory;
 
+import org.springframework.context.MessageSource;
+
+import org.springframework.context.i18n.LocaleContextHolder;
+
 import org.springframework.core.io.ClassPathResource;
 
 import org.springframework.http.HttpStatus;
@@ -62,13 +67,19 @@ public class FakeStoreApiController {
     /// The fake store JSON file name
     private static final String FAKE_STORE_JSON = "fakestore.json";
 
+    /// The message source
+    final MessageSource messageSource;
+
     /// The log tracer
     private final LogTracer logTracer;
 
     /// The constructor
-    public FakeStoreApiController() {
+    ///
+    /// @param  messageSource   org.springframework.context.MessageSource
+    public FakeStoreApiController(final MessageSource messageSource) {
         super();
 
+        this.messageSource = messageSource;
         this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
@@ -77,7 +88,9 @@ public class FakeStoreApiController {
     /// @return org.springframework.http.ResponseEntity<java.lang.String>
     @GetMapping("/ok")
     public ResponseEntity<String> ok() {
-        return this.logTracer.traced(() -> new ResponseEntity<>("OK", HttpStatus.OK));
+        final String ok = this.messageSource.getMessage("j.ok", null, LocaleContextHolder.getLocale());
+
+        return this.logTracer.traced(() -> new ResponseEntity<>(ok, HttpStatus.OK));
     }
 
     /// The get all products method
@@ -93,7 +106,9 @@ public class FakeStoreApiController {
             try (final InputStream in = new ClassPathResource(FAKE_STORE_JSON).getInputStream()) {
                 products =  objectMapper.readValue(in, new TypeReference<>() {});
             } catch (final Exception e) {
-                this.logTracer.getLogger().error("Failed to read fake store JSON", e);
+                final String message = this.messageSource.getMessage("j.fakestore.read.failure", null, LocaleContextHolder.getLocale());
+
+                this.logTracer.getLogger().error(message, e);
 
                 return new ResponseEntity<>(products, HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -116,7 +131,9 @@ public class FakeStoreApiController {
             try (final InputStream in = new ClassPathResource(FAKE_STORE_JSON).getInputStream()) {
                 products =  objectMapper.readValue(in, new TypeReference<>() {});
             } catch (final Exception e) {
-                this.logTracer.getLogger().error("Failed to read fake store JSON", e);
+                final String message = this.messageSource.getMessage("j.fakestore.read.failure", null, LocaleContextHolder.getLocale());
+
+                this.logTracer.getLogger().error(message, e);
 
                 return new ResponseEntity<>(new Product(), HttpStatus.INTERNAL_SERVER_ERROR);
             }

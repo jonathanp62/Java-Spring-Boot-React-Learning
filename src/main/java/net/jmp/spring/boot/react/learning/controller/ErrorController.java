@@ -30,28 +30,51 @@ package net.jmp.spring.boot.react.learning.controller;
  * SOFTWARE.
  */
 
-import java.io.IOException;
-
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpStatus;
+
+import org.springframework.context.MessageSource;
+
+import org.springframework.context.i18n.LocaleContextHolder;
+
 import org.springframework.stereotype.Controller;
+
+import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
 /// The error controller class. Used to test the error template.
 @Controller
 public class ErrorController {
-    /// The default constructor
-    public ErrorController() {
+    /// The message source
+    final MessageSource messageSource;
+
+    /// The constructor
+    ///
+    /// @param  messageSource   org.springframework.context.MessageSource
+    public ErrorController(final MessageSource messageSource) {
         super();
+
+        this.messageSource = messageSource;
     }
 
     /// Maps GET requests for the "/error-test" path to the error template.
     ///
+    /// @param  request     jakarta.servlet.http.HttpServletRequest
     /// @param  response    jakarta.servlet.http.HttpServletResponse
-    /// @throws             java.io.IOException                         If an I/O error occurs
+    /// @param  model       org.springframework.ui.Model
+    /// @return             java.lang.String
     @GetMapping("/error-test")
-    public void error(final HttpServletResponse response) throws IOException {
-        response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Testing error template rendering");
+    public String error(final HttpServletRequest request, final HttpServletResponse response, final Model model) {
+        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+
+        model.addAttribute("status", HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+        model.addAttribute("error", HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase());
+        model.addAttribute("path", request.getRequestURI());
+        model.addAttribute("message", this.messageSource.getMessage("j.testing.error.template", null, LocaleContextHolder.getLocale()));
+
+        return "error";
     }
 }
