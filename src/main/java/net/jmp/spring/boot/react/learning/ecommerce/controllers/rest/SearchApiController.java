@@ -1,11 +1,12 @@
 package net.jmp.spring.boot.react.learning.ecommerce.controllers.rest;
 
 /*
+ * (#)SearchApiController.java  0.6.0   05/20/2026
  * (#)SearchApiController.java  0.5.0   03/27/2026
  * (#)SearchApiController.java  0.4.0   03/21/2026
  *
  * @author    Jonathan Parker
- * @version   0.5.0
+ * @version   0.6.0
  * @since     0.4.0
  *
  * MIT License
@@ -44,6 +45,10 @@ import net.jmp.spring.boot.react.learning.ecommerce.solr.TermsSolrResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.context.MessageSource;
+
+import org.springframework.context.i18n.LocaleContextHolder;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -64,11 +69,16 @@ public class SearchApiController {
     /// The search service
     private final SearchService searchService;
 
+    /// The message source
+    final MessageSource messageSource;
+
     /// The constructor
     ///
     /// @param  searchService  net.jmp.spring.boot.react.learning.ecommerce.services.SearchService
-    public SearchApiController(final SearchService searchService) {
+    /// @param  messageSource  org.springframework.context.MessageSource
+    public SearchApiController(final SearchService searchService, final MessageSource messageSource) {
         this.searchService = searchService;
+        this.messageSource = messageSource;
         this.logTracer = new LogTracer(LoggerFactory.getLogger(this.getClass()));
     }
 
@@ -77,7 +87,11 @@ public class SearchApiController {
     /// @return org.springframework.http.ResponseEntity<java.lang.String>
     @GetMapping("/ok")
     public ResponseEntity<String> ok() {
-        return this.logTracer.traced(() -> new ResponseEntity<>("OK", HttpStatus.OK));
+        return this.logTracer.traced(() -> {
+            final String ok = this.messageSource.getMessage("j.ok", null, LocaleContextHolder.getLocale());
+
+            return new ResponseEntity<>(ok, HttpStatus.OK);
+        });
     }
 
     /// The ping method
@@ -91,7 +105,7 @@ public class SearchApiController {
 
             return switch (response.getStatus()) {
                 case 200 -> new ResponseEntity<>(
-                        String.format("Pinged Solr collection %s OK", collection),
+                        this.messageSource.getMessage("j.solr.ping.coll.ok", new Object[] { collection }, LocaleContextHolder.getLocale()),
                         HttpStatus.OK
                 );
                 case 404 -> new ResponseEntity<>(
@@ -103,7 +117,7 @@ public class SearchApiController {
                         HttpStatus.INTERNAL_SERVER_ERROR
                 );
                 default -> new ResponseEntity<>(
-                        String.format("Failed to ping Solr collection %s", collection),
+                        this.messageSource.getMessage("j.solr.ping.coll.failed", new Object[] { collection }, LocaleContextHolder.getLocale()),
                         HttpStatus.INTERNAL_SERVER_ERROR
                 );
             };
@@ -133,7 +147,7 @@ public class SearchApiController {
                         HttpStatus.INTERNAL_SERVER_ERROR
                 );
                 default -> new ResponseEntity<>(
-                        new FacetsSolrResponse(500, String.format("Failed to list facets for collection %s", collection)),
+                        new FacetsSolrResponse(500, this.messageSource.getMessage("j.solr.ping.facets.failed", new Object[] { collection }, LocaleContextHolder.getLocale())),
                         HttpStatus.INTERNAL_SERVER_ERROR
                 );
             };
@@ -164,7 +178,7 @@ public class SearchApiController {
                         HttpStatus.INTERNAL_SERVER_ERROR
                 );
                 default -> new ResponseEntity<>(
-                        new TermsSolrResponse(500, String.format("Failed to list terms for collection %s and field %s", collection, field)),
+                        new TermsSolrResponse(500, this.messageSource.getMessage("j.solr.ping.terms.failed", new Object[] { collection, field }, LocaleContextHolder.getLocale())),
                         HttpStatus.INTERNAL_SERVER_ERROR
                 );
             };
@@ -201,10 +215,10 @@ public class SearchApiController {
                         case "ratingcount" -> this.searchService.selectByRatingCount(collectionName, fieldMin, fieldMax, category);
                         case "ratingrate" -> this.searchService.selectByRatingRate(collectionName, fieldMin, fieldMax, category);
                         case "title" -> this.searchService.selectByTitle(collectionName, fieldValue, category);
-                        default -> new QuerySolrResponse<>(400, String.format("Unrecognized field name: %s", fieldName));
+                        default -> new QuerySolrResponse<>(400, this.messageSource.getMessage("j.solr.unrecognized.field", new Object[] { fieldName }, LocaleContextHolder.getLocale()));
                     };
                 } else {
-                    response = new QuerySolrResponse<>(400, String.format("Unrecognized request parameters: %s", requestParameters));
+                    response = new QuerySolrResponse<>(400, this.messageSource.getMessage("j.solr.unrecognized.request", new Object[] { requestParameters }, LocaleContextHolder.getLocale()));
                 }
             }
 
